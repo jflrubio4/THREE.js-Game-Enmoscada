@@ -8,83 +8,51 @@ class Mosca extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-
-    this.tope = false;
     
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
-    
-    //CREAMOS LAS PARTES.
 
-    //BRAZOS:
-    var manoGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-    var brazoGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
-    var hombroGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    //CUERPO MOSCA
+    var cuerpoGeom = new THREE.SphereGeometry(0.5, 32, 32);
+    var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
 
-    manoGeometry.translate(0, -3.5, 0);
-    brazoGeometry.translate(0, -2, 0);
-    hombroGeometry.translate(0, -0.5, 0);
+    //ALAS
+    var shape = new THREE.Shape();
+    //shape.lineTo(-1,1);
+    shape.moveTo(0,0);
+    shape.quadraticCurveTo(-1,0.75, -1.5,0.5);
+    shape.quadraticCurveTo(-2.5,0, -1.5,-0.5);
+    //shape.lineTo(0,0)
+    shape.quadraticCurveTo(-1,-0.75, 0,0);
 
-    //COLOCAMOS EL PRIMER BRAZO
-    var mano1 = new THREE.Mesh(manoGeometry, mat);
+    var options = {
+      depth: 0.2, 
+      steps: 10, 
+      curveSegments: 32, 
+      bevelSegments: 12,
+      bevelThickness: 0.25,
+      bevelSize: 0.6
+    };
 
-    var brazo1 = new THREE.Mesh(brazoGeometry, mat);
+    var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
+    alaIGeometry.scale(0.5,0.5,0.5);
+    alaIGeometry.translate(-0.6,0,-0.05);
+    this.alaI = new THREE.Mesh(alaIGeometry, mat);
 
-    var hombro1 = new THREE.Mesh(hombroGeometry, mat);
+    var alaDGeometry = new THREE.ExtrudeGeometry(shape, options);
+    alaDGeometry.scale(0.5,0.5,0.5);
+    alaDGeometry.translate(-0.6,0,-0.05);
+    alaDGeometry.rotateY(Math.PI);
+    this.alaD = new THREE.Mesh(alaDGeometry, mat);
+
 
     //UNIMOS LAS PARTES DEL BRAZO.
-    var cgsBrazo1 = new CSG();
-    cgsBrazo1.union([mano1, brazo1, hombro1]);
-    this.brazoIzquierda = cgsBrazo1.toMesh();
+    var moscaCSG = new CSG();
+    moscaCSG.union([cuerpo, this.alaI, this.alaD]);
+    var mosca = moscaCSG.toMesh();
 
-    this.add(this.brazoIzquierda);
-
-    /* //COLOCAMOS EL SEGUNDO BRAZO
-    var mano2 = new THREE.Mesh(articulacionGeometry, mat);
-    this.add(mano2);
+    this.add(mosca);
     
-    var hombro2 = new THREE.Mesh(articulacionGeometry, mat);
-    this.add(hombro2);
-    
-    var brazo2 = new THREE.Mesh(brazoGeometry, mat);
-    this.add(brazo2); */
-
-    //TORSO:
-    var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2, 32);
-
-    var torso = new THREE.Mesh(torsoGeometry, mat);
-
-    //PIERNAS:
-    var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32);
-
-    var pierna1 = new THREE.Mesh(piernaGeometry, mat);
-    var pierna2 = new THREE.Mesh(piernaGeometry, mat);
-
-    //PIES:
-    var tobilloGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
-    var pieGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-
-    tobilloGeometry.rotateX(Math.PI/2);
-    pieGeometry.translate(0, 0, 0.5);
-
-    var tobillo = new THREE.Mesh(tobilloGeometry, mat);
-    var pie = new THREE.Mesh(pieGeometry, mat);
-
-    var csg = new CSG();
-    csg.union([tobillo, pie]);
-    var tobilloPie1 = csg.toMesh();
-    var tobilloPie2 = csg.toMesh(); //ARREGLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
-
-    //POSICIONAMOS LAS PARTES.
-    
-
-
-
-
-    
-
-
-    this.rotar = false;
   }
   
   createGUI (gui,titleGui) {
@@ -137,6 +105,7 @@ class Mosca extends THREE.Object3D {
     folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
     
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
+
   }
 
   setRotacion(value){
@@ -146,7 +115,7 @@ class Mosca extends THREE.Object3D {
     else{
         this.rotar = false;
     }
-  }
+}
   
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
@@ -159,22 +128,6 @@ class Mosca extends THREE.Object3D {
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
-
-    //PARA ROTAR EL OBEJTO.
-    if(this.rotar){
-      if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.tope){
-        this.brazoIzquierda.rotation.x += 0.05;
-        if(this.brazoIzquierda.rotation.x == Math.PI/4){
-          this.tope = true;
-        }
-      }
-      else{
-        this.brazoIzquierda.rotation.x -= 0.05;
-        if(this.brazoIzquierda.rotation.x == -Math.PI/4){
-          this.tope = false;
-        }
-      }
-    }
     
   }
 }

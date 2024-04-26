@@ -4,7 +4,7 @@
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
-import { Personaje } from './Personaje.js';
+import { Mosca } from './Mosca.js';
 
 // Clases de mi proyecto
 //IMPORT <MI CLASE>
@@ -47,7 +47,7 @@ class MyScene extends THREE.Scene {
       // Por último creamos el modelo.
       // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-      this.model = new Personaje(this.gui, "Controles del Personaje");
+      this.model = new Mosca(this.gui, "Controles de la Mosca");
       this.add (this.model);
 
     }
