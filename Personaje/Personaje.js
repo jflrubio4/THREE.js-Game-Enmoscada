@@ -9,8 +9,9 @@ class Personaje extends THREE.Object3D {
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
 
-    this.tope = false;
-    
+    this.topeIzq = false;
+    this.topeDer = false;
+
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
     
@@ -21,38 +22,38 @@ class Personaje extends THREE.Object3D {
     var brazoGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
     var hombroGeometry = new THREE.SphereGeometry(0.5, 32, 32);
 
-    manoGeometry.translate(0, -3.5, 0);
-    brazoGeometry.translate(0, -2, 0);
+    manoGeometry.translate(0, -3, 0);
+    brazoGeometry.translate(0, -1.5, 0);
     hombroGeometry.translate(0, -0.5, 0);
 
     //COLOCAMOS EL PRIMER BRAZO
-    var mano1 = new THREE.Mesh(manoGeometry, mat);
-
-    var brazo1 = new THREE.Mesh(brazoGeometry, mat);
-
-    var hombro1 = new THREE.Mesh(hombroGeometry, mat);
+    var mano = new THREE.Mesh(manoGeometry, mat);
+    var brazo = new THREE.Mesh(brazoGeometry, mat);
+    var hombro = new THREE.Mesh(hombroGeometry, mat);
 
     //UNIMOS LAS PARTES DEL BRAZO.
-    var cgsBrazo1 = new CSG();
-    cgsBrazo1.union([mano1, brazo1, hombro1]);
-    this.brazoIzquierda = cgsBrazo1.toMesh();
+    var cgsBrazoI = new CSG();
+    cgsBrazoI.union([mano, brazo, hombro]);
+    this.brazoIzquierda = cgsBrazoI.toMesh();
 
+    this.brazoIzquierda.translateX(2.5);
+    this.brazoIzquierda.translateY(1);
     this.add(this.brazoIzquierda);
+    
+    var cgsBrazoD = new CSG();
+    cgsBrazoD.union([mano, brazo, hombro]);
+    this.brazoDerecha = cgsBrazoD.toMesh();
 
-    /* //COLOCAMOS EL SEGUNDO BRAZO
-    var mano2 = new THREE.Mesh(articulacionGeometry, mat);
-    this.add(mano2);
+    this.brazoDerecha.translateX(-2.5);
+    this.brazoDerecha.translateY(1);
+    this.add(this.brazoDerecha);
     
-    var hombro2 = new THREE.Mesh(articulacionGeometry, mat);
-    this.add(hombro2);
-    
-    var brazo2 = new THREE.Mesh(brazoGeometry, mat);
-    this.add(brazo2); */
 
     //TORSO:
-    var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2, 32);
-
+    var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2.5, 32);
     var torso = new THREE.Mesh(torsoGeometry, mat);
+
+    this.add(torso);
 
     //PIERNAS:
     var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32);
@@ -162,16 +163,29 @@ class Personaje extends THREE.Object3D {
 
     //PARA ROTAR EL OBEJTO.
     if(this.rotar){
-      if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.tope){
-        this.brazoIzquierda.rotation.x += 0.05;
-        if(this.brazoIzquierda.rotation.x == Math.PI/4){
-          this.tope = true;
+      if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzq){
+        this.brazoIzquierda.rotation.x += 0.01;
+        if(this.brazoIzquierda.rotation.x >= Math.PI/4){
+          this.topeIzq = true;
         }
       }
       else{
-        this.brazoIzquierda.rotation.x -= 0.05;
-        if(this.brazoIzquierda.rotation.x == -Math.PI/4){
-          this.tope = false;
+        this.brazoIzquierda.rotation.x -= 0.01;
+        if(this.brazoIzquierda.rotation.x <= -Math.PI/4){
+          this.topeIzq = false;
+        }
+      }
+
+      if(this.brazoDerecha.rotation.x > -Math.PI/4 && !this.topeDer){
+        this.brazoDerecha.rotation.x -= 0.01;
+        if(this.brazoDerecha.rotation.x <= -Math.PI/4){
+          this.topeDer = true;
+        }
+      }
+      else{
+        this.brazoDerecha.rotation.x += 0.01;
+        if(this.brazoDerecha.rotation.x >= +Math.PI/4){
+          this.topeDer = false;
         }
       }
     }

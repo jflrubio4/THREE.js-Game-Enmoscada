@@ -1,59 +1,49 @@
 import * as THREE from '../libs/three.module.js'
-import {CSG} from '../libs/CSG-v2.js'
  
-class Circuito extends THREE.Object3D {
+class Rev extends THREE.Object3D {
+
+  static currentSegments; // Variable estática para guardar el número de segmentos actual
+
   constructor(gui,titleGui) {
     super();
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    this.currentSegments = this.guiControls.segmentos;
+
+    // Crear el perfil del triángulo
+    this.points = [];
+    this.points.push(new THREE.Vector2(0, 0)); // Punto en el origen
+    this.points.push(new THREE.Vector2(this.guiControls.radio, 0)); // Punto en la base
+    this.points.push(new THREE.Vector2(this.guiControls.radio/2, 3)); // Punto en el vértice superior
+    this.points.push(new THREE.Vector2(0, 0)); // Volver al origen para cerrar el triángulo
     
-    var path = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-250, 0, 0),
-      new THREE.Vector3(-125, 100, -50),
-      new THREE.Vector3(0, 25, 35),
-      new THREE.Vector3(50, 50, -25),
-      new THREE.Vector3(100, -25, 10),
-      new THREE.Vector3(-50, 0, 100),
-      new THREE.Vector3(0, 75, 150),
-      new THREE.Vector3(50, 100, 175),
-      new THREE.Vector3(50, 25, 25),
-      new THREE.Vector3(50, 25, -50),
-      new THREE.Vector3(100, 50, -75),
-      new THREE.Vector3(150, -35, 50),
-      new THREE.Vector3(125, 50, 125),
-      new THREE.Vector3(-25, -25, 0),
-      new THREE.Vector3(-100, 150, -75),
-      new THREE.Vector3(-150, 150, 50),
-      new THREE.Vector3(-175, 50, 100),
-      new THREE.Vector3(-100, 0, 150),
-      new THREE.Vector3(-150, -50, 200),
-      new THREE.Vector3(-200, -35, 100)
-      //NO SE REPITE EL PRIMER PUNTO.
-    ],true);
+    // Un Mesh se compone de geometría y material
+    var geom = new THREE.LatheGeometry (this.points, this.guiControls.segmentos, 0, 2*Math.PI);
+    // Como material se crea uno a partir de un color
+    var mat = new THREE.MeshNormalMaterial({color: 0x44556f});
 
-    var tubeGeometry = new THREE.TubeGeometry(path, 500, 5, 20, true);
-    var mat = new THREE.MeshNormalMaterial();
+    // Crear una semiesfera
+    const semiSphereGeom = new THREE.SphereGeometry(1, this.guiControls.segmentos, this.guiControls.segmentos, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);    const semiSphereMat = new THREE.MeshNormalMaterial({color: 0x44556f});
+    const semiSphere = new THREE.Mesh(semiSphereGeom, semiSphereMat);
+    
+    // Ya podemos construir el Mesh
+    this.revol = new THREE.Mesh (geom, mat);
+    // Y añadirlo como hijo del Object3D (el this)
+    this.add (this.revol);
 
-    var tubo = new THREE.Mesh(tubeGeometry, mat);
-    this.add(tubo);
-
-    var esfera = new THREE.SphereGeometry(10, 32, 32);
-    var esfera1 = new THREE.Mesh(esfera, mat);
-
-    esfera1.position.set(-100, 0, 150);
-    this.add(esfera1);
-
-    this.rotar = false;
+    // Añadir la semiesfera al objeto 3D
+    this.add(semiSphere);
   }
   
   createGUI (gui,titleGui) {
     // Controles para el tamaño, la orientación y la posición de la caja
     this.guiControls = {
-      sizeX : 0.5,
-      sizeY : 0.5,
-      sizeZ : 0.5,
+      sizeX : 1.0,
+      sizeY : 1.0,
+      sizeZ : 1.0,
       
       rotX : 0.0,
       rotY : 0.0,
@@ -62,6 +52,9 @@ class Circuito extends THREE.Object3D {
       posX : 0.0,
       posY : 0.0,
       posZ : 0.0,
+
+      segmentos: 20,
+      radio: 1.0,
       
       // Un botón para dejarlo todo en su posición inicial
       // Cuando se pulse se ejecutará esta función.
@@ -77,6 +70,9 @@ class Circuito extends THREE.Object3D {
         this.guiControls.posX = 0.0;
         this.guiControls.posY = 0.0;
         this.guiControls.posZ = 0.0;
+
+        this.guiControls.segmentos = 20;
+        this.guiControls.radio = 1.0;
       }
     } 
     
@@ -96,17 +92,11 @@ class Circuito extends THREE.Object3D {
     folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
     folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
     folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
+
+    folder.add (this.guiControls, 'segmentos', 3, 30, 1).name ('Segmentos : ').listen();
+    folder.add (this.guiControls, 'radio', 0.1, 50.0, 0.1).name ('Radio : ').listen();
     
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
-  }
-
-  setRotacion(value){
-    if (value){
-        this.rotar = true;
-    }
-    else{
-        this.rotar = false;
-    }
   }
   
   update () {
@@ -116,21 +106,13 @@ class Circuito extends THREE.Object3D {
     // Después, la rotación en Y
     // Luego, la rotación en X
     // Y por último la traslación
-   
+
+    this.revol.geometry.dispose();
+    this.revol.geometry = new THREE.LatheGeometry(this.points, this.guiControls.segmentos, this.guiControls.radio);
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
-
-    //PARA ROTAR EL OBEJTO.
-    if(this.rotar){
-        this.resultadoMesh1.rotation.x += 0.01;
-        this.resultadoMesh1.rotation.y += 0.01;
-        
-        this.resultadoMesh2.rotation.x -= 0.01;
-        this.resultadoMesh2.rotation.z -= 0.01;
-    }
-    
   }
 }
 
-export { Circuito };
+export { Rev };
