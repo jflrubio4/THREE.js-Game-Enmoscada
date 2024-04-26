@@ -1,7 +1,5 @@
 import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
-
-this.tope = false;
  
 class Personaje extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -11,6 +9,8 @@ class Personaje extends THREE.Object3D {
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
 
+    this.tope = false;
+    
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
     
