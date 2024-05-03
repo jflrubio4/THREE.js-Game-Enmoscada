@@ -9,10 +9,9 @@ class Bomba extends THREE.Object3D {
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
     
-    //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshStandardMaterial();
+    //DEFINIMOS EL MATERIAL.
+    var mat = new THREE.MeshNormalMaterial();
 
-    //CUERPO MOSCA
     var cuerpoGeom = new THREE.SphereGeometry(2, 32, 32);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
 
@@ -20,27 +19,40 @@ class Bomba extends THREE.Object3D {
     topeGeom.translate(0,4,0);
     var topeMesh = new THREE.Mesh(topeGeom, mat);
 
-    var torusGeometry = new THREE.TorusGeometry(2, 0.7, 32, 32, Math.PI / 2); //Hasta 60 grados
+    var torusGeometry = new THREE.TorusGeometry(2, 0.7, 32, 32); //Hasta 60 grados
     //0.5 de la base y 1.5 para situarlo encima de la esfera
-    torusGeometry.translate(-2,4,0);
+    //torusGeometry.translate(-2,4,0);
     var toro = new THREE.Mesh(torusGeometry, mat);
 
-    var tapaToro = new THREE.CircleGeometry(0.7, 32);
-    tapaToro.rotateY(-Math.PI/2);
-    tapaToro.translate(-2,6,0);
-    var tapaToroMesh = new THREE.Mesh(tapaToro, mat);
+    var caja = new THREE.BoxGeometry(10,3,2);
+    var caja2 = new THREE.BoxGeometry(10,10,2);
+    caja.translate(0,-1.5,0);
+    caja2.translate(-5,0,0);
+    var cajaMesh = new THREE.Mesh(caja, mat);
+    var cajaMesh2 = new THREE.Mesh(caja2, mat);
 
     var csg = new CSG();
-    csg.union([toro, tapaToroMesh]);
-    var toroConTapa = csg.toMesh();
+    csg.subtract([toro, cajaMesh]);
+    csg.subtract([cajaMesh2]);
+    var toroCortado = csg.toMesh();
+
+    toroCortado.position.set(-2,4.5,0);
+
+    // var tapaToro = new THREE.CylinderGeometry(0.7, 0.7, 0.01, 32);
+    // tapaToro.rotateY(-Math.PI/2);
+    // tapaToro.rotateZ(Math.PI/2);
+    // tapaToro.translate(-2,6,0);
+    // var tapaToroMesh = new THREE.Mesh(tapaToro, mat);
+    
+    //this.add(tapaToroMesh);
 
 
     //UNIMOS LAS PARTES DEL BRAZO.
     var fuseCSG = new CSG();
-    fuseCSG.union([topeMesh, toroConTapa]);
+    fuseCSG.union([topeMesh, toroCortado]);
     var fuse = fuseCSG.toMesh();
-    //fuse.scale.set(0.5,0.5,0.5);
-    //fuse.rotation.set(0,Math.PI,Math.PI/6);
+    fuse.scale.set(0.5,0.5,0.5);
+    fuse.rotation.set(0,Math.PI,Math.PI/6);
 
     var bombaCSG = new CSG();
     bombaCSG.union([fuse, cuerpo]);
