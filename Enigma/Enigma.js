@@ -22,6 +22,8 @@ class Enigma extends THREE.Object3D {
             this.add(this.resultadoMesh1);
           }, null, null);
       });
+
+      
       
     
 

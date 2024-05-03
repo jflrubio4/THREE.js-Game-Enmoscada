@@ -10,7 +10,7 @@ class Bomba extends THREE.Object3D {
     this.createGUI(gui,titleGui);
     
     //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    var mat = new THREE.MeshStandardMaterial();
 
     //CUERPO MOSCA
     var cuerpoGeom = new THREE.SphereGeometry(2, 32, 32);
@@ -20,18 +20,27 @@ class Bomba extends THREE.Object3D {
     topeGeom.translate(0,4,0);
     var topeMesh = new THREE.Mesh(topeGeom, mat);
 
-    var torusGeometry = new THREE.TorusGeometry(2, 0.7, 32, 32, 1.047); //Hasta 60 grados
+    var torusGeometry = new THREE.TorusGeometry(2, 0.7, 32, 32, Math.PI / 2); //Hasta 60 grados
     //0.5 de la base y 1.5 para situarlo encima de la esfera
     torusGeometry.translate(-2,4,0);
     var toro = new THREE.Mesh(torusGeometry, mat);
 
+    var tapaToro = new THREE.CircleGeometry(0.7, 32);
+    tapaToro.rotateY(-Math.PI/2);
+    tapaToro.translate(-2,6,0);
+    var tapaToroMesh = new THREE.Mesh(tapaToro, mat);
+
+    var csg = new CSG();
+    csg.union([toro, tapaToroMesh]);
+    var toroConTapa = csg.toMesh();
+
 
     //UNIMOS LAS PARTES DEL BRAZO.
     var fuseCSG = new CSG();
-    fuseCSG.union([topeMesh, toro]);
+    fuseCSG.union([topeMesh, toroConTapa]);
     var fuse = fuseCSG.toMesh();
-    fuse.scale.set(0.5,0.5,0.5);
-    fuse.rotation.set(0,Math.PI,Math.PI/6);
+    //fuse.scale.set(0.5,0.5,0.5);
+    //fuse.rotation.set(0,Math.PI,Math.PI/6);
 
     var bombaCSG = new CSG();
     bombaCSG.union([fuse, cuerpo]);
