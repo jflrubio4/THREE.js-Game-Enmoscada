@@ -28,9 +28,13 @@ class Rev extends THREE.Object3D {
     // Crear una semiesfera
     const semiSphereGeom = new THREE.SphereGeometry(1, this.guiControls.segmentos, this.guiControls.segmentos, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2);    const semiSphereMat = new THREE.MeshNormalMaterial({color: 0x44556f});
     const semiSphere = new THREE.Mesh(semiSphereGeom, semiSphereMat);
+
+    semiSphere.rotateX(Math.PI/2);
     
     // Ya podemos construir el Mesh
     this.revol = new THREE.Mesh (geom, mat);
+    this.revol.rotateX(Math.PI/2);
+
     // Y añadirlo como hijo del Object3D (el this)
     this.add (this.revol);
 

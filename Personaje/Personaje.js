@@ -1,5 +1,6 @@
 import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
+import { Rev } from '../Rev/Rev.js'; //Importamos Rev para la cabeza.
  
 class Personaje extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -16,6 +17,13 @@ class Personaje extends THREE.Object3D {
     var mat = new THREE.MeshNormalMaterial();
     
     //CREAMOS LAS PARTES.
+
+    //CABEZA:
+    var cabeza = new Rev(gui, "Controles de la Cabeza");
+    cabeza.scale.set(1.5, 1.5, 1.5);
+    //cabeza.rotateX(Math.PI/2);
+    cabeza.translateY(2.75);
+    this.add(cabeza);
 
     //BRAZOS:
     var manoGeometry = new THREE.SphereGeometry(0.5, 32, 32);
@@ -56,27 +64,55 @@ class Personaje extends THREE.Object3D {
     this.add(torso);
 
     //PIERNAS:
-    var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1.5, 32);
+    var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
 
-    var pierna1 = new THREE.Mesh(piernaGeometry, mat);
-    var pierna2 = new THREE.Mesh(piernaGeometry, mat);
+    this.piernaDer = new THREE.Mesh(piernaGeometry, mat);
+    this.piernaDer.translateX(-1.25);
+    this.piernaDer.translateY(-2.25);
+
+
+    this.piernaIzq = new THREE.Mesh(piernaGeometry, mat);
+    this.piernaIzq.translateX(1.25);
+    this.piernaIzq.translateY(-2.25);
+
 
     //PIES:
     var tobilloGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
     var pieGeometry = new THREE.SphereGeometry(0.5, 32, 32);
 
     tobilloGeometry.rotateX(Math.PI/2);
-    pieGeometry.translate(0, 0, 0.5);
 
     var tobillo = new THREE.Mesh(tobilloGeometry, mat);
-    var pie = new THREE.Mesh(pieGeometry, mat);
 
+    var pie1 = new THREE.Mesh(pieGeometry, mat);
+    pie1.position.z = 0.5;
+
+    var pie2 = new THREE.Mesh(pieGeometry, mat);
+    pie2.position.z = -0.5;
+    
     var csg = new CSG();
-    csg.union([tobillo, pie]);
+    csg.union([tobillo, pie1, pie2]);
     var tobilloPie1 = csg.toMesh();
-    var tobilloPie2 = csg.toMesh(); //ARREGLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR
+    tobilloPie1.translateZ(0.25);
+    tobilloPie1.translateY(-3.25);
+    tobilloPie1.translateX(-1.25);
 
-    //POSICIONAMOS LAS PARTES.
+    var tobilloPie2 = csg.toMesh();
+    tobilloPie2.translateZ(0.25);
+    tobilloPie2.translateY(-3.25);
+    tobilloPie2.translateX(1.25);
+
+    var csgIzq = new CSG();
+    csgIzq.union([this.piernaIzq, tobilloPie2]);
+    this.pataIzq = csgIzq.toMesh();
+
+    var csgDer = new CSG();
+    csgDer.union([this.piernaDer, tobilloPie1]);
+    this.pataDer = csgDer.toMesh();
+
+
+    this.add(this.pataIzq);
+    this.add(this.pataDer);
     
 
 
@@ -85,7 +121,7 @@ class Personaje extends THREE.Object3D {
     
 
 
-    this.rotar = false;
+    this.rotar = true;
   }
   
   createGUI (gui,titleGui) {
@@ -185,6 +221,32 @@ class Personaje extends THREE.Object3D {
       else{
         this.brazoDerecha.rotation.x += 0.01;
         if(this.brazoDerecha.rotation.x >= +Math.PI/4){
+          this.topeDer = false;
+        }
+      }
+
+      if(this.pataDer.rotation.x < Math.PI/4 && !this.topeIzq){
+        this.pataDer.rotation.x += 0.01;
+        if(this.pataDer.rotation.x >= Math.PI/4){
+          this.topeIzq = true;
+        }
+      }
+      else{
+        this.pataDer.rotation.x -= 0.01;
+        if(this.pataDer.rotation.x <= -Math.PI/4){
+          this.topeIzq = false;
+        }
+      }
+
+      if(this.pataIzq.rotation.x > -Math.PI/4 && !this.topeDer){
+        this.pataIzq.rotation.x -= 0.01;
+        if(this.pataIzq.rotation.x <= -Math.PI/4){
+          this.topeDer = true;
+        }
+      }
+      else{
+        this.pataIzq.rotation.x += 0.01;
+        if(this.pataIzq.rotation.x >= +Math.PI/4){
           this.topeDer = false;
         }
       }
