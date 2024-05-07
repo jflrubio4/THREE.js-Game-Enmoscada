@@ -1,5 +1,6 @@
 import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
+import {Personaje} from '../Personaje/Personaje.js'
  
 class Circuito extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -39,11 +40,22 @@ class Circuito extends THREE.Object3D {
     var tubo = new THREE.Mesh(tubeGeometry, mat);
     this.add(tubo);
 
-    var esfera = new THREE.SphereGeometry(10, 32, 32);
+    //GUARDAMOS LOS PARÁMETROS DEL TUBO
+    this.tubo = tubeGeometry;
+    this.path = tubeGeometry.parameters.path;
+    this.radio = tubeGeometry.parameters.radius;
+    this.segmentos = tubeGeometry.parameters.tubularSegments;
+
+    /* var esfera = new THREE.SphereGeometry(10, 32, 32);
     var esfera1 = new THREE.Mesh(esfera, mat);
 
     esfera1.position.set(-100, 0, 150);
-    this.add(esfera1);
+    this.add(esfera1); */
+
+    this.personaje = new Personaje(gui, "Controles del Personaje");
+    this.add(this.personaje);
+
+
 
     this.rotar = false;
   }
@@ -62,6 +74,8 @@ class Circuito extends THREE.Object3D {
       posX : 0.0,
       posY : 0.0,
       posZ : 0.0,
+
+      t: 0, //PARA ALMACENAR LA POSICION DEL PERSONAJE.
       
       // Un botón para dejarlo todo en su posición inicial
       // Cuando se pulse se ejecutará esta función.
@@ -77,6 +91,8 @@ class Circuito extends THREE.Object3D {
         this.guiControls.posX = 0.0;
         this.guiControls.posY = 0.0;
         this.guiControls.posZ = 0.0;
+
+        this.guiControls.t = 0.0;
       }
     } 
     
@@ -121,14 +137,38 @@ class Circuito extends THREE.Object3D {
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
 
-    //PARA ROTAR EL OBEJTO.
+    // Actualizar t
+    this.guiControls.t += 0.00021;
+    if (this.guiControls.t > 1) {
+      this.guiControls.t = 0;
+    }
+
+    // Mover el personaje a lo largo del camino
+    var posTmp = this.path.getPointAt(this.guiControls.t);
+    this.personaje.position.copy(posTmp);
+
+    // Orientar al personaje en la dirección del camino
+    var tangente = this.path.getTangentAt(this.guiControls.t);
+    posTmp.add(tangente);
+    var segmentoActual = Math.floor(this.guiControls.t * this.segmentos);
+    this.personaje.up = this.tubo.binormals[segmentoActual];
+    this.personaje.lookAt(posTmp);
+
+    //MOVIMIENTO LATERAL A LO LARGO DEL TUBO.
+
+    //LO COLOCAMOS ENCIMA DEL TUBO.
+    this.personaje.translateY(this.radio + 3.75);
+
+
+
+    /* //PARA ROTAR EL OBEJTO.
     if(this.rotar){
         this.resultadoMesh1.rotation.x += 0.01;
         this.resultadoMesh1.rotation.y += 0.01;
         
         this.resultadoMesh2.rotation.x -= 0.01;
         this.resultadoMesh2.rotation.z -= 0.01;
-    }
+    } */
     
   }
 }
