@@ -3,44 +3,8 @@ import {CSG} from '../libs/CSG-v2.js'
 
  
 class Juego extends THREE.Object3D {
-  constructor(gui,titleGui, circuito, personaje) {
+  constructor(gui,titleGui) {
     super();
-
-    this.cañon = new THREE.Group();
-
-    this.circuito = circuito;
-    /* this.personaje = personaje; */
-
-    //PARAMETROS DEL TUBO
-    this.tubo = this.circuito.tubo;
-    this.path = this.circuito.path;
-    this.radio = this.circuito.radio;
-    this.segmentos = this.circuito.segmentos;
-
-    this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
-    this.t = 0; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
-
-    //TRES DISTINTOS NODOS POR LOS QUE SE PASA PARA ACABAR CON EL PERSOANJE POSICIONADO.
-    this.nodoPosOrientTubo = new THREE.Object3D();
-    this.movimientoLateral = new THREE.Object3D();
-    this.posSuperficie = new THREE.Object3D();
-
-    this.posSuperficie.position.y = this.radio + 3.75;
-
-    this.add(this.nodoPosOrientTubo);
-    this.nodoPosOrientTubo.add(this.movimientoLateral);
-    this.movimientoLateral.add(this.posSuperficie);
-    this.movimientoLateral.rotateZ(this.rot);
-    this.posSuperficie.add(this.personaje);
-
-    //POSICION INICIAL.
-    var posTmp = this.path.getPointAt(this.t);
-    this.nodoPosOrientTubo.position.copy(posTmp);
-    var tangente = this.path.getTangentAt(this.t);
-    posTmp.add(tangente);
-    var segmentoActual = Math.floor(this.t * this.segmentos);
-    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
-    this.nodoPosOrientTubo.lookAt(posTmp);
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
@@ -124,34 +88,6 @@ class Juego extends THREE.Object3D {
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
-
-    //ACTUALIZAMOS T
-    this.t += 0.0001;
-    if (this.t > 1) {
-      this.t = 0;
-    }
-
-    //ACTUALIZAMOS LA ROTACION.
-    this.rot += 0.00001%Math.PI*2;
-
-    var posTmp = this.path.getPointAt(this.t);
-    this.nodoPosOrientTubo.position.copy(posTmp);
-    var tangente = this.path.getTangentAt(this.t);
-    posTmp.add(tangente);
-    var segmentoActual = Math.floor(this.t * this.segmentos);
-    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
-    this.nodoPosOrientTubo.lookAt(posTmp);
-
-
-
-    /* //PARA ROTAR EL OBEJTO.
-    if(this.rotar){
-        this.resultadoMesh1.rotation.x += 0.01;
-        this.resultadoMesh1.rotation.y += 0.01;
-        
-        this.resultadoMesh2.rotation.x -= 0.01;
-        this.resultadoMesh2.rotation.z -= 0.01;
-    } */
     
   }
 }

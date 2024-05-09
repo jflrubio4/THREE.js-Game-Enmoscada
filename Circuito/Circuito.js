@@ -114,6 +114,10 @@ class Circuito extends THREE.Object3D {
     }
   }
 
+  getGeometry(){
+    return this.tubo;
+  }
+
   
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:

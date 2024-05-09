@@ -12,9 +12,6 @@ import {Circuito} from '../Circuito/Circuito.js'
 //IMPORT <MI CLASE>
 
 
-
-
-
 /// La clase fachada del modelo
 /**
  * Usaremos una clase derivada de la clase Scene de Three.js para llevar el control de la escena y de todo lo que ocurre en ella.
@@ -46,17 +43,17 @@ class MyScene extends THREE.Scene {
       this.add (this.axis);
 
       //CREAMOS LOS OBJETOS IMPORTADOS.
-      this.personaje = new Personaje(this.gui, "Controles del Personaje");
       this.circuito = new Circuito(this.gui, "Controles del Circuito");
+      this.personaje = new Personaje(this.gui, "Controles del Personaje", this.circuito.getGeometry());
       
       
       // Por último creamos el modelo.
       // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-      this.model = new Juego(this.gui, "Controles del Juego", this.circuito, this.personaje);
-      this.add (this.model);
-      this.add(this.circuito);
-      this.add(this.personaje);
+      // this.model = new Juego(this.gui, "Controles del Juego");
+      // this.add (this.model);
+      this.add(this.circuito); //AÑADIMOS EL CIRCUITO A LA ESCENA
+      this.add(this.personaje); //AÑADIMOS EL PERSONAJE A LA ESCENA
 
     }
     
@@ -65,7 +62,7 @@ class MyScene extends THREE.Scene {
       //   El ángulo del campo de visión vértical en grados sexagesimales
       //   La razón de aspecto ancho/alto
       //   Los planos de recorte cercano y lejano
-      this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 500);
+      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 500);
       // También se indica dónde se coloca
       this.camera.position.set (15.0, 0.05, 2.0);
       // Y hacia dónde mira
@@ -116,10 +113,6 @@ class MyScene extends THREE.Scene {
       folder.add (this.guiControls, 'axisOnOff')
         .name ('Mostrar ejes : ')
         .onChange ( (value) => this.setAxisVisible (value) );
-
-      folder.add (this.guiControls, 'rotacion')
-        .name ('Rotación : ')
-        .onChange ( (value) => this.model.setRotacion (value) );
 
       
       return gui;
@@ -204,8 +197,9 @@ class MyScene extends THREE.Scene {
       // Se actualiza la posición de la cámara según su controlador
       this.cameraControl.update();
       
-      // Se actualiza el resto del modelo
-      this.model.update();
+      //SE ACTUALIZAN LOS OBJETOS DEL MODELO.
+      this.circuito.update();
+      this.personaje.update();
       
       // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
       // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".

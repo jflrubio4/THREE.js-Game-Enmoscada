@@ -3,27 +3,30 @@ import {CSG} from '../libs/CSG-v2.js'
 import { Rev } from '../Rev/Rev.js'; //Importamos Rev para la cabeza.
  
 class Personaje extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor(gui,titleGui, geomTubo) {
     super();
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
 
+    this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
+    this.t = 0; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
+
+    //PARA LAS ROTACIONES.
     this.topeIzq = false;
     this.topeDer = false;
+    this.rotar = true;
 
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
-    
-    //CREAMOS LAS PARTES.
 
     //CABEZA:
-    var cabeza = new Rev(gui, "Controles de la Cabeza");
-    cabeza.scale.set(1.5, 1.5, 1.5);
+    this.cabeza = new Rev(gui, "Controles de la Cabeza");
+    this.cabeza.scale.set(1.5, 1.5, 1.5);
     //cabeza.rotateX(Math.PI/2);
-    cabeza.translateY(2.75);
-    this.add(cabeza);
+    this.cabeza.translateY(2.75);
+    //this.add(this.cabeza);
 
     //BRAZOS:
     var manoGeometry = new THREE.SphereGeometry(0.5, 32, 32);
@@ -46,7 +49,7 @@ class Personaje extends THREE.Object3D {
 
     this.brazoIzquierda.translateX(2.5);
     this.brazoIzquierda.translateY(1);
-    this.add(this.brazoIzquierda);
+    //this.add(this.brazoIzquierda);
     
     var cgsBrazoD = new CSG();
     cgsBrazoD.union([mano, brazo, hombro]);
@@ -54,14 +57,14 @@ class Personaje extends THREE.Object3D {
 
     this.brazoDerecha.translateX(-2.5);
     this.brazoDerecha.translateY(1);
-    this.add(this.brazoDerecha);
+    //this.add(this.brazoDerecha);
     
 
     //TORSO:
     var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2.5, 32);
-    var torso = new THREE.Mesh(torsoGeometry, mat);
+    this.torso = new THREE.Mesh(torsoGeometry, mat);
 
-    this.add(torso);
+    //this.add(this.torso);
 
     //PIERNAS:
     var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
@@ -111,17 +114,51 @@ class Personaje extends THREE.Object3D {
     this.pataDer = csgDer.toMesh();
 
 
-    this.add(this.pataIzq);
-    this.add(this.pataDer);
+    //this.add(this.pataIzq);
+    //this.add(this.pataDer);
+
+
+    // var csgPersonaje = new CSG();
+    // csgPersonaje.union([this.cabeza, this.brazoIzquierda, this.brazoDerecha, this.pataDer, this.pataIzq, this.torso]);
+    // this.personaje = csgPersonaje.toMesh();
+
+    this.personaje = new THREE.Group();
+    this.personaje.add(this.cabeza);
+    this.personaje.add(this.brazoIzquierda);
+    this.personaje.add(this.brazoDerecha);
+    this.personaje.add(this.torso);
+    this.personaje.add(this.pataDer);
+    this.personaje.add(this.pataIzq);
+    
+    this.add(this.personaje);
     
 
+    //OBTENEMOS LA INFORMACION DEL TUBO.
+    this.tubo = geomTubo;
+    this.path = geomTubo.parameters.path;
+    this.radio = geomTubo.parameters.radius;
+    this.segmentos = geomTubo.parameters.tubularSegments;
 
+    //TRES DISTINTOS NODOS POR LOS QUE SE PASA PARA ACABAR CON EL PERSOANJE POSICIONADO.
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.movimientoLateral = new THREE.Object3D();
+    this.posSuperficie = new THREE.Object3D();
 
+    this.posSuperficie.position.y = this.radio + 3.75; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
 
-    
+    this.add(this.nodoPosOrientTubo);
+    this.nodoPosOrientTubo.add(this.movimientoLateral);
+    this.movimientoLateral.add(this.posSuperficie);
+    this.posSuperficie.add(this.personaje);
 
-
-    this.rotar = true;
+    //POSICION INICIAL.
+    var posTmp = this.path.getPointAt(this.t);
+    this.nodoPosOrientTubo.position.copy(posTmp);
+    var tangente = this.path.getTangentAt(this.t);
+    posTmp.add(tangente);
+    var segmentoActual = Math.floor(this.t * this.segmentos);
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt(posTmp);
   }
   
   createGUI (gui,titleGui) {
@@ -185,6 +222,59 @@ class Personaje extends THREE.Object3D {
     }
   }
   
+  funcionAnimar(value){
+    if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzq){
+      this.brazoIzquierda.rotation.x += 0.01;
+      if(this.brazoIzquierda.rotation.x >= Math.PI/4){
+        this.topeIzq = true;
+      }
+    }
+    else{
+      this.brazoIzquierda.rotation.x -= 0.01;
+      if(this.brazoIzquierda.rotation.x <= -Math.PI/4){
+        this.topeIzq = false;
+      }
+    }
+
+    if(this.brazoDerecha.rotation.x > -Math.PI/4 && !this.topeDer){
+      this.brazoDerecha.rotation.x -= 0.01;
+      if(this.brazoDerecha.rotation.x <= -Math.PI/4){
+        this.topeDer = true;
+      }
+    }
+    else{
+      this.brazoDerecha.rotation.x += 0.01;
+      if(this.brazoDerecha.rotation.x >= +Math.PI/4){
+        this.topeDer = false;
+      }
+    }
+
+    if(this.pataDer.rotation.x < Math.PI/4 && !this.topeIzq){
+      this.pataDer.rotation.x += 0.01;
+      if(this.pataDer.rotation.x >= Math.PI/4){
+        this.topeIzq = true;
+      }
+    }
+    else{
+      this.pataDer.rotation.x -= 0.01;
+      if(this.pataDer.rotation.x <= -Math.PI/4){
+        this.topeIzq = false;
+      }
+    }
+
+    if(this.pataIzq.rotation.x > -Math.PI/4 && !this.topeDer){
+      this.pataIzq.rotation.x -= 0.01;
+      if(this.pataIzq.rotation.x <= -Math.PI/4){
+        this.topeDer = true;
+      }
+    }
+    else{
+      this.pataIzq.rotation.x += 0.01;
+      if(this.pataIzq.rotation.x >= +Math.PI/4){
+        this.topeDer = false;
+      }
+    }
+  }
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
     // Primero, el escalado
@@ -197,61 +287,29 @@ class Personaje extends THREE.Object3D {
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
 
+    this.funcionAnimar(this.rotar);
     //PARA ROTAR EL OBEJTO.
-    if(this.rotar){
-      if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzq){
-        this.brazoIzquierda.rotation.x += 0.01;
-        if(this.brazoIzquierda.rotation.x >= Math.PI/4){
-          this.topeIzq = true;
-        }
-      }
-      else{
-        this.brazoIzquierda.rotation.x -= 0.01;
-        if(this.brazoIzquierda.rotation.x <= -Math.PI/4){
-          this.topeIzq = false;
-        }
-      }
-
-      if(this.brazoDerecha.rotation.x > -Math.PI/4 && !this.topeDer){
-        this.brazoDerecha.rotation.x -= 0.01;
-        if(this.brazoDerecha.rotation.x <= -Math.PI/4){
-          this.topeDer = true;
-        }
-      }
-      else{
-        this.brazoDerecha.rotation.x += 0.01;
-        if(this.brazoDerecha.rotation.x >= +Math.PI/4){
-          this.topeDer = false;
-        }
-      }
-
-      if(this.pataDer.rotation.x < Math.PI/4 && !this.topeIzq){
-        this.pataDer.rotation.x += 0.01;
-        if(this.pataDer.rotation.x >= Math.PI/4){
-          this.topeIzq = true;
-        }
-      }
-      else{
-        this.pataDer.rotation.x -= 0.01;
-        if(this.pataDer.rotation.x <= -Math.PI/4){
-          this.topeIzq = false;
-        }
-      }
-
-      if(this.pataIzq.rotation.x > -Math.PI/4 && !this.topeDer){
-        this.pataIzq.rotation.x -= 0.01;
-        if(this.pataIzq.rotation.x <= -Math.PI/4){
-          this.topeDer = true;
-        }
-      }
-      else{
-        this.pataIzq.rotation.x += 0.01;
-        if(this.pataIzq.rotation.x >= +Math.PI/4){
-          this.topeDer = false;
-        }
-      }
-    }
+    /* if(this.rotar){
+      
+    } */
     
+    //ACTUALIZAMOS T
+    this.t += 0.0001;
+    if (this.t > 1) {
+      this.t = 0;
+    }
+
+    //ACTUALIZAMOS LA ROTACION.
+    this.rot += 0.00001%Math.PI*2;
+    this.movimientoLateral.rotateZ(this.rot);
+
+    var posTmp = this.path.getPointAt(this.t);
+    this.nodoPosOrientTubo.position.copy(posTmp);
+    var tangente = this.path.getTangentAt(this.t);
+    posTmp.add(tangente);
+    var segmentoActual = Math.floor(this.t * this.segmentos);
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt(posTmp);
   }
 }
 
