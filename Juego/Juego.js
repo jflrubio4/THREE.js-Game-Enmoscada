@@ -1,56 +1,54 @@
 import * as THREE from '../libs/three.module.js'
+import {CSG} from '../libs/CSG-v2.js'
+
  
-class Circuito extends THREE.Object3D {
-  constructor(gui,titleGui) {
+class Juego extends THREE.Object3D {
+  constructor(gui,titleGui, circuito, personaje) {
     super();
 
+    this.cañon = new THREE.Group();
+
+    this.circuito = circuito;
+    /* this.personaje = personaje; */
+
+    //PARAMETROS DEL TUBO
+    this.tubo = this.circuito.tubo;
+    this.path = this.circuito.path;
+    this.radio = this.circuito.radio;
+    this.segmentos = this.circuito.segmentos;
+
+    this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
+    this.t = 0; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
+
+    //TRES DISTINTOS NODOS POR LOS QUE SE PASA PARA ACABAR CON EL PERSOANJE POSICIONADO.
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.movimientoLateral = new THREE.Object3D();
+    this.posSuperficie = new THREE.Object3D();
+
+    this.posSuperficie.position.y = this.radio + 3.75;
+
+    this.add(this.nodoPosOrientTubo);
+    this.nodoPosOrientTubo.add(this.movimientoLateral);
+    this.movimientoLateral.add(this.posSuperficie);
+    this.movimientoLateral.rotateZ(this.rot);
+    this.posSuperficie.add(this.personaje);
+
+    //POSICION INICIAL.
+    var posTmp = this.path.getPointAt(this.t);
+    this.nodoPosOrientTubo.position.copy(posTmp);
+    var tangente = this.path.getTangentAt(this.t);
+    posTmp.add(tangente);
+    var segmentoActual = Math.floor(this.t * this.segmentos);
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt(posTmp);
+    
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-    
-    var path = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-250, 0, 0),
-      new THREE.Vector3(-125, 100, -50),
-      new THREE.Vector3(0, 25, 35),
-      new THREE.Vector3(50, 50, -25),
-      new THREE.Vector3(100, -25, 10),
-      new THREE.Vector3(-50, 0, 100),
-      new THREE.Vector3(0, 75, 150),
-      new THREE.Vector3(50, 100, 175),
-      new THREE.Vector3(50, 25, 25),
-      new THREE.Vector3(50, 25, -50),
-      new THREE.Vector3(100, 50, -75),
-      new THREE.Vector3(150, -35, 50),
-      new THREE.Vector3(125, 50, 125),
-      new THREE.Vector3(-25, -25, 0),
-      new THREE.Vector3(-100, 150, -75),
-      new THREE.Vector3(-150, 150, 50),
-      new THREE.Vector3(-175, 50, 100),
-      new THREE.Vector3(-100, 0, 150),
-      new THREE.Vector3(-150, -50, 200),
-      new THREE.Vector3(-200, -35, 100)
-      //NO SE REPITE EL PRIMER PUNTO.
-    ],true);
 
-    var tubeGeometry = new THREE.TubeGeometry(path, 200, 5, 20, true);
-    var mat = new THREE.MeshNormalMaterial();
 
-    var tubo = new THREE.Mesh(tubeGeometry, mat);
-    this.add(tubo);
 
-    //GUARDAMOS LOS PARÁMETROS DEL TUBO
-    this.tubo = tubeGeometry;
-    this.path = tubeGeometry.parameters.path;
-    this.radio = tubeGeometry.parameters.radius;
-    this.segmentos = tubeGeometry.parameters.tubularSegments;
-
-    /* var esfera = new THREE.SphereGeometry(10, 32, 32);
-    var esfera1 = new THREE.Mesh(esfera, mat);
-
-    esfera1.position.set(-100, 0, 150);
-    this.add(esfera1); 
-
-    this.rotar = false;*/
+    this.rotar = false;
   }
   
   createGUI (gui,titleGui) {
@@ -127,6 +125,24 @@ class Circuito extends THREE.Object3D {
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
 
+    //ACTUALIZAMOS T
+    this.t += 0.0001;
+    if (this.t > 1) {
+      this.t = 0;
+    }
+
+    //ACTUALIZAMOS LA ROTACION.
+    this.rot += 0.00001%Math.PI*2;
+
+    var posTmp = this.path.getPointAt(this.t);
+    this.nodoPosOrientTubo.position.copy(posTmp);
+    var tangente = this.path.getTangentAt(this.t);
+    posTmp.add(tangente);
+    var segmentoActual = Math.floor(this.t * this.segmentos);
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt(posTmp);
+
+
 
     /* //PARA ROTAR EL OBEJTO.
     if(this.rotar){
@@ -140,4 +156,4 @@ class Circuito extends THREE.Object3D {
   }
 }
 
-export { Circuito };
+export { Juego };
