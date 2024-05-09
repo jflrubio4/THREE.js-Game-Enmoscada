@@ -17,6 +17,7 @@ class Personaje extends THREE.Object3D {
     this.topeIzq = false;
     this.topeDer = false;
     this.rotar = true;
+    this.velocidad = 1.0;
 
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
@@ -159,6 +160,8 @@ class Personaje extends THREE.Object3D {
     var segmentoActual = Math.floor(this.t * this.segmentos);
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt(posTmp);
+
+    document.addEventListener('keydown', (event) => this.onKeyDown(event), false);
   }
   
   createGUI (gui,titleGui) {
@@ -275,6 +278,21 @@ class Personaje extends THREE.Object3D {
       }
     }
   }
+
+  onKeyDown(event) {
+    const keyCode = event.keyCode;
+    this.rot = 0.1 * this.velocidad;
+
+    switch (keyCode) {
+      case 37: // Flecha izquierda
+          this.movimientoLateral.rotateZ(-this.rot);
+          break;
+      case 39: // Flecha derecha
+          this.movimientoLateral.rotateZ(this.rot);
+          break;
+    }
+  }
+
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
     // Primero, el escalado
@@ -292,24 +310,38 @@ class Personaje extends THREE.Object3D {
     /* if(this.rotar){
       
     } */
-    
-    //ACTUALIZAMOS T
-    this.t += 0.0001;
-    if (this.t > 1) {
-      this.t = 0;
-    }
 
-    //ACTUALIZAMOS LA ROTACION.
-    this.rot += 0.00001%Math.PI*2;
-    this.movimientoLateral.rotateZ(this.rot);
+    // //ACTUALIZAMOS LA ROTACION.
+    // this.movimientoLateral.rotateZ(this.rot);
+
+    // var posTmp = this.path.getPointAt(this.t);
+    // this.nodoPosOrientTubo.position.copy(posTmp);
+    // var tangente = this.path.getTangentAt(this.t);
+    // posTmp.add(tangente);
+    // var segmentoActual = Math.floor(this.t * this.segmentos);
+    // this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    // this.nodoPosOrientTubo.lookAt(posTmp);
+
+    // Obtenemos la normal de la superficie en la posición actual del personaje
 
     var posTmp = this.path.getPointAt(this.t);
     this.nodoPosOrientTubo.position.copy(posTmp);
     var tangente = this.path.getTangentAt(this.t);
-    posTmp.add(tangente);
+
+    var normal = new THREE.Vector3(-tangente.y, tangente.x, 0);
+    posTmp.add(normal);
+
+    // Calculamos un punto hacia el que el personaje debe mirar sumando la normal a la posición actual del personaje
+    this.nodoPosOrientTubo.position.copy(posTmp);
+
     var segmentoActual = Math.floor(this.t * this.segmentos);
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+
+    // Hacemos que el personaje mire hacia ese punto
     this.nodoPosOrientTubo.lookAt(posTmp);
+
+    //ACTUALIZAMOS T
+    this.t += 0.0001 % 1;
   }
 }
 
