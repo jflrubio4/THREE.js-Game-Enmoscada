@@ -10,24 +10,29 @@ class Enigma extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-
-    var materialLoader = new MTLLoader();
-    var objectLoader = new OBJLoader();
-    materialLoader.load('question/question.mtl',
-      (materials) => {
-        objectLoader.setMaterials(materials);
-        objectLoader.load('question/question.obj',
-          (object) => {
-            this.resultadoMesh1 = object;
-            this.add(this.resultadoMesh1);
-          }, null, null);
-      });
-
-      
-      
     
+    var path = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0.5, 0),
+      new THREE.Vector3(0.3, 0.65, 0),
+      new THREE.Vector3(0.5, 1, 0),
+      new THREE.Vector3(0.3, 1.35, 0),
+      new THREE.Vector3(0, 1.5, 0),
+      new THREE.Vector3(-0.15, 1.45, 0),
+      new THREE.Vector3(-0.35, 1.25, 0),
+      new THREE.Vector3(-0.35, 1, 0)
+    ],false);
 
-    this.rotar = false;
+    var tubeGeometry = new THREE.TubeGeometry(path, 100, 0.15, 100, false);
+    var mat = new THREE.MeshNormalMaterial();
+
+    var sphereGeom = new THREE.SphereGeometry(0.15);
+    sphereGeom.translate(0,-0.5,0);
+
+    var punto = new THREE.Mesh(sphereGeom, mat);
+    var enigma = new THREE.Mesh(tubeGeometry, mat);
+    this.add(enigma);
+    this.add(punto)
   }
   
   createGUI (gui,titleGui) {
