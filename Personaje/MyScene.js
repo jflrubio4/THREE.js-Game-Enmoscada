@@ -40,12 +40,10 @@ class MyScene extends THREE.Scene {
       this.axis = new THREE.AxesHelper (2);
       this.add (this.axis);
       
-      this.circuito = new Circuito(this.gui, "Controles del Circuito");
-      
       // Por último creamos el modelo.
       // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-      this.model = new Personaje(this.gui, "Controles del Personaje", this.circuito.getGeometry());
+      this.model = new Personaje(this.gui, "Controles del Personaje");
       this.add (this.model);
 
     }

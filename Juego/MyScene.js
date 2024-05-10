@@ -41,10 +41,6 @@ class MyScene extends THREE.Scene {
       // Todas las unidades están en metros
       this.axis = new THREE.AxesHelper (2);
       this.add (this.axis);
-
-      //CREAMOS LOS OBJETOS IMPORTADOS.
-      this.circuito = new Circuito(this.gui, "Controles del Circuito");
-      this.personaje = new Personaje(this.gui, "Controles del Personaje", this.circuito.getGeometry());
       
       
       // Por último creamos el modelo.
@@ -52,8 +48,8 @@ class MyScene extends THREE.Scene {
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
       // this.model = new Juego(this.gui, "Controles del Juego");
       // this.add (this.model);
-      this.add(this.circuito); //AÑADIMOS EL CIRCUITO A LA ESCENA
-      this.add(this.personaje); //AÑADIMOS EL PERSONAJE A LA ESCENA
+      this.model = new Juego(this.gui,"Controles del juego");
+      this.add(this.model);
 
     }
     
@@ -198,8 +194,7 @@ class MyScene extends THREE.Scene {
       this.cameraControl.update();
       
       //SE ACTUALIZAN LOS OBJETOS DEL MODELO.
-      this.circuito.update();
-      this.personaje.update();
+      this.model.update();
       
       // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
       // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".

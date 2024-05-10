@@ -3,21 +3,19 @@ import {CSG} from '../libs/CSG-v2.js'
 import { Rev } from '../Rev/Rev.js'; //Importamos Rev para la cabeza.
  
 class Personaje extends THREE.Object3D {
-  constructor(gui,titleGui, geomTubo) {
+  constructor(gui,titleGui) {
     super();
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
 
-    this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
-    this.t = 0; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
 
     //PARA LAS ROTACIONES.
     this.topeIzq = false;
     this.topeDer = false;
     this.rotar = true;
-    this.velocidad = 1.0;
+    //this.velocidad = 1.0;
 
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
@@ -130,38 +128,7 @@ class Personaje extends THREE.Object3D {
     this.personaje.add(this.torso);
     this.personaje.add(this.pataDer);
     this.personaje.add(this.pataIzq);
-    
     this.add(this.personaje);
-    
-
-    //OBTENEMOS LA INFORMACION DEL TUBO.
-    this.tubo = geomTubo;
-    this.path = geomTubo.parameters.path;
-    this.radio = geomTubo.parameters.radius;
-    this.segmentos = geomTubo.parameters.tubularSegments;
-
-    //TRES DISTINTOS NODOS POR LOS QUE SE PASA PARA ACABAR CON EL PERSOANJE POSICIONADO.
-    this.nodoPosOrientTubo = new THREE.Object3D();
-    this.movimientoLateral = new THREE.Object3D();
-    this.posSuperficie = new THREE.Object3D();
-
-    this.posSuperficie.position.y = this.radio + 3.75; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
-
-    this.add(this.nodoPosOrientTubo);
-    this.nodoPosOrientTubo.add(this.movimientoLateral);
-    this.movimientoLateral.add(this.posSuperficie);
-    this.posSuperficie.add(this.personaje);
-
-    //POSICION INICIAL.
-    var posTmp = this.path.getPointAt(this.t);
-    this.nodoPosOrientTubo.position.copy(posTmp);
-    var tangente = this.path.getTangentAt(this.t);
-    posTmp.add(tangente);
-    var segmentoActual = Math.floor(this.t * this.segmentos);
-    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
-    this.nodoPosOrientTubo.lookAt(posTmp);
-
-    document.addEventListener('keydown', (event) => this.onKeyDown(event), false);
   }
   
   createGUI (gui,titleGui) {
@@ -279,20 +246,6 @@ class Personaje extends THREE.Object3D {
     }
   }
 
-  onKeyDown(event) {
-    const keyCode = event.keyCode;
-    this.rot = 0.1 * this.velocidad;
-
-    switch (keyCode) {
-      case 37: // Flecha izquierda
-          this.movimientoLateral.rotateZ(-this.rot);
-          break;
-      case 39: // Flecha derecha
-          this.movimientoLateral.rotateZ(this.rot);
-          break;
-    }
-  }
-
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
     // Primero, el escalado
@@ -300,10 +253,6 @@ class Personaje extends THREE.Object3D {
     // Después, la rotación en Y
     // Luego, la rotación en X
     // Y por último la traslación
-   
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
 
     this.funcionAnimar(this.rotar);
     //PARA ROTAR EL OBEJTO.
@@ -324,7 +273,7 @@ class Personaje extends THREE.Object3D {
 
     // Obtenemos la normal de la superficie en la posición actual del personaje
 
-    var posTmp = this.path.getPointAt(this.t);
+    /* var posTmp = this.path.getPointAt(this.t);
     this.nodoPosOrientTubo.position.copy(posTmp);
     var tangente = this.path.getTangentAt(this.t);
 
@@ -338,10 +287,9 @@ class Personaje extends THREE.Object3D {
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
 
     // Hacemos que el personaje mire hacia ese punto
-    this.nodoPosOrientTubo.lookAt(posTmp);
+    this.nodoPosOrientTubo.lookAt(posTmp); */
 
     //ACTUALIZAMOS T
-    this.t += 0.0001 % 1;
   }
 }
 

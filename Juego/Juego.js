@@ -1,5 +1,7 @@
 import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
+import { Personaje } from '../Personaje/Personaje.js';
+import { Circuito } from '../Circuito/Circuito.js';
 
  
 class Juego extends THREE.Object3D {
@@ -9,10 +11,76 @@ class Juego extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+    this.circuito = new Circuito(gui, "Controles circuito");
+    this.add(this.circuito);
+
+    this.personaje = new Personaje(gui, "Controles del personaje");
+
+    this.geomTubo = this.circuito.getGeometry();
+    var mat = new THREE.MeshNormalMaterial();
+
+    this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
+    this.t = 0.0001; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
+
+    var esferaGeom = new THREE.SphereGeometry(2);
+    var esfera = new THREE.Mesh(esferaGeom, mat);
 
 
+    //OBTENEMOS LA INFORMACION DEL TUBO.
+    this.tubo = this.geomTubo;
+    this.path = this.geomTubo.parameters.path;
+    this.radio = this.geomTubo.parameters.radius;
+    this.segmentos = this.geomTubo.parameters.tubularSegments;
+  
 
-    this.rotar = false;
+    //TRES DISTINTOS NODOS POR LOS QUE SE PASA PARA ACABAR CON EL PERSOANJE POSICIONADO.
+    this.posSuperficie = new THREE.Object3D();
+    this.posSuperficie.add(this.personaje);
+    this.posSuperficie.add(esfera);
+    //SE HACE LA TRANSFORMACIÓN Y ACABA EL NODO
+    this.posSuperficie.position.y = this.radio + 3.75; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
+
+    this.movimientoLateral = new THREE.Object3D();
+    this.movimientoLateral.add(this.posSuperficie);
+    this.setAnguloRotacion(this.rot); //ESTA FUNCIÓN MODIFICA LA ROTACIÓN EN EL NODO
+
+    this.nodoPosOrientTubo = new THREE.Object3D();
+    this.nodoPosOrientTubo.add(this.movimientoLateral);
+    this.avanzaPersonaje(this.t);
+
+    this.add(this.nodoPosOrientTubo);
+
+
+    document.addEventListener('keydown', (event) => this.onKeyDown(event), false);
+  }
+
+  onKeyDown(event) {
+    const keyCode = event.keyCode;
+
+    switch (keyCode) {
+      case 37: //Flecha izquierda
+          this.setAnguloRotacion(this.rot -= 0.1);
+          break;
+      case 39: //Flecha derecha
+          this.setAnguloRotacion(this.rot += 0.1);
+          break;
+    }
+  }
+
+  setAnguloRotacion(valor){
+    this.movimientoLateral.rotation.z = valor;
+  }
+
+  avanzaPersonaje(valor){
+    //POSICION INICIAL.
+    var posTmp = this.path.getPointAt(valor);
+    this.nodoPosOrientTubo.position.copy(posTmp);
+
+    var tangente = this.path.getTangentAt(valor);
+    posTmp.add(tangente);
+    var segmentoActual = Math.floor(valor * this.segmentos);
+    this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
+    this.nodoPosOrientTubo.lookAt(posTmp);
   }
   
   createGUI (gui,titleGui) {
@@ -67,15 +135,6 @@ class Juego extends THREE.Object3D {
     folder.add (this.guiControls, 'reset').name ('[ Reset ]');
   }
 
-  setRotacion(value){
-    if (value){
-        this.rotar = true;
-    }
-    else{
-        this.rotar = false;
-    }
-  }
-
   
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
@@ -85,9 +144,10 @@ class Juego extends THREE.Object3D {
     // Luego, la rotación en X
     // Y por último la traslación
    
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+    this.t = (this.t + 0.005) % 1;
+    this.avanzaPersonaje(this.t);
+    this.setAnguloRotacion(this.rot);
+    this.personaje.update();
     
   }
 }
