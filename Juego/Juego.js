@@ -2,6 +2,12 @@ import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
 import { Personaje } from '../Personaje/Personaje.js';
 import { Circuito } from '../Circuito/Circuito.js';
+import { Mosca } from '../Mosca/Mosca.js';
+import { MoscaReina } from '../MoscaReina/MoscaReina.js';
+import { Enigma } from '../Enigma/Enigma.js';
+import { Bomba } from '../Bomba/Bomba.js';
+import { Nitro } from '../Nitro/Nitro.js';
+import { Escudo } from '../Escudo/Escudo.js';
 
  
 class Juego extends THREE.Object3D {
@@ -15,15 +21,19 @@ class Juego extends THREE.Object3D {
     this.add(this.circuito);
 
     //PARA ESCALAR TODO
-    var factorEscalado = 0.2;
+    this.factorEscalado = 0.2;
 
     this.personaje = new Personaje(gui, "Controles del personaje");
-    this.personaje.scale.set(factorEscalado, factorEscalado, factorEscalado);
+    this.personaje.scale.set(this.factorEscalado, this.factorEscalado, this.factorEscalado);
+    //this.mosca.scale.set(this.factorEscalado, this.factorEscalado, this.factorEscalado);
+
+    this.crearObjetos(gui);
 
     this.geomTubo = this.circuito.getGeometry();
     var mat = new THREE.MeshNormalMaterial();
 
     this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
+    this.rotMosca = 0;
     this.t = 0.0001; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
     this.thirdCamera = false;
 
@@ -42,7 +52,7 @@ class Juego extends THREE.Object3D {
     this.posSuperficie.add(this.personaje);
     //this.posSuperficie.add(esfera);
     //SE HACE LA TRANSFORMACIÓN Y ACABA EL NODO
-    this.posSuperficie.position.y = this.radio + 3.75 * factorEscalado; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
+    this.posSuperficie.position.y = this.radio + 3.75 * this.factorEscalado; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
 
     this.movimientoLateral = new THREE.Object3D();
     this.movimientoLateral.add(this.posSuperficie);
@@ -53,9 +63,34 @@ class Juego extends THREE.Object3D {
     this.avanzaPersonaje(this.t);
 
     this.add(this.nodoPosOrientTubo);
+    this.posicionarObjeto(this.mosca); //La posiciona
+    this.add(this.mosca);
 
 
     document.addEventListener('keydown', (event) => this.onKeyDown(event), false);
+  }
+
+  crearObjetos(gui){
+    this.mosca = new Mosca(gui, "A");
+    this.moscaReina = new MoscaReina(gui, "B");
+    this.enigma = new Enigma(gui, "C");
+    this.bomba = new Bomba(gui, "D");
+    this.nitro = new Nitro(gui, "E");
+    this.escudo = new Escudo(gui, "F");
+    
+    this.moscaReina.position.x = 6;
+    this.enigma.position.y = 5;
+    this.bomba.position.x = -5;
+    this.nitro.position.y = -10;
+    this.escudo.position.x = -10;
+    this.escudo.position.y = -10;
+
+    this.add(this.mosca);
+    this.add(this.moscaReina);
+    this.add(this.enigma);
+    this.add(this.bomba);
+    this.add(this.nitro);
+    this.add(this.escudo);
   }
 
   onKeyDown(event) {
@@ -77,6 +112,10 @@ class Juego extends THREE.Object3D {
     this.movimientoLateral.rotation.z = valor;
   }
 
+  setAnguloRotacionObj(valor){
+    this.movimientoLateralObj.rotation.z = valor;
+  }
+
   avanzaPersonaje(valor){
     //POSICION INICIAL.
     var posTmp = this.path.getPointAt(valor);
@@ -87,6 +126,21 @@ class Juego extends THREE.Object3D {
     var segmentoActual = Math.floor(valor * this.segmentos);
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt(posTmp);
+  }
+
+  posicionarObjeto(objeto){
+    this.posSuperficieObj = new THREE.Object3D();
+    this.posSuperficieObj.add(objeto);
+    this.posSuperficieObj.position.y = this.radio + 8 * this.factorEscalado;
+
+    this.movimientoLateralObj = new THREE.Object3D();
+    this.movimientoLateralObj.add(this.posSuperficieObj);
+    this.setAnguloRotacionObj(this.rotMosca);
+
+    this.nodoPosOrientTuboObj = new THREE.Object3D();
+    this.nodoPosOrientTuboObj.add(this.movimientoLateralObj);
+
+    this.add(this.nodoPosOrientTubo);
   }
 
   getPersonaje(){
@@ -159,8 +213,10 @@ class Juego extends THREE.Object3D {
     // Y por último la traslación
    
     this.t = (this.t + 0.0005) % 1;
-    //this.avanzaPersonaje(this.t);
+    this.rotMosca += 0.1;
+    this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
+    this.setAnguloRotacionObj(this.rotMosca);
     this.personaje.update();
     
   }

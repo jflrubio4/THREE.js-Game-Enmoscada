@@ -45,11 +45,11 @@ class Circuito extends THREE.Object3D {
     this.radio = tubeGeometry.parameters.radius;
     this.segmentos = tubeGeometry.parameters.tubularSegments;
 
-    var esfera = new THREE.SphereGeometry(10, 32, 32);
-    var esfera1 = new THREE.Mesh(esfera, mat);
+    // var esfera = new THREE.SphereGeometry(10, 32, 32);
+    // var esfera1 = new THREE.Mesh(esfera, mat);
 
-    esfera1.position.set(-175, 50, 100);
-    this.add(esfera1); 
+    // esfera1.position.set(-200, -35, 100);
+    // this.add(esfera1); 
 
     /* this.rotar = false; */
   }
