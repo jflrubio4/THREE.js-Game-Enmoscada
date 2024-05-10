@@ -12,8 +12,10 @@ class Personaje extends THREE.Object3D {
 
 
     //PARA LAS ROTACIONES.
-    this.topeIzq = false;
-    this.topeDer = false;
+    this.topeIzqBrazo = false;
+    this.topeIzqPata = false;
+    this.topeDerBrazo = false;
+    this.topeDerPata = false;
     this.rotar = true;
     //this.velocidad = 1.0;
 
@@ -193,55 +195,55 @@ class Personaje extends THREE.Object3D {
   }
   
   funcionAnimar(value){
-    if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzq){
+    if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzqBrazo){
       this.brazoIzquierda.rotation.x += 0.01;
       if(this.brazoIzquierda.rotation.x >= Math.PI/4){
-        this.topeIzq = true;
+        this.topeIzqBrazo = true;
       }
     }
     else{
       this.brazoIzquierda.rotation.x -= 0.01;
       if(this.brazoIzquierda.rotation.x <= -Math.PI/4){
-        this.topeIzq = false;
+        this.topeIzqBrazo = false;
       }
     }
 
-    if(this.brazoDerecha.rotation.x > -Math.PI/4 && !this.topeDer){
+    if(this.brazoDerecha.rotation.x > -Math.PI/4 && !this.topeDerBrazo){
       this.brazoDerecha.rotation.x -= 0.01;
       if(this.brazoDerecha.rotation.x <= -Math.PI/4){
-        this.topeDer = true;
+        this.topeDerBrazo = true;
       }
     }
     else{
       this.brazoDerecha.rotation.x += 0.01;
       if(this.brazoDerecha.rotation.x >= +Math.PI/4){
-        this.topeDer = false;
+        this.topeDerBrazo = false;
       }
     }
 
-    if(this.pataDer.rotation.x < Math.PI/4 && !this.topeIzq){
+    if(this.pataDer.rotation.x < Math.PI/4 && !this.topeIzqPata){
       this.pataDer.rotation.x += 0.01;
       if(this.pataDer.rotation.x >= Math.PI/4){
-        this.topeIzq = true;
+        this.topeIzqPata = true;
       }
     }
     else{
       this.pataDer.rotation.x -= 0.01;
       if(this.pataDer.rotation.x <= -Math.PI/4){
-        this.topeIzq = false;
+        this.topeIzqPata = false;
       }
     }
 
-    if(this.pataIzq.rotation.x > -Math.PI/4 && !this.topeDer){
+    if(this.pataIzq.rotation.x > -Math.PI/4 && !this.topeDerPata){
       this.pataIzq.rotation.x -= 0.01;
       if(this.pataIzq.rotation.x <= -Math.PI/4){
-        this.topeDer = true;
+        this.topeDerPata = true;
       }
     }
     else{
       this.pataIzq.rotation.x += 0.01;
       if(this.pataIzq.rotation.x >= +Math.PI/4){
-        this.topeDer = false;
+        this.topeDerPata = false;
       }
     }
   }

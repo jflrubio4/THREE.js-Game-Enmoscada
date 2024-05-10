@@ -11,20 +11,24 @@ class Juego extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-    this.circuito = new Circuito(gui, "Controles circuito");
+    this.circuito = new Circuito(gui, "Controles del circuito");
     this.add(this.circuito);
 
+    //PARA ESCALAR TODO
+    var factorEscalado = 0.2;
+
     this.personaje = new Personaje(gui, "Controles del personaje");
+    this.personaje.scale.set(factorEscalado, factorEscalado, factorEscalado);
 
     this.geomTubo = this.circuito.getGeometry();
     var mat = new THREE.MeshNormalMaterial();
 
     this.rot = 0; //PARA LA ROTACION DEL PERSONAJE
     this.t = 0.0001; //PARA ALMACENAR LA POSICION DEL PERSONAJE.
+    this.thirdCamera = false;
 
-    var esferaGeom = new THREE.SphereGeometry(2);
-    var esfera = new THREE.Mesh(esferaGeom, mat);
-
+    /* var esferaGeom = new THREE.SphereGeometry(2);
+    var esfera = new THREE.Mesh(esferaGeom, mat); */
 
     //OBTENEMOS LA INFORMACION DEL TUBO.
     this.tubo = this.geomTubo;
@@ -36,9 +40,9 @@ class Juego extends THREE.Object3D {
     //TRES DISTINTOS NODOS POR LOS QUE SE PASA PARA ACABAR CON EL PERSOANJE POSICIONADO.
     this.posSuperficie = new THREE.Object3D();
     this.posSuperficie.add(this.personaje);
-    this.posSuperficie.add(esfera);
+    //this.posSuperficie.add(esfera);
     //SE HACE LA TRANSFORMACIÓN Y ACABA EL NODO
-    this.posSuperficie.position.y = this.radio + 3.75; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
+    this.posSuperficie.position.y = this.radio + 3.75 * factorEscalado; //3.75 ES LA ALTURA DEL PERSONAJE DESDE LA MITAD.
 
     this.movimientoLateral = new THREE.Object3D();
     this.movimientoLateral.add(this.posSuperficie);
@@ -64,6 +68,8 @@ class Juego extends THREE.Object3D {
       case 39: //Flecha derecha
           this.setAnguloRotacion(this.rot += 0.1);
           break;
+      case 32: //Barra espaciadora
+          this.setThirdCamera()
     }
   }
 
@@ -81,6 +87,14 @@ class Juego extends THREE.Object3D {
     var segmentoActual = Math.floor(valor * this.segmentos);
     this.nodoPosOrientTubo.up = this.tubo.binormals[segmentoActual];
     this.nodoPosOrientTubo.lookAt(posTmp);
+  }
+
+  getPersonaje(){
+    return this.personaje;
+  }
+
+  setThirdCamera(){
+    this.thirdCamera = !this.thirdCamera;
   }
   
   createGUI (gui,titleGui) {
@@ -144,8 +158,8 @@ class Juego extends THREE.Object3D {
     // Luego, la rotación en X
     // Y por último la traslación
    
-    this.t = (this.t + 0.005) % 1;
-    this.avanzaPersonaje(this.t);
+    this.t = (this.t + 0.0005) % 1;
+    //this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
     this.personaje.update();
     

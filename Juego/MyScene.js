@@ -42,7 +42,6 @@ class MyScene extends THREE.Scene {
       this.axis = new THREE.AxesHelper (2);
       this.add (this.axis);
       
-      
       // Por último creamos el modelo.
       // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
@@ -50,6 +49,9 @@ class MyScene extends THREE.Scene {
       // this.add (this.model);
       this.model = new Juego(this.gui,"Controles del juego");
       this.add(this.model);
+      
+      //LIGA LA CAMARA AL PERSONAJE.
+      this.model.personaje.add(this.cameraPersonaje);
 
     }
     
@@ -75,6 +77,20 @@ class MyScene extends THREE.Scene {
       this.cameraControl.panSpeed = 0.5;
       // Debe orbitar con respecto al punto de mira de la cámara
       this.cameraControl.target = look;
+
+      //CAMARA DEL PERSONAJE (3ª PERSONA).
+      this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 5000);
+      //this.model.personaje.add(this.cameraPersonaje);
+      this.cameraPersonaje.position.set(0,8,-10); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
+
+      var puntoDeMira = new THREE.Vector3(0,-0.35, 1);
+
+      var target = new THREE.Vector3();
+      this.cameraPersonaje.getWorldPosition(target);
+
+      target.add(puntoDeMira);
+      this.cameraPersonaje.lookAt(target);
+
     }
     
     createGUI () {
@@ -166,15 +182,20 @@ class MyScene extends THREE.Scene {
     getCamera () {
       // En principio se devuelve la única cámara que tenemos
       // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
-      return this.camera;
+      if (this.model.thirdCamera)
+        return this.cameraPersonaje;
+      else  
+        return this.camera;
     }
     
     setCameraAspect (ratio) {
       // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
       // su sistema operativo hay que actualizar el ratio de aspecto de la cámara
       this.camera.aspect = ratio;
+      this.cameraPersonaje.aspect = ratio;
       // Y si se cambia ese dato hay que actualizar la matriz de proyección de la cámara
       this.camera.updateProjectionMatrix();
+      this.cameraPersonaje.updateProjectionMatrix();
     }
       
     onWindowResize () {
@@ -189,7 +210,7 @@ class MyScene extends THREE.Scene {
     update () {
       // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
       this.renderer.render (this, this.getCamera());
-  
+      
       // Se actualiza la posición de la cámara según su controlador
       this.cameraControl.update();
       

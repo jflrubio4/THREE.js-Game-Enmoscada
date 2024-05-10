@@ -9,6 +9,7 @@ class Circuito extends THREE.Object3D {
     this.createGUI(gui,titleGui);
     
     var path = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-200, -35, 100),
       new THREE.Vector3(-250, 0, 0),
       new THREE.Vector3(-125, 100, -50),
       new THREE.Vector3(0, 25, 35),
@@ -27,12 +28,12 @@ class Circuito extends THREE.Object3D {
       new THREE.Vector3(-150, 150, 50),
       new THREE.Vector3(-175, 50, 100),
       new THREE.Vector3(-100, 0, 150),
-      new THREE.Vector3(-150, -50, 200),
-      new THREE.Vector3(-200, -35, 100)
+      new THREE.Vector3(-150, -50, 200)
+      
       //NO SE REPITE EL PRIMER PUNTO.
     ],true);
 
-    var tubeGeometry = new THREE.TubeGeometry(path, 200, 5, 20, true);
+    var tubeGeometry = new THREE.TubeGeometry(path, 500, 5, 20, true);
     var mat = new THREE.MeshNormalMaterial();
 
     var tubo = new THREE.Mesh(tubeGeometry, mat);
@@ -44,13 +45,13 @@ class Circuito extends THREE.Object3D {
     this.radio = tubeGeometry.parameters.radius;
     this.segmentos = tubeGeometry.parameters.tubularSegments;
 
-    /* var esfera = new THREE.SphereGeometry(10, 32, 32);
+    var esfera = new THREE.SphereGeometry(10, 32, 32);
     var esfera1 = new THREE.Mesh(esfera, mat);
 
-    esfera1.position.set(-100, 0, 150);
+    esfera1.position.set(-175, 50, 100);
     this.add(esfera1); 
 
-    this.rotar = false;*/
+    /* this.rotar = false; */
   }
   
   createGUI (gui,titleGui) {

@@ -78,8 +78,6 @@ class Bomba extends THREE.Object3D {
       posY : 0.0,
       posZ : 0.0,
       
-      // Un botón para dejarlo todo en su posición inicial
-      // Cuando se pulse se ejecutará esta función.
       reset : () => {
         this.guiControls.sizeX = 1.0;
         this.guiControls.sizeY = 1.0;
