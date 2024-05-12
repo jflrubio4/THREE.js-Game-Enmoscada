@@ -8,6 +8,11 @@ class Mosca extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    //VALORES PARA LAS ROTACIONES.
+    this.topeAlaI = false;
+    this.topeAlaD = false;
+    this.rotar = true;
     
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
@@ -46,13 +51,17 @@ class Mosca extends THREE.Object3D {
     this.alaD = new THREE.Mesh(alaDGeometry, mat);
 
 
-    //UNIMOS LAS PARTES DEL BRAZO.
+    /* //UNIMOS LAS PARTES DEL BRAZO.
     var moscaCSG = new CSG();
     moscaCSG.union([cuerpo, this.alaI, this.alaD]);
     var mosca = moscaCSG.toMesh();
     mosca.rotateY(Math.PI/2);
 
-    this.add(mosca);
+    this.add(mosca); */
+
+    this.add(cuerpo);
+    this.add(this.alaI);
+    this.add(this.alaD);
     
   }
   
@@ -116,7 +125,35 @@ class Mosca extends THREE.Object3D {
     else{
         this.rotar = false;
     }
-}
+  }
+
+  funcionAnimar(value){
+    if(this.alaI.rotation.z < 0.055 && !this.topeAlaI){
+      this.alaI.rotation.z += 0.01;
+      if(this.alaI.rotation.z >= 0.055){
+        this.topeAlaI = true;
+      }
+    }
+    else{
+      this.alaI.rotation.z -= 0.01;
+      if(this.alaI.rotation.z <= -0.055){
+        this.topeAlaI = false;
+      }
+    }
+
+    if(this.alaD.rotation.z < 0.055 && !this.topeAlaD){
+      this.alaD.rotation.z += 0.01;
+      if(this.alaD.rotation.z >= 0.055){
+        this.topeAlaD = true;
+      }
+    }
+    else{
+      this.alaD.rotation.z -= 0.01;
+      if(this.alaD.rotation.z <= -0.055){
+        this.topeAlaD = false;
+      }
+    }
+  }
   
   update () {
     // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
@@ -129,6 +166,8 @@ class Mosca extends THREE.Object3D {
     this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
+
+    this.funcionAnimar(this.rotar);
     
   }
 }
