@@ -46,13 +46,15 @@ class MoscaAgresiva extends THREE.Object3D {
     this.alaD = new THREE.Mesh(alaDGeometry, mat);
 
     var cejasShape = new THREE.Shape();
-    cejasShape.moveTo(0,0);
+    cejasShape.moveTo(-0.1,0.02);
     cejasShape.lineTo(-0.9,0.1);
     cejasShape.quadraticCurveTo(-1,0.15, -1,0.2);
     cejasShape.lineTo(-0.95,0.55);
-    cejasShape.quadraticCurveTo(-0.9,0.65, -0.8,0.6);
-    cejasShape.lineTo(-0.1,0.4);
-    cejasShape.lineTo(0,0);
+    cejasShape.quadraticCurveTo(-0.9,0.65, -0.8,0.65);
+    cejasShape.lineTo(-0.15,0.5);
+    cejasShape.quadraticCurveTo(-0.05,0.45, -0.05,0.35);
+    cejasShape.lineTo(0,0.05);
+    cejasShape.quadraticCurveTo(0,0, -0.1,0.02);
 
     var cejasOptions = {
       depth: 0.05, 
@@ -62,17 +64,26 @@ class MoscaAgresiva extends THREE.Object3D {
       bevelSize: 0.1
     };
 
-    var cejasGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
-    var cejas = new THREE.Mesh(cejasGeometry, mat);
+    var cejaIGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
+    cejaIGeometry.scale(0.4,0.4,0.4);
+    cejaIGeometry.rotateZ(-Math.PI/16);
+    cejaIGeometry.translate(-0.2,0.1,0.6);
+    var cejaI = new THREE.Mesh(cejaIGeometry, mat);
 
+    var cejaDGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
+    cejaDGeometry.scale(0.4,0.4,0.4);
+    cejaDGeometry.rotateZ(-Math.PI/16);
+    cejaDGeometry.rotateY(Math.PI);
+    cejaDGeometry.translate(0.2,0.1,0.6);
+    var cejaD = new THREE.Mesh(cejaDGeometry, mat);
 
-    // //UNIMOS LAS PARTES DEL BRAZO.
-    // var moscaCSG = new CSG();
-    // moscaCSG.union([cuerpo, this.alaI, this.alaD, cejas]);
-    // var mosca = moscaCSG.toMesh();
-    // mosca.rotateY(Math.PI/2);
+    //UNIMOS LAS PARTES DEL BRAZO.
+    var moscaCSG = new CSG();
+    moscaCSG.union([cuerpo, this.alaI, this.alaD, cejaI, cejaD]);
+    var mosca = moscaCSG.toMesh();
+    mosca.rotateY(Math.PI/2);
 
-    this.add(cejas);
+    this.add(mosca);
     
   }
   
