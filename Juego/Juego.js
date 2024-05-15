@@ -8,6 +8,7 @@ import { Enigma } from '../Enigma/Enigma.js';
 import { Bomba } from '../Bomba/Bomba.js';
 import { Nitro } from '../Nitro/Nitro.js';
 import { Escudo } from '../Escudo/Escudo.js';
+import { Venus } from '../Venus/Venus.js';
 
  
 class Juego extends THREE.Object3D {
@@ -77,6 +78,7 @@ class Juego extends THREE.Object3D {
     this.bomba = new Bomba(gui, "D");
     this.nitro = new Nitro(gui, "E");
     this.escudo = new Escudo(gui, "F");
+    this.venus = new Venus(gui, "G");
     
     this.moscaReina.position.x = 6;
     this.enigma.position.y = 5;
@@ -84,6 +86,8 @@ class Juego extends THREE.Object3D {
     this.nitro.position.y = -10;
     this.escudo.position.x = -10;
     this.escudo.position.y = -10;
+    this.venus.position.x = 6;
+    this.venus.position.y = 5;
 
     this.add(this.mosca);
     this.add(this.moscaReina);
@@ -91,6 +95,7 @@ class Juego extends THREE.Object3D {
     this.add(this.bomba);
     this.add(this.nitro);
     this.add(this.escudo);
+    this.add(this.venus);
   }
 
   onKeyDown(event) {
@@ -212,7 +217,7 @@ class Juego extends THREE.Object3D {
     // Luego, la rotación en X
     // Y por último la traslación
    
-    this.t = (this.t + 0.0005) % 1;
+    this.t = (this.t + 0.0001) % 1;
     this.rotMosca += 0.1;
     this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
