@@ -51,23 +51,41 @@ class MoscaEnigma extends THREE.Object3D {
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, mat);
 
-    var enigma = new Enigma(gui, "Controles Enigma");
-    enigma.position.set(0,0.9,0);
-    enigma.scale.set(0.5,0.5,0.5);
+    this.enigma = new Enigma(gui, "Controles Enigma");
+    this.enigma.position.set(0,0.9,0);
+    this.enigma.scale.set(0.5,0.5,0.5);
+    this.enigma.rotation.set(0,Math.PI/2,0);
 
 
-    /* //UNIMOS LAS PARTES DEL BRAZO.
+    //UNIMOS LAS PARTES DEL BRAZO.
     var moscaCSG = new CSG();
     moscaCSG.union([cuerpo, this.alaI, this.alaD]);
     var mosca = moscaCSG.toMesh();
     mosca.rotateY(Math.PI/2);
 
-    this.add(mosca); */
+    this.add(mosca);
+    this.add(this.enigma);
 
-    this.add(cuerpo);
+    //PATRA LAS COLISIONES.
+    this.cajaEnvolvente = new THREE.Box3();
+    this.cajaEnvolvente.setFromObject(mosca);
+
+    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    var cajaEnvolventeVisible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
+    this.add(cajaEnvolventeVisible);
+
+    /* //PATRA LAS COLISIONES.
+    this.cajaEnvolventeEnigma = new THREE.Box3();
+    this.cajaEnvolventeEnigma.setFromObject(enigma);
+
+    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    var cajaEnvolventeEnigmaVisible = new THREE.Box3Helper(this.cajaEnvolventeEnigma, 0x00ff00);
+    this.add(cajaEnvolventeEnigmaVisible); */
+
+    /* this.add(cuerpo);
     this.add(this.alaI);
     this.add(this.alaD);
-    this.add(enigma);
+    this.add(enigma); */
     
   }
   

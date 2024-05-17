@@ -24,7 +24,7 @@ class Enigma extends THREE.Object3D {
       new THREE.Vector3(-0.25, 1, 0)
     ],false);
 
-    var tubeGeometry = new THREE.TubeGeometry(path, 100, 0.2, 100, false);
+    var tubeGeometry = new THREE.TubeGeometry(path, 12, 0.2, 12, false);
     var tapaGeometry = new THREE.CylinderGeometry(0.2,0.2,0.01);
     tapaGeometry.translate(0,0.005,0);
     var mat = new THREE.MeshNormalMaterial();
@@ -48,6 +48,14 @@ class Enigma extends THREE.Object3D {
 
     this.enigma.position.y = 0.3;
     this.add(this.enigma);
+
+    //PATRA LAS COLISIONES.
+    this.cajaEnvolvente = new THREE.Box3();
+    this.cajaEnvolvente.setFromObject(this.enigma);
+
+    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
+    this.add(cajaEnvolventeVsible);
   }
   
   createGUI (gui,titleGui) {

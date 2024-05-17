@@ -2,7 +2,7 @@ import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
 import { Personaje } from '../Personaje/Personaje.js';
 import { Circuito } from '../Circuito/Circuito.js';
-import { Mosca } from '../Mosca/Mosca.js';
+import { MoscaLowPoly } from '../MoscaLowPoly/MoscaLowPoly.js';
 import { MoscaReina } from '../MoscaReina/MoscaReina.js';
 import { MoscaAgresiva } from '../MoscaAgresiva/MoscaAgresiva.js';
 import { MoscaEnigma } from '../MoscaEnigma/MoscaEnigma.js';
@@ -16,11 +16,13 @@ import { Venus } from '../Venus/Venus.js';
 class Juego extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
+
+    this.moscas = []; //Array de moscas para poder aplicarles movimientos a cada una por separada.
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-    this.circuito = new Circuito(gui, "Controles del circuito");
+    this.circuito = new Circuito(gui, "Controles del circuito", 300, 12);
     this.add(this.circuito);
 
     //PARA ESCALAR TODO
@@ -73,6 +75,10 @@ class Juego extends THREE.Object3D {
     this.posicionarObjeto(this.moscaReina, 7, -0.3, 0.02);
     this.posicionarObjeto(this.mosca, 6, this.rotMosca, 0.01); //La posiciona
     
+    /* this.posicionarObjeto(this.enigma, 0.01);
+    this.posicionarObjeto(this.moscaReina, 0.02);
+    this.posicionarObjeto(this.mosca, 0.01); */
+
     //this.add(this.mosca);
 
 
@@ -80,9 +86,9 @@ class Juego extends THREE.Object3D {
   }
 
   crearObjetos(gui){
-    this.mosca = new Mosca(gui, "A");
+    this.mosca = new MoscaLowPoly(gui, "A");
     this.moscaReina = new MoscaReina(gui, "B");
-    this.enigma = new Enigma(gui, "C");
+    this.enigma = new Enigma(gui, "C", 50);
     this.bomba = new Bomba(gui, "D");
     this.nitro = new Nitro(gui, "E");
     this.escudo = new Escudo(gui, "F");
@@ -192,10 +198,10 @@ class Juego extends THREE.Object3D {
     this.add(this.nodoPosOrientTuboObj);
   }
 
-  /* posicionarObjeto(objeto){
+  /* posicionarObjeto(objeto, posicion){
     this.posSuperficieObj = new THREE.Object3D();
     this.posSuperficieObj.add(objeto);
-    this.posSuperficieObj.position.y = this.radio + 3.75 * this.factorEscalado;
+    this.posSuperficieObj.position.y = this.radio + 5;
 
     this.movimientoLateralObj = new THREE.Object3D();
     this.movimientoLateralObj.add(this.posSuperficieObj);
@@ -203,8 +209,9 @@ class Juego extends THREE.Object3D {
 
     this.nodoPosOrientTuboObj = new THREE.Object3D();
     this.nodoPosOrientTuboObj.add(this.movimientoLateralObj);
+    this.situarObjeto(posicion);
 
-    this.add(this.nodoPosOrientTubo);
+    this.add(this.nodoPosOrientTuboObj);
   } */
 
   getPersonaje(){
@@ -281,8 +288,7 @@ class Juego extends THREE.Object3D {
     //this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
     this.setAnguloRotacionObj(this.rotMosca);
-    this.personaje.update();
-    
+    this.personaje.update();    
   }
 }
 

@@ -13,7 +13,7 @@ class MoscaAgresiva extends THREE.Object3D {
     var mat = new THREE.MeshNormalMaterial();
 
     //CUERPO MOSCA
-    var cuerpoGeom = new THREE.SphereGeometry(0.65, 32, 32);
+    var cuerpoGeom = new THREE.SphereGeometry(0.65, 8, 8);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
 
     //ALAS
@@ -31,7 +31,8 @@ class MoscaAgresiva extends THREE.Object3D {
       curveSegments: 32, 
       bevelSegments: 12,
       bevelThickness: 0.25,
-      bevelSize: 0.6
+      bevelSize: 0.6,
+      bevelEnabled: false
     };
 
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
@@ -60,8 +61,9 @@ class MoscaAgresiva extends THREE.Object3D {
       depth: 0.05, 
       steps: 1, 
       curveSegments: 8, 
-      bevelSegments: 12,
-      bevelSize: 0.1
+      bevelSegments: 1,
+      bevelSize: 0.1,
+      bevelEnabled: false
     };
 
     var cejaIGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
@@ -84,6 +86,14 @@ class MoscaAgresiva extends THREE.Object3D {
     mosca.rotateY(Math.PI/2);
 
     this.add(mosca);
+
+    //PATRA LAS COLISIONES.
+    this.cajaEnvolvente = new THREE.Box3();
+    this.cajaEnvolvente.setFromObject(mosca);
+
+    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
+    this.add(cajaEnvolventeVsible);
     
   }
   
