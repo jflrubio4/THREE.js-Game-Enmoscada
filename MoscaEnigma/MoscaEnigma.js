@@ -1,5 +1,6 @@
 import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
+import { Enigma } from '../Enigma/Enigma.js';
  
 class MoscaEnigma extends THREE.Object3D {
   constructor(gui,titleGui) {
@@ -18,7 +19,7 @@ class MoscaEnigma extends THREE.Object3D {
     var mat = new THREE.MeshNormalMaterial();
 
     //CUERPO MOSCA
-    var cuerpoGeom = new THREE.SphereGeometry(0.5, 32, 32);
+    var cuerpoGeom = new THREE.SphereGeometry(0.7, 32, 32);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
 
     //ALAS
@@ -41,14 +42,18 @@ class MoscaEnigma extends THREE.Object3D {
 
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaIGeometry.scale(0.5,0.5,0.5);
-    alaIGeometry.translate(-0.6,0,-0.05);
+    alaIGeometry.translate(-0.8,0,-0.05);
     this.alaI = new THREE.Mesh(alaIGeometry, mat);
 
     var alaDGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaDGeometry.scale(0.5,0.5,0.5);
-    alaDGeometry.translate(-0.6,0,-0.05);
+    alaDGeometry.translate(-0.8,0,-0.05);
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, mat);
+
+    var enigma = new Enigma(gui, "Controles Enigma");
+    enigma.position.set(0,0.9,0);
+    enigma.scale.set(0.5,0.5,0.5);
 
 
     /* //UNIMOS LAS PARTES DEL BRAZO.
@@ -62,6 +67,7 @@ class MoscaEnigma extends THREE.Object3D {
     this.add(cuerpo);
     this.add(this.alaI);
     this.add(this.alaD);
+    this.add(enigma);
     
   }
   
@@ -167,7 +173,7 @@ class MoscaEnigma extends THREE.Object3D {
     this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
     this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
 
-    this.funcionAnimar(this.rotar);
+    //this.funcionAnimar(this.rotar);
     
   }
 }

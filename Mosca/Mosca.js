@@ -128,28 +128,28 @@ class Mosca extends THREE.Object3D {
   }
 
   funcionAnimar(value){
-    if(this.alaI.rotation.z < 0.055 && !this.topeAlaI){
-      this.alaI.rotation.z += 0.01;
-      if(this.alaI.rotation.z >= 0.055){
+    if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
+      this.alaI.rotation.y += 0.015;
+      if(this.alaI.rotation.y >= 0.2){
         this.topeAlaI = true;
       }
     }
     else{
-      this.alaI.rotation.z -= 0.01;
-      if(this.alaI.rotation.z <= -0.055){
+      this.alaI.rotation.y -= 0.015;
+      if(this.alaI.rotation.y <= -0.2){
         this.topeAlaI = false;
       }
     }
 
-    if(this.alaD.rotation.z < 0.055 && !this.topeAlaD){
-      this.alaD.rotation.z += 0.01;
-      if(this.alaD.rotation.z >= 0.055){
+    if(this.alaD.rotation.y > -0.2 && !this.topeAlaD){
+      this.alaD.rotation.y -= 0.015;
+      if(this.alaD.rotation.y <= -0.2){
         this.topeAlaD = true;
       }
     }
     else{
-      this.alaD.rotation.z -= 0.01;
-      if(this.alaD.rotation.z <= -0.055){
+      this.alaD.rotation.y += 0.015;
+      if(this.alaD.rotation.y >= 0.2){
         this.topeAlaD = false;
       }
     }
