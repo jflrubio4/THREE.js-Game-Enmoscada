@@ -36,13 +36,13 @@ class MoscaAgresiva extends THREE.Object3D {
     };
 
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
-    alaIGeometry.scale(0.5,0.5,0.5);
-    alaIGeometry.translate(-0.7,0,-0.05);
+    alaIGeometry.scale(0.75,0.75,0.75);
+    alaIGeometry.translate(-0.5,0,-0.05);
     this.alaI = new THREE.Mesh(alaIGeometry, mat);
 
     var alaDGeometry = new THREE.ExtrudeGeometry(shape, options);
-    alaDGeometry.scale(0.5,0.5,0.5);
-    alaDGeometry.translate(-0.7,0,-0.05);
+    alaDGeometry.scale(0.75,0.75,0.75);
+    alaDGeometry.translate(-0.5,0,-0.05);
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, mat);
 
@@ -58,7 +58,7 @@ class MoscaAgresiva extends THREE.Object3D {
     cejasShape.quadraticCurveTo(0,0, -0.1,0.02);
 
     var cejasOptions = {
-      depth: 0.05, 
+      depth: 0.5, 
       steps: 1, 
       curveSegments: 8, 
       bevelSegments: 1,
@@ -69,14 +69,14 @@ class MoscaAgresiva extends THREE.Object3D {
     var cejaIGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
     cejaIGeometry.scale(0.4,0.4,0.4);
     cejaIGeometry.rotateZ(-Math.PI/16);
-    cejaIGeometry.translate(-0.2,0.1,0.6);
+    cejaIGeometry.translate(-0.2,0.1,0.45);
     var cejaI = new THREE.Mesh(cejaIGeometry, mat);
 
     var cejaDGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
     cejaDGeometry.scale(0.4,0.4,0.4);
     cejaDGeometry.rotateZ(-Math.PI/16);
     cejaDGeometry.rotateY(Math.PI);
-    cejaDGeometry.translate(0.2,0.1,0.6);
+    cejaDGeometry.translate(0.2,0.1,0.65);
     var cejaD = new THREE.Mesh(cejaDGeometry, mat);
 
     //UNIMOS LAS PARTES DEL BRAZO.
@@ -85,6 +85,7 @@ class MoscaAgresiva extends THREE.Object3D {
     var mosca = moscaCSG.toMesh();
     mosca.rotateY(Math.PI/2);
 
+    mosca.position.set(0,0.65,0);
     this.add(mosca);
 
     //PATRA LAS COLISIONES.

@@ -2,7 +2,7 @@ import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
 import { Personaje } from '../Personaje/Personaje.js';
 import { Circuito } from '../Circuito/Circuito.js';
-import { MoscaLowPoly } from '../MoscaLowPoly/MoscaLowPoly.js';
+import { Mosca } from '../Mosca/Mosca.js'; //HAY QUE PONER "Modelos_Calidad/".
 import { MoscaReina } from '../MoscaReina/MoscaReina.js';
 import { MoscaAgresiva } from '../MoscaAgresiva/MoscaAgresiva.js';
 import { MoscaEnigma } from '../MoscaEnigma/MoscaEnigma.js';
@@ -12,17 +12,39 @@ import { Nitro } from '../Nitro/Nitro.js';
 import { Escudo } from '../Escudo/Escudo.js';
 import { Venus } from '../Venus/Venus.js';
 
- 
+class GestorBalas {
+  constructor() {
+    this.almacen = [];
+  }
+
+  crearBala() {
+    var mat = new THREE.MeshNormalMaterial();
+    var sphereGeom = new THREE.SphereGeometry(0.2, 8, 8);
+    return new THREE.Mesh(sphereGeom, mat);
+  }
+
+  getBala() {
+    if (this.almacen.length){
+      return this.almacen.pop();
+    } else {return this.crearBala()}
+  }
+
+  devolverBala(p) {
+    this.almacen.push(p);
+  }
+}
+
 class Juego extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor(gui,titleGui,scene) {
     super();
 
+    this.myScene = scene;
     this.moscas = []; //Array de moscas para poder aplicarles movimientos a cada una por separada.
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-    this.circuito = new Circuito(gui, "Controles del circuito", 300, 12);
+    this.circuito = new Circuito(gui, "Controles del circuito");
     this.add(this.circuito);
 
     //PARA ESCALAR TODO
@@ -66,14 +88,10 @@ class Juego extends THREE.Object3D {
     this.nodoPosOrientTubo = new THREE.Object3D();
     this.nodoPosOrientTubo.add(this.movimientoLateral);
     this.avanzaPersonaje(this.t);
-
     this.add(this.nodoPosOrientTubo);
 
     //NODOS PARA LOS OBJETOS
-
-    this.posicionarObjeto(this.enigma, 5, 0.3, 0.005);
-    this.posicionarObjeto(this.moscaReina, 7, -0.3, 0.02);
-    this.posicionarObjeto(this.mosca, 6, this.rotMosca, 0.01); //La posiciona
+    
     
     /* this.posicionarObjeto(this.enigma, 0.01);
     this.posicionarObjeto(this.moscaReina, 0.02);
@@ -81,12 +99,73 @@ class Juego extends THREE.Object3D {
 
     //this.add(this.mosca);
 
+    var posicion = new THREE.Vector3();
+    var direccion = new THREE.Vector3(0,0,1);
+
 
     document.addEventListener('keydown', (event) => this.onKeyDown(event), false);
+
+    document.addEventListener('mousedown', (event) => this.onDocumentMouseDown(event), false);
+
+    this.candidatos = [this.enigma, this.bomba, this.nitro, this.escudo, this.venus];
+    this.voladores = [this.mosca, this.moscaReina, this.moscaAgresiva, this.moscaEnigma]
+    
+    this.rayo = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(0,0,1), 0, 500); //BUSCA ELEMENTOS ENTRE 0 Y distancia (10).
+    this.personaje.getWorldPosition(posicion);
+    this.rayo.set(posicion, direccion.normalize());
+    var impactados = this.rayo.intersectObjects(this.candidatos, true);
+    if(impactados.length > 0){
+      console.log("Colisión");
+      this.remove(impactados[0].object);
+    }
+
+    //Balas
+    this.gestorBalas = new GestorBalas();
+    this.nodoBalas = new THREE.Object3D();
+    this.balasADestruir = [];
+    
+    //NODOS PARA LOS OBJETOS.
+    this.add(this.posicionarObjeto(this.enigma, 4, 0, 0.005));
+    this.add(this.posicionarObjeto(this.moscaReina, 6, 0, 0.02));
+    this.add(this.posicionarObjeto(this.bomba, 0, 0, 0.01));
+    this.add(this.posicionarObjeto(this.mosca, 5, this.rotMosca, 0.01)); //La posiciona
+
+/*     var valores = []; */
+    this.moscas = [];
+
+    for (var i=0; i<10; i++){
+      var mosca = new Mosca(gui, i);
+      this.moscas.push(mosca);
+      var moscaReina = new MoscaReina(gui, i + 10);
+      this.moscas.push(moscaReina);
+    }
+
+    for (var i=0; i<this.moscas.length; i++){
+      var altura = Math.random() * (8 - 4) + 4; // un número aleatorio entre 4 y 8
+      var rotacion = Math.random() * 2 * Math.PI; // un número aleatorio entre 0 y 2*Math.PI
+      var valor = Math.random(); // un número aleatorio entre 0 y 1
+      
+      this.add(this.posicionarObjeto(this.moscas[i], altura, rotacion, valor));
+    }
+    
+    for (var j=0; j<this.voladores.length; j++){
+      var altura = Math.random() * (8 - 4) + 4; // un número aleatorio entre 4 y 8
+      var rotacion = Math.random() * 2 * Math.PI; // un número aleatorio entre 0 y 2*Math.PI
+      var valor = Math.random(); // un número aleatorio entre 0 y 1
+      
+      this.add(this.posicionarObjeto(this.voladores[j], altura, rotacion, valor));
+    }
+
+    for (var k=0; k<this.candidatos.length; k++){
+      var rotacion = Math.random() * 2 * Math.PI; // un número aleatorio entre 0 y 2*Math.PI
+      var valor = Math.random(); // un número aleatorio entre 0 y 1
+      this.add(this.posicionarObjeto(this.candidatos[k], 0, rotacion, valor));
+    }
+    
   }
 
   crearObjetos(gui){
-    this.mosca = new MoscaLowPoly(gui, "A");
+    this.mosca = new Mosca(gui, "A");
     this.moscaReina = new MoscaReina(gui, "B");
     this.enigma = new Enigma(gui, "C", 50);
     this.bomba = new Bomba(gui, "D");
@@ -99,12 +178,10 @@ class Juego extends THREE.Object3D {
     //this.moscaReina.position.x = 6;
     this.moscaReina.rotation.set(0,-Math.PI/2,0);
     this.moscaAgresiva.position.x = 6;
-    this.moscaAgresiva.position.y = 5;
     this.moscaEnigma.position.x = 6;
     this.moscaEnigma.position.y = -5;
     //this.enigma.position.y = 5;
     this.enigma.rotation.set(0,Math.PI,0);
-    this.bomba.position.x = -5;
     this.nitro.position.y = -10;
     this.escudo.position.x = -10;
     this.escudo.position.y = -10;
@@ -134,6 +211,28 @@ class Juego extends THREE.Object3D {
           break;
       case 32: //Barra espaciadora
           this.setThirdCamera()
+          break;
+    }
+  }
+
+  onDocumentMouseDown(event){
+    //Creamos el mouse y el rayo para el picking.
+    this.mouse = new THREE.Vector2();
+    this.rayoPick = new THREE.Raycaster();
+
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+    this.rayoPick.setFromCamera(this.mouse, this.myScene.getCamera());
+
+    var pickedObjects = this.rayoPick.intersectObjects(this.voladores, true);
+
+    if(pickedObjects.length > 0){
+      var selectedObject = pickedObjects[0].object;
+      
+       var selectedPoint = pickedObjects[0].point;
+
+      console.log("Objeto seleccionado: " + selectedObject.name);
     }
   }
 
@@ -143,6 +242,15 @@ class Juego extends THREE.Object3D {
 
   setAnguloRotacionObj(valor){
     this.movimientoLateralObj.rotation.z = valor;
+  }
+
+  disparar() {
+    var bala = this.gestorBalas.getBala();
+
+    //Configurar posicion, direccion, velocidad...
+    //bala.set (...);
+
+    this.nodoBalas.add(bala);
   }
 
   avanzaPersonaje(valor){
@@ -195,7 +303,7 @@ class Juego extends THREE.Object3D {
     this.nodoPosOrientTuboObj.add(movLateral);
     this.situarObjeto(valorPosicion);
 
-    this.add(this.nodoPosOrientTuboObj);
+    return this.nodoPosOrientTuboObj;
   }
 
   /* posicionarObjeto(objeto, posicion){
@@ -283,12 +391,46 @@ class Juego extends THREE.Object3D {
     // Luego, la rotación en X
     // Y por último la traslación
    
-    this.t = (this.t + 0.0001) % 1;
+    //0
+    this.t = (this.t + 0.00005) % 1;
     this.rotMosca += 0.01;
-    //this.avanzaPersonaje(this.t);
+    this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
     this.setAnguloRotacionObj(this.rotMosca);
-    this.personaje.update();    
+    this.personaje.update();
+    
+    
+    //COLISIONES.
+    var posicion = new THREE.Vector3();
+    var direccion = new THREE.Vector3(0,0,1);
+
+    this.personaje.getWorldPosition(posicion);
+    this.rayo.set(posicion, direccion.normalize());
+    var impactados = this.rayo.intersectObjects(this.candidatos, true);
+    if(impactados.length > 0){
+      console.log("Colisión de rayos.");
+      impactados[0].object.parent.remove(impactados[0].object);
+      //this.t = (this.t - 0.0015) % 1;
+    }
+
+    /* //BALAS
+    var bala;
+    for (var i=0; i<this.nodoBalas.children.length; i++){
+      bala = this.nodoBalas.children[i];
+      //bala.update();
+      //Si la bala llega al fin del recorrido, es decir, se necesita descartar, se manda a destruir
+      if (bala.debeDesaparecer())
+        this.balasADestruir.push(bala);
+    }
+
+    //Se descartan las balas innecesarias, pero se reciclan, no destruyen
+    for (var i=0; i<this.balasADestruir.length; i++){
+      bala = this.balasADestruir[i];
+      this.nodoBalas.remove(bala);
+      this.gestorBalas.devolverBala(bala);
+    }
+
+    this.balasADestruir.length = 0; */
   }
 }
 

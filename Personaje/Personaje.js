@@ -30,9 +30,9 @@ class Personaje extends THREE.Object3D {
     //this.add(this.cabeza);
 
     //BRAZOS:
-    var manoGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-    var brazoGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
-    var hombroGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    var manoGeometry = new THREE.SphereGeometry(0.5, 8, 8);
+    var brazoGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
+    var hombroGeometry = new THREE.SphereGeometry(0.5, 8, 8);
 
     manoGeometry.translate(0, -3, 0);
     brazoGeometry.translate(0, -1.5, 0);
@@ -62,13 +62,13 @@ class Personaje extends THREE.Object3D {
     
 
     //TORSO:
-    var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2.5, 32);
+    var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2.5, 8);
     this.torso = new THREE.Mesh(torsoGeometry, mat);
 
     //this.add(this.torso);
 
     //PIERNAS:
-    var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
+    var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
 
     this.piernaDer = new THREE.Mesh(piernaGeometry, mat);
     this.piernaDer.translateX(-1.25);
@@ -81,8 +81,8 @@ class Personaje extends THREE.Object3D {
 
 
     //PIES:
-    var tobilloGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
-    var pieGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    var tobilloGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 8);
+    var pieGeometry = new THREE.SphereGeometry(0.5, 8, 8);
 
     tobilloGeometry.rotateX(Math.PI/2);
 

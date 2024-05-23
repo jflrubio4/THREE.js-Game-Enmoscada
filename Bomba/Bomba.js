@@ -12,14 +12,14 @@ class Bomba extends THREE.Object3D {
     //DEFINIMOS EL MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
 
-    var cuerpoGeom = new THREE.SphereGeometry(2, 32, 32);
+    var cuerpoGeom = new THREE.SphereGeometry(2, 8, 8);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
 
-    var topeGeom = new THREE.CylinderGeometry(1.5, 1.5, 1, 32);
+    var topeGeom = new THREE.CylinderGeometry(1.5, 1.5, 1, 8);
     topeGeom.translate(0,4,0);
     var topeMesh = new THREE.Mesh(topeGeom, mat);
 
-    var torusGeometry = new THREE.TorusGeometry(2, 0.7, 32, 32); //Hasta 60 grados
+    var torusGeometry = new THREE.TorusGeometry(2, 0.7, 8, 8); //Hasta 60 grados
     //0.5 de la base y 1.5 para situarlo encima de la esfera
     //torusGeometry.translate(-2,4,0);
     var toro = new THREE.Mesh(torusGeometry, mat);
@@ -57,6 +57,8 @@ class Bomba extends THREE.Object3D {
     var bombaCSG = new CSG();
     bombaCSG.union([fuse, cuerpo]);
     var bomba = bombaCSG.toMesh();
+
+    bomba.position.set(0,2,0);
 
 
     this.add(bomba);

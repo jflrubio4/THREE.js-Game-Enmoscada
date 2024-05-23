@@ -29,7 +29,7 @@ class Enigma extends THREE.Object3D {
     tapaGeometry.translate(0,0.005,0);
     var mat = new THREE.MeshNormalMaterial();
 
-    var sphereGeom = new THREE.SphereGeometry(0.2);
+    var sphereGeom = new THREE.SphereGeometry(0.2, 8, 8);
     sphereGeom.translate(0,-0.3,0);
 
     var tapa1 = new THREE.Mesh(tapaGeometry, mat);
@@ -46,7 +46,7 @@ class Enigma extends THREE.Object3D {
     this.enigma.add(tapa1);
     this.enigma.add(tapa2);
 
-    this.enigma.position.y = 0.3;
+    this.enigma.position.y = 0.3 + 0.2;
     this.add(this.enigma);
 
     //PATRA LAS COLISIONES.

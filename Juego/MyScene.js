@@ -47,12 +47,11 @@ class MyScene extends THREE.Scene {
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
       // this.model = new Juego(this.gui, "Controles del Juego");
       // this.add (this.model);
-      this.model = new Juego(this.gui,"Controles del juego");
+      this.model = new Juego(this.gui,"Controles del juego",this);
       this.add(this.model);
       
       //LIGA LA CAMARA AL PERSONAJE.
       this.model.personaje.add(this.cameraPersonaje);
-
     }
     
     createCamera () {
@@ -60,11 +59,11 @@ class MyScene extends THREE.Scene {
       //   El ángulo del campo de visión vértical en grados sexagesimales
       //   La razón de aspecto ancho/alto
       //   Los planos de recorte cercano y lejano
-      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 500);
+      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 700);
       // También se indica dónde se coloca
-      this.camera.position.set (15.0, 0.05, 2.0);
+      this.camera.position.set (100, 0.05, -250.0);
       // Y hacia dónde mira
-      var look = new THREE.Vector3 (0,0,0);
+      var look = new THREE.Vector3 (-30,0,0);
       this.camera.lookAt(look);
       this.add (this.camera);
       
@@ -81,7 +80,7 @@ class MyScene extends THREE.Scene {
       //CAMARA DEL PERSONAJE (3ª PERSONA).
       this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 5000);
       //this.model.personaje.add(this.cameraPersonaje);
-      this.cameraPersonaje.position.set(0,8,-10); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
+      this.cameraPersonaje.position.set(0,8,-12); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
 
       var puntoDeMira = new THREE.Vector3(0,-0.35, 1);
 

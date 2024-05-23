@@ -19,7 +19,7 @@ class MoscaReina extends THREE.Object3D {
     // this.add(mosca);
 
     //CODIGO DE LA MOSCA
-    var cuerpoGeom = new THREE.SphereGeometry(1, 32, 32);
+    var cuerpoGeom = new THREE.SphereGeometry(1, 8, 8);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
 
     //ALAS
@@ -33,11 +33,12 @@ class MoscaReina extends THREE.Object3D {
 
     var options = {
       depth: 0.2, 
-      steps: 10, 
-      curveSegments: 32, 
-      bevelSegments: 12,
+      steps: 2, 
+      curveSegments: 8, 
+      bevelSegments: 6,
       bevelThickness: 0.25,
-      bevelSize: 0.6
+      bevelSize: 0.6,
+      bevelEnabled: false
     };
 
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
@@ -69,7 +70,8 @@ class MoscaReina extends THREE.Object3D {
       curveSegments: 0, // No hay segmentos curvos en una forma triangular
       bevelSegments: 1, // Reducimos el número de segmentos del bisel para mantenerlo simple
       bevelThickness: 0, // Grosor del bisel, puede ajustarse según el efecto deseado
-      bevelSize: 0 // Tamaño del bisel, puede ajustarse según el efecto deseado
+      bevelSize: 0, // Tamaño del bisel, puede ajustarse según el efecto deseado
+      bevelEnabled: false
     };
 
     var restaGeom = new THREE.ExtrudeGeometry(shape, options);
@@ -85,7 +87,7 @@ class MoscaReina extends THREE.Object3D {
       restas.push(restaMesh);
     }
 
-    var baseGeometry = new THREE.CylinderGeometry(1, 1, 1, 32);
+    var baseGeometry = new THREE.CylinderGeometry(1, 1, 1, 8);
     baseGeometry.translate(0,0.5,0);
     var baseMesh = new THREE.Mesh(baseGeometry, mat);
 
@@ -107,6 +109,7 @@ class MoscaReina extends THREE.Object3D {
     reinaCSG.union([coronaMesh, mosca]);
     var moscaReina = reinaCSG.toMesh();
 
+    moscaReina.position.set(0,1,0);
     // Añadir la corona a este objeto
     this.add(moscaReina);
 
