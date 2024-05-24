@@ -132,12 +132,30 @@ class Juego extends THREE.Object3D {
 
 /*     var valores = []; */
     this.moscas = [];
+    this.terrestres = [];
 
     for (var i=0; i<10; i++){
       var mosca = new Mosca(gui, i);
       this.moscas.push(mosca);
       var moscaReina = new MoscaReina(gui, i + 10);
       this.moscas.push(moscaReina);
+      var moscaAgresiva = new MoscaAgresiva(gui, i + 20);
+      this.moscas.push(moscaAgresiva);
+      var moscaEnigma = new MoscaEnigma(gui, i+30);
+      this.moscas.push(moscaEnigma);
+    }
+
+    for (var i=0; i<8; i++){
+      var bomba = new Bomba(gui, i+50);
+      this.terrestres.push(bomba);
+      var nitro = new Nitro(gui, i + 60);
+      this.terrestres.push(nitro);
+      var escudo = new Escudo(gui, i + 70);
+      this.terrestres.push(escudo);
+      var venus = new Venus(gui, i+80);
+      this.terrestres.push(venus);
+      var enigma = new Enigma(gui, i+90);
+      this.terrestres.push(enigma);
     }
 
     for (var i=0; i<this.moscas.length; i++){
@@ -146,6 +164,13 @@ class Juego extends THREE.Object3D {
       var valor = Math.random(); // un número aleatorio entre 0 y 1
       
       this.add(this.posicionarObjeto(this.moscas[i], altura, rotacion, valor));
+    }
+
+    for (var i=0; i<this.terrestres.length; i++){
+      var rotacion = Math.random() * 2 * Math.PI; // un número aleatorio entre 0 y 2*Math.PI
+      var valor = Math.random(); // un número aleatorio entre 0 y 1
+      
+      this.add(this.posicionarObjeto(this.terrestres[i], 0, rotacion, valor));
     }
     
     for (var j=0; j<this.voladores.length; j++){
@@ -176,17 +201,17 @@ class Juego extends THREE.Object3D {
     this.moscaEnigma = new MoscaEnigma(gui, "I");
     
     //this.moscaReina.position.x = 6;
-    this.moscaReina.rotation.set(0,-Math.PI/2,0);
-    this.moscaAgresiva.position.x = 6;
-    this.moscaEnigma.position.x = 6;
-    this.moscaEnigma.position.y = -5;
-    //this.enigma.position.y = 5;
-    this.enigma.rotation.set(0,Math.PI,0);
-    this.nitro.position.y = -10;
-    this.escudo.position.x = -10;
-    this.escudo.position.y = -10;
-    this.venus.position.x = 6;
-    this.venus.position.y = 5;
+    // this.moscaReina.rotation.set(0,-Math.PI/2,0);
+    // this.moscaAgresiva.position.x = 6;
+    // this.moscaEnigma.position.x = 6;
+    // this.moscaEnigma.position.y = -5;
+    // //this.enigma.position.y = 5;
+    // this.enigma.rotation.set(0,Math.PI,0);
+    // this.nitro.position.y = -10;
+    // this.escudo.position.x = -10;
+    // this.escudo.position.y = -10;
+    // this.venus.position.x = 6;
+    // this.venus.position.y = 5;
 
     this.add(this.mosca);
     this.add(this.moscaReina);
@@ -406,7 +431,7 @@ class Juego extends THREE.Object3D {
 
     this.personaje.getWorldPosition(posicion);
     this.rayo.set(posicion, direccion.normalize());
-    var impactados = this.rayo.intersectObjects(this.candidatos, true);
+    var impactados = this.rayo.intersectObjects(this.terrestres, true);
     if(impactados.length > 0){
       console.log("Colisión de rayos.");
       impactados[0].object.parent.remove(impactados[0].object);
