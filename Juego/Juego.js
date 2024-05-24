@@ -119,16 +119,16 @@ class Juego extends THREE.Object3D {
       this.remove(impactados[0].object);
     }
 
-    //Balas
+    /* //Balas
     this.gestorBalas = new GestorBalas();
     this.nodoBalas = new THREE.Object3D();
-    this.balasADestruir = [];
+    this.balasADestruir = []; */
     
-    //NODOS PARA LOS OBJETOS.
+    /* //NODOS PARA LOS OBJETOS.
     this.add(this.posicionarObjeto(this.enigma, 4, 0, 0.005));
     this.add(this.posicionarObjeto(this.moscaReina, 6, 0, 0.02));
     this.add(this.posicionarObjeto(this.bomba, 0, 0, 0.01));
-    this.add(this.posicionarObjeto(this.mosca, 5, this.rotMosca, 0.01)); //La posiciona
+    this.add(this.posicionarObjeto(this.mosca, 5, this.rotMosca, 0.01)); //La posiciona */
 
 /*     var valores = []; */
     this.moscas = [];
@@ -225,7 +225,7 @@ class Juego extends THREE.Object3D {
 
     this.rayoPick.setFromCamera(this.mouse, this.myScene.getCamera());
 
-    var pickedObjects = this.rayoPick.intersectObjects(this.voladores, true);
+    var pickedObjects = this.rayoPick.intersectObjects(this.moscas, true);
 
     if(pickedObjects.length > 0){
       var selectedObject = pickedObjects[0].object;
