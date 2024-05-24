@@ -8,6 +8,8 @@ class Nitro extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    this.nombre = 'Nitro';
     
     // Crear una instancia de THREE.Shape
     var shape = new THREE.Shape();
@@ -42,7 +44,8 @@ class Nitro extends THREE.Object3D {
     // Crear una malla a partir de la geometría y el material
     var mesh = new THREE.Mesh(geometry, material);
 
-    mesh.scale.set(1, 1.25, 0.5);
+    mesh.scale.set(0.43, 0.53625, 0.215);
+    mesh.position.set(0.25, 1.75, 0);
 
     // Añadir la malla a la escena
     this.add(mesh);
@@ -51,9 +54,9 @@ class Nitro extends THREE.Object3D {
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(mesh);
 
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
+    this.add(cajaEnvolventeVsible); */
 
     this.rotar = false;
   }

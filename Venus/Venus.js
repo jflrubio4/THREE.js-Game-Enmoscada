@@ -11,6 +11,8 @@ class Venus extends THREE.Object3D {
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
 
+    this.nombre = 'Venus';
+
     var materialLoader = new MTLLoader();
     var objectLoader = new OBJLoader();
     materialLoader.load('venus/model.mtl',
@@ -19,23 +21,23 @@ class Venus extends THREE.Object3D {
         objectLoader.load('venus/model.obj',
           (object) => {
             this.resultadoMesh1 = object;
-            this.resultadoMesh1.scale.set(0.05,0.05,0.05);
-            this.resultadoMesh1.translateX(-2.45);
-            this.resultadoMesh1.translateZ(-1.25);
-            this.resultadoMesh1.translateY(-0.5);
+            this.resultadoMesh1.scale.set(0.2,0.2,0.2);
+            this.resultadoMesh1.translateX(-9.75);
+            this.resultadoMesh1.translateZ(-5.25);
+            this.resultadoMesh1.translateY(-1);
             this.add(this.resultadoMesh1);
 
-            //PATRA LAS COLISIONES.
+/*             //PATRA LAS COLISIONES.
             this.cajaEnvolvente = new THREE.Box3(
               new THREE.Vector3(-0.5, -0.5, -0.5), // min
               new THREE.Vector3(0.5, 0.5, 0.5) // max
-            );
+            ); */
             //this.cajaEnvolvente.setFromObject(this.resultadoMesh1);
             //this.cajaEnvolvente.scale.set(0.05,0.05,0.05);
 
-            //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+            /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
             var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-            this.add(cajaEnvolventeVsible);     
+            this.add(cajaEnvolventeVsible);     */ 
           }, null, null);
       });
 

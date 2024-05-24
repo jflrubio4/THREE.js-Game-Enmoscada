@@ -8,6 +8,8 @@ class PlanchaPinchos extends THREE.Object3D {
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
 
+    this.nombre = 'Plancha de pinchos';
+
     var mat = new THREE.MeshNormalMaterial();
 
     var plancha = new THREE.BoxGeometry(3, 0.25, 3);
@@ -171,9 +173,9 @@ class PlanchaPinchos extends THREE.Object3D {
 
     this.add(this.planchaPincho);
 
-    //PATRA LAS COLISIONES.
+    /* //PATRA LAS COLISIONES.
     this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(this.planchaPincho);
+    this.cajaEnvolvente.setFromObject(this.planchaPincho); */
 
     //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);

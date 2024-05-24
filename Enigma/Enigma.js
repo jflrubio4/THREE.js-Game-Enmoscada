@@ -10,6 +10,8 @@ class Enigma extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    this.nombre = 'Enigma';
     
     var path = new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, 0, 0),
@@ -40,22 +42,29 @@ class Enigma extends THREE.Object3D {
     var punto = new THREE.Mesh(sphereGeom, mat);
     var interrog = new THREE.Mesh(tubeGeometry, mat);
 
+ /*    var enigmaCSG = new CSG();
+    enigmaCSG.union([punto, interrog, tapa1, tapa2]);
+    this.enigma = enigmaCSG.toMesh();
+    this.enigma.rotateY(Math.PI/2); */
+
     this.enigma = new THREE.Group();
     this.enigma.add(punto);
     this.enigma.add(interrog);
     this.enigma.add(tapa1);
     this.enigma.add(tapa2);
 
-    this.enigma.position.y = 0.3 + 0.2;
+    this.enigma.rotateY(-Math.PI);
+    this.enigma.position.y = 0.3 + 0.7;
+    this.enigma.scale.set(2,2,2);
     this.add(this.enigma);
 
     //PATRA LAS COLISIONES.
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(this.enigma);
 
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
+    this.add(cajaEnvolventeVsible); */
   }
   
   createGUI (gui,titleGui) {

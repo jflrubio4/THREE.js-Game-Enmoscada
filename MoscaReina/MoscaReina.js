@@ -9,6 +9,8 @@ class MoscaReina extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    this.nombre = 'Mosca Reina';
     
     //DEFINIMOS LE MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
@@ -117,9 +119,9 @@ class MoscaReina extends THREE.Object3D {
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(moscaReina);
 
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
+    this.add(cajaEnvolventeVsible); */
     
   }
   

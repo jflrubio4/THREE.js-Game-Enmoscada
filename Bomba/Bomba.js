@@ -8,6 +8,8 @@ class Bomba extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    this.nombre = 'Bomba';
     
     //DEFINIMOS EL MATERIAL.
     var mat = new THREE.MeshNormalMaterial();
@@ -60,16 +62,15 @@ class Bomba extends THREE.Object3D {
 
     bomba.position.set(0,2,0);
 
-
     this.add(bomba);
 
     //PATRA LAS COLISIONES.
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(bomba);
 
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVisible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVisible);
+    this.add(cajaEnvolventeVisible); */
     
   }
   

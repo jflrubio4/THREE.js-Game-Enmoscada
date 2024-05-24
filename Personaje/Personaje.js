@@ -136,9 +136,9 @@ class Personaje extends THREE.Object3D {
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(this.personaje);
 
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
+    this.add(cajaEnvolventeVsible); */
   }
   
   createGUI (gui,titleGui) {
