@@ -52,7 +52,43 @@ class MoscaEnigma extends THREE.Object3D {
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, mat);
 
-    this.enigma = new Enigma(gui, "Controles Enigma");
+    //Enigma
+    var path = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0.5, 0),
+      new THREE.Vector3(0.25, 0.5, 0),
+      new THREE.Vector3(0.6, 0.65, 0),
+      new THREE.Vector3(0.75, 1, 0),
+      new THREE.Vector3(0.6, 1.35, 0),
+      new THREE.Vector3(0.25, 1.5, 0),
+      new THREE.Vector3(0, 1.5, 0),
+      new THREE.Vector3(-0.25, 1.35, 0),
+      new THREE.Vector3(-0.25, 1, 0)
+    ],false);
+
+    var tubeGeometry = new THREE.TubeGeometry(path, 12, 0.2, 12, false);
+    var tapaGeometry = new THREE.CylinderGeometry(0.2,0.2,0.01);
+    tapaGeometry.translate(0,0.005,0);
+    var mat = new THREE.MeshNormalMaterial();
+
+    var sphereGeom = new THREE.SphereGeometry(0.2, 8, 8);
+    sphereGeom.translate(0,-0.3,0);
+
+    var tapa1 = new THREE.Mesh(tapaGeometry, mat);
+    var tapa2 = new THREE.Mesh(tapaGeometry, mat);
+    tapa2.position.y = 1;
+    tapa2.position.x = -0.25;
+
+    var punto = new THREE.Mesh(sphereGeom, mat);
+    var interrog = new THREE.Mesh(tubeGeometry, mat);
+
+    this.enigma = new THREE.Group();
+    this.enigma.add(punto);
+    this.enigma.add(interrog);
+    this.enigma.add(tapa1);
+    this.enigma.add(tapa2);
+
+    this.enigma.position.y = 0.3 + 0.2;
     this.enigma.position.set(0,0.9 + 0.7,0);
     this.enigma.scale.set(0.5,0.5,0.5);
     this.enigma.rotation.set(0,Math.PI/2,0);
@@ -65,12 +101,15 @@ class MoscaEnigma extends THREE.Object3D {
     mosca.rotateY(Math.PI/2);
 
     mosca.position.set(0,0.7,0);
-    this.add(mosca);
-    this.add(this.enigma);
+
+    this.moscaEnigma = new THREE.Group();
+    this.moscaEnigma.add(mosca);
+    this.moscaEnigma.add(this.enigma);
+    this.add(this.moscaEnigma);
 
     //PATRA LAS COLISIONES.
     this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(mosca);
+    this.cajaEnvolvente.setFromObject(this.moscaEnigma);
 
     //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVisible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
