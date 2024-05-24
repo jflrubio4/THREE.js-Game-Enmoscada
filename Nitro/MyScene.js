@@ -47,7 +47,7 @@ class MyScene extends THREE.Scene {
       // Por último creamos el modelo.
       // El modelo puede incluir su parte de la interfaz gráfica de usuario. Le pasamos la referencia a 
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
-      this.model = new Nitro(this.gui, "Controles del Nitro");
+      this.model = new Nitro();
       this.add (this.model);
 
     }

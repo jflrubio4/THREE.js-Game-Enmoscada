@@ -11,6 +11,8 @@ import { Bomba } from '../Bomba/Bomba.js';
 import { Nitro } from '../Nitro/Nitro.js';
 import { Escudo } from '../Escudo/Escudo.js';
 import { Venus } from '../Venus/Venus.js';
+import { BolaPinchos} from '../BolaPinchos/BolaPinchos.js'
+import { PlanchaPinchos} from '../PlanchaPinchos/PlanchaPinchos.js'
 
 class GestorBalas {
   constructor() {
@@ -43,13 +45,13 @@ class Juego extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
-    this.circuito = new Circuito(gui, "Controles del circuito");
+    this.circuito = new Circuito();
     this.add(this.circuito);
 
     //PARA ESCALAR TODO
     this.factorEscalado = 0.2;
 
-    this.personaje = new Personaje(gui, "Controles del personaje");
+    this.personaje = new Personaje();
     this.personaje.scale.set(this.factorEscalado, this.factorEscalado, this.factorEscalado);
     //this.mosca.scale.set(this.factorEscalado, this.factorEscalado, this.factorEscalado);
 
@@ -130,36 +132,42 @@ class Juego extends THREE.Object3D {
     this.valorRotaciones = [];
 
     for (var i=0; i<10; i++){
-      var mosca = new Mosca(gui, i);
+      var mosca = new Mosca();
       this.moscas.push(mosca);
       this.objetos.push(mosca);
-      var moscaReina = new MoscaReina(gui, i + 10);
+      var moscaReina = new MoscaReina();
       this.moscas.push(moscaReina);
       this.objetos.push(moscaReina);
-      var moscaAgresiva = new MoscaAgresiva(gui, i + 20);
+      var moscaAgresiva = new MoscaAgresiva();
       this.moscas.push(moscaAgresiva);
       this.objetos.push(moscaAgresiva);
-      var moscaEnigma = new MoscaEnigma(gui, i+30);
+      var moscaEnigma = new MoscaEnigma();
       this.moscas.push(moscaEnigma);
       this.objetos.push(moscaEnigma);
     }
 
     for (var i=0; i<8; i++){
-      var nitro = new Nitro(gui, i + 60);
+      var nitro = new Nitro();
       this.terrestres.push(nitro);
       this.objetos.push(nitro);
-      var escudo = new Escudo(gui, i + 70);
+      var escudo = new Escudo();
       this.terrestres.push(escudo);
       this.objetos.push(escudo);
-      var venus = new Venus(gui, i+80);
+      var venus = new Venus();
       this.terrestres.push(venus);
       this.objetos.push(venus);
-      var enigma = new Enigma(gui, i+90);
+      var enigma = new Enigma();
       this.terrestres.push(enigma);
       this.objetos.push(enigma);
-      var bomba = new Bomba(gui, i + 50);
+      var bomba = new Bomba();
       this.terrestres.push(bomba);
       this.objetos.push(bomba);
+      var bolaPinchos = new BolaPinchos();
+      this.terrestres.push(bolaPinchos);
+      this.objetos.push(bolaPinchos);
+      var planchaPinchos = new PlanchaPinchos();
+      this.terrestres.push(planchaPinchos);
+      this.objetos.push(planchaPinchos);
     }
 
     for (var i=0; i<this.moscas.length; i++){
@@ -200,6 +208,11 @@ class Juego extends THREE.Object3D {
       var valor = Math.random(); // un número aleatorio entre 0 y 1
       this.add(this.posicionarObjeto(this.candidatos[k], 0, rotacion, valor));
     } */
+
+    var pinchos = new PlanchaPinchos();
+    this.add(this.posicionarObjeto(contador, pinchos, 0, 0, 0.02))
+    contador++;
+    this.terrestres.push(pinchos);
 
     //Rayo para las colisiones terrestres
     this.rayo = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(0,0,1), 0, 500); //BUSCA ELEMENTOS ENTRE 0 Y distancia (10).
