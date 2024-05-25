@@ -25,19 +25,24 @@ class Nitro extends THREE.Object3D {
     // Configurar las opciones de extrusión
     var extrudeSettings = {
         steps: 2,
-        depth: 2,
+        depth: 1,
+        curveSegments: 8, 
+        bevelSegments: 12,
         bevelEnabled: true,
         bevelThickness: 1,
         bevelSize: 1,
-        bevelOffset: 0.25,
-        bevelSegments: 2
+        bevelOffset: 0.25
     };
 
     // Crear la geometría extrudida a partir de la forma
     var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
     // Crear un material
-    var material = new THREE.MeshMatcapMaterial({color: 0xfffb00});
+    var material = new THREE.MeshStandardMaterial({
+      color: 0xfffb00, // color del material
+      emissive: 0xfffb00, // color de la emisión de luz
+      emissiveIntensity: 0.5 // intensidad de la emisión de luz
+    });
 
     // Crear una malla a partir de la geometría y el material
     var mesh = new THREE.Mesh(geometry, material);
@@ -46,14 +51,6 @@ class Nitro extends THREE.Object3D {
 
     // Añadir la malla a la escena
     this.add(mesh);
-
-    //PATRA LAS COLISIONES.
-    this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(mesh);
-
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
 
     this.rotar = false;
   }

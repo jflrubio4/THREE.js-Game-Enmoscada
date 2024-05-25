@@ -7,18 +7,23 @@ class PlanchaPinchos extends THREE.Object3D {
 
     this.nombre = 'Plancha de pinchos';
 
-    var mat = new THREE.MeshNormalMaterial();
+    var loader = new THREE.TextureLoader();
+    var texturePinchos = loader.load('../imgs/metal.jpg');
+    var textureMadera = loader.load('../imgs/madera.jpg');
+
+    var materialPinchos = new THREE.MeshStandardMaterial({map: texturePinchos});
+    var materialMadera = new THREE.MeshStandardMaterial({map: textureMadera});
 
     var plancha = new THREE.BoxGeometry(3, 0.25, 3);
     
     var pinchoGrande = new THREE.ConeGeometry(0.25, 0.75, 8);
 
-    var planchaMesh = new THREE.Mesh(plancha, mat);
+    var planchaMesh = new THREE.Mesh(plancha, materialMadera);
 
     // Crear múltiples instancias de los pinchos y distribuirlos
     var pinchos = [];
     for (let i = 0; i < 25; i++) {
-        pinchos[i] = new THREE.Mesh(pinchoGrande, mat);
+        pinchos[i] = new THREE.Mesh(pinchoGrande, materialPinchos);
     }
 
     // Posicionar los pinchos
@@ -144,6 +149,10 @@ class PlanchaPinchos extends THREE.Object3D {
     /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
     this.add(cajaEnvolventeVsible); */
+  }
+
+  getNombre(){
+    return this.nombre;
   }
   
   update(){}

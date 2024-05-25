@@ -80,7 +80,7 @@ class MyScene extends THREE.Scene {
       //CAMARA DEL PERSONAJE (3ª PERSONA).
       this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 5000);
       //this.model.personaje.add(this.cameraPersonaje);
-      this.cameraPersonaje.position.set(0,8,-12); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
+      this.cameraPersonaje.position.set(0,8+3.75,-12); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
 
       var puntoDeMira = new THREE.Vector3(0,-0.35, 1);
 

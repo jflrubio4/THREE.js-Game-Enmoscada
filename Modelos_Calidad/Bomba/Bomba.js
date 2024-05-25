@@ -8,47 +8,78 @@ class Bomba extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    //DEFINIMOS LE MATERIAL.
+    var loader = new THREE.TextureLoader();
+    var textureCuerda = loader.load('../../imgs/cuerda.jpg');
+    textureCuerda.wrapS = THREE.RepeatWrapping;
+    //textureCuerda.wrapT = THREE.RepeatWrapping;
+    /* textureAlas.offset.set(-0.5, 0.5);
+    textureAlas.wrapS = THREE.RepeatWrapping;
+    textureAlas.wrapT = THREE.RepeatWrapping; */
+
+    var matCuerda = new THREE.MeshStandardMaterial({map: textureCuerda});
+
     
     //DEFINIMOS EL MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    var matBomba = new THREE.MeshPhysicalMaterial({
+      color: 0x444444, // color base
+      map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
+      /* roughness: 1,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 0.3 // rugosidad del clearcoat, 0.3 es un valor medio */
+    });
+
+    var matCuerda = new THREE.MeshPhysicalMaterial({
+      map: new THREE.TextureLoader().load('../../imgs/cuerda.jpg'),
+    });
 
     var cuerpoGeom = new THREE.SphereGeometry(2, 32, 32);
-    var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
+    var cuerpo = new THREE.Mesh(cuerpoGeom, matBomba);
 
     var topeGeom = new THREE.CylinderGeometry(1.5, 1.5, 1, 32);
     topeGeom.translate(0,4,0);
-    var topeMesh = new THREE.Mesh(topeGeom, mat);
+    var topeMesh = new THREE.Mesh(topeGeom, matBomba);
 
     var torusGeometry = new THREE.TorusGeometry(2, 0.7, 32, 32); //Hasta 60 grados
     //0.5 de la base y 1.5 para situarlo encima de la esfera
     //torusGeometry.translate(-2,4,0);
-    var toro = new THREE.Mesh(torusGeometry, mat);
+    var toro = new THREE.Mesh(torusGeometry, matCuerda);
 
     var caja = new THREE.BoxGeometry(10,3,2);
     var caja2 = new THREE.BoxGeometry(10,10,2);
     caja.translate(0,-1.5,0);
     caja2.translate(-5,0,0);
-    var cajaMesh = new THREE.Mesh(caja, mat);
-    var cajaMesh2 = new THREE.Mesh(caja2, mat);
+    var cajaMesh = new THREE.Mesh(caja, matCuerda);
+    var cajaMesh2 = new THREE.Mesh(caja2, matCuerda);
 
     var csg = new CSG();
     csg.subtract([toro, cajaMesh]);
     csg.subtract([cajaMesh2]);
     var toroCortado = csg.toMesh();
 
-    toroCortado.position.set(-2,4.5,0);
+    toroCortado.position.set(1,2.25,0);
 
     // var tapaToro = new THREE.CylinderGeometry(0.7, 0.7, 0.01, 32);
     // tapaToro.rotateY(-Math.PI/2);
     // tapaToro.rotateZ(Math.PI/2);
     // tapaToro.translate(-2,6,0);
-    // var tapaToroMesh = new THREE.Mesh(tapaToro, mat);
+    // var tapaToroMesh = new THREE.Mesh(tapaToro, matCuerda);
     
     //this.add(tapaToroMesh);
 
 
-    //UNIMOS LAS PARTES DEL BRAZO.
-    var fuseCSG = new CSG();
+    this.bombaFinal = new THREE.Group();
+    topeMesh.scale.set(0.5,0.5,0.5);
+    topeMesh.rotation.set(0,Math.PI,0);
+    this.bombaFinal.add(topeMesh);
+    toroCortado.scale.set(0.5,0.5,0.5);
+    toroCortado.rotation.set(0,Math.PI,0);
+    this.bombaFinal.add(toroCortado);
+    this.bombaFinal.add(cuerpo);
+
+
+   /*  var fuseCSG = new CSG();
     fuseCSG.union([topeMesh, toroCortado]);
     var fuse = fuseCSG.toMesh();
     fuse.scale.set(0.5,0.5,0.5);
@@ -56,18 +87,10 @@ class Bomba extends THREE.Object3D {
 
     var bombaCSG = new CSG();
     bombaCSG.union([fuse, cuerpo]);
-    var bomba = bombaCSG.toMesh();
+    var bomba = bombaCSG.toMesh(); */
 
 
-    this.add(bomba);
-
-    //PATRA LAS COLISIONES.
-    this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(bomba);
-
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVisible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVisible);
+    this.add(this.bombaFinal);
     
   }
   

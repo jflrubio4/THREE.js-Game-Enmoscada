@@ -11,8 +11,8 @@ import { Bomba } from '../Bomba/Bomba.js';
 import { Nitro } from '../Nitro/Nitro.js';
 import { Escudo } from '../Escudo/Escudo.js';
 import { Venus } from '../Venus/Venus.js';
-import { BolaPinchos} from '../BolaPinchos/BolaPinchos.js'
-import { PlanchaPinchos} from '../PlanchaPinchos/PlanchaPinchos.js'
+import { BolaPinchos} from '../BolaPinchos/BolaPinchos.js';
+import { PlanchaPinchos} from '../PlanchaPinchos/PlanchaPinchos.js';
 
 class GestorBalas {
   constructor() {
@@ -168,6 +168,8 @@ class Juego extends THREE.Object3D {
       var planchaPinchos = new PlanchaPinchos();
       this.terrestres.push(planchaPinchos);
       this.objetos.push(planchaPinchos);
+
+      planchaPinchos.name = 'Plancha de pinchos';
     }
 
     for (var i=0; i<this.moscas.length; i++){
@@ -353,6 +355,10 @@ class Juego extends THREE.Object3D {
     this.add(this.nodoPosOrientTuboObj);
   } */
 
+  /* getNombre(index){
+    return this.terrestres[index].getNombre()
+  } */
+  
   getPersonaje(){
     return this.personaje;
   }
@@ -443,7 +449,15 @@ class Juego extends THREE.Object3D {
     var impactados = this.rayo.intersectObjects(this.terrestres, true);
     if(impactados.length > 0){
       console.log("Colisión de rayos.");
-      impactados[0].object.parent.remove(impactados[0].object);
+        var padre = impactados[0].object.parent;
+        var abuelo = padre.parent;
+
+        impactados[0].object.parent.remove(impactados[0].object);
+
+        if(abuelo != null){
+          abuelo.remove(padre);
+        }
+
       //this.t = (this.t - 0.0015) % 1;
     }
 

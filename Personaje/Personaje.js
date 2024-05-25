@@ -66,12 +66,12 @@ class Personaje extends THREE.Object3D {
     var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
 
     this.piernaDer = new THREE.Mesh(piernaGeometry, mat);
-    this.piernaDer.translateX(-1.25);
+    this.piernaDer.translateX(-0.5);
     this.piernaDer.translateY(-2.25);
 
 
     this.piernaIzq = new THREE.Mesh(piernaGeometry, mat);
-    this.piernaIzq.translateX(1.25);
+    this.piernaIzq.translateX(0.5);
     this.piernaIzq.translateY(-2.25);
 
 
@@ -94,12 +94,12 @@ class Personaje extends THREE.Object3D {
     var tobilloPie1 = csg.toMesh();
     tobilloPie1.translateZ(0.25);
     tobilloPie1.translateY(-3.25);
-    tobilloPie1.translateX(-1.25);
+    tobilloPie1.translateX(-0.5);
 
     var tobilloPie2 = csg.toMesh();
     tobilloPie2.translateZ(0.25);
     tobilloPie2.translateY(-3.25);
-    tobilloPie2.translateX(1.25);
+    tobilloPie2.translateX(0.5);
 
     var csgIzq = new CSG();
     csgIzq.union([this.piernaIzq, tobilloPie2]);

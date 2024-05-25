@@ -14,9 +14,35 @@ class Mosca extends THREE.Object3D {
     this.topeAlaD = false;
     this.rotar = true;
     
+    //var mat = new THREE.MeshNormalMaterial();
     //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    // var loader = new THREE.TextureLoader();
+    // var textureAlas = loader.load('../../imgs/alas.jpg');
+    // textureAlas.offset.set(-0.5, 0.5);
+    // textureAlas.wrapS = THREE.RepeatWrapping;
+    // textureAlas.wrapT = THREE.RepeatWrapping;
 
+    // var materialAlas = new THREE.MeshStandardMaterial({map: textureAlas});
+    var materialAlas = new THREE.MeshPhysicalMaterial({
+      color: 0xcccccc, // Color gris claro
+      roughness: 0.2, // Un poco rugoso para darle un toque natural
+      metalness: 0.1, // Un toque de metalicidad para el brillo sutil
+      transmission: 0.9, // Alta transmisión para transparencia
+      opacity: 0.75, // Transparencia moderada
+      transparent: true, // Permitir transparencia
+      thickness: 0.01, // Grosor del material muy delgado
+      clearcoat: 0.5, // Añadir una capa de recubrimiento transparente
+      clearcoatRoughness: 0.1, // Un poco de rugosidad en la capa de recubrimiento
+      reflectivity: 0.5, // Reflejos sutiles
+      attenuationDistance: 1.0, // Distancia de atenuación de la luz
+      attenuationColor: new THREE.Color(0xaaaaaa) // Color de atenuación gris claro
+    });
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x222222,
+      roughness: 0.5,
+      metalness: 0.1
+    })
     //CUERPO MOSCA
     var cuerpoGeom = new THREE.SphereGeometry(0.5, 32, 32);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
@@ -42,13 +68,13 @@ class Mosca extends THREE.Object3D {
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaIGeometry.scale(0.5,0.5,0.5);
     alaIGeometry.translate(-0.6,0,-0.05);
-    this.alaI = new THREE.Mesh(alaIGeometry, mat);
+    this.alaI = new THREE.Mesh(alaIGeometry, materialAlas);
 
     var alaDGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaDGeometry.scale(0.5,0.5,0.5);
     alaDGeometry.translate(-0.6,0,-0.05);
     alaDGeometry.rotateY(Math.PI);
-    this.alaD = new THREE.Mesh(alaDGeometry, mat);
+    this.alaD = new THREE.Mesh(alaDGeometry, materialAlas);
 
 
     /* //UNIMOS LAS PARTES DEL BRAZO.

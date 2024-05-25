@@ -6,9 +6,17 @@ class Bomba extends THREE.Object3D {
     super();
 
     this.nombre = 'Bomba';
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x555555, // color base
+      metalness: 0.0,
+      roughness: 1,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 1 // rugosidad del clearcoat, 0.5 es un valor medio
+    });
     
     //DEFINIMOS EL MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    //var mat = new THREE.MeshNormalMaterial();
 
     var cuerpoGeom = new THREE.SphereGeometry(2, 8, 8);
     var cuerpo = new THREE.Mesh(cuerpoGeom, mat);
