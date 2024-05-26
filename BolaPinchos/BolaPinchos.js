@@ -9,33 +9,53 @@ class BolaPinchos extends THREE.Object3D {
 
     this.nombre = 'Bola de pinchos';
 
-    var mat = new THREE.MeshNormalMaterial();
+   /*  var loader = new THREE.TextureLoader();
+    var texturePinchos = loader.load('../imgs/metal.jpg');
 
-    var bola = new THREE.SphereGeometry(1, 32, 32);
-    var pinchoGrande = new THREE.ConeGeometry(0.5, 1.75, 32);
-    var pinchoPeque = new THREE.ConeGeometry(0.5, 1, 32);
+    //var materialPinchos = new THREE.MeshStandardMaterial({map: texturePinchos}); */
+
+    var materialPinchos = new THREE.MeshPhysicalMaterial({
+      color: 0xff0000, // color base
+      map: new THREE.TextureLoader().load('../imgs/metal.jpg'),
+      metalness: 0.9,
+      roughness: 0.2,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 1 // rugosidad del clearcoat, 0.5 es un valor medio
+    });
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x555555, // color base
+      metalness: 0.9,
+      roughness: 0.2,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 1 // rugosidad del clearcoat, 0.5 es un valor medio
+    });
+
+    var bola = new THREE.SphereGeometry(1, 8, 8);
+    var pinchoGrande = new THREE.ConeGeometry(0.5, 1.75, 8);
+    var pinchoPeque = new THREE.ConeGeometry(0.5, 1, 8);
 
     var bolaMesh = new THREE.Mesh(bola, mat);
-    var pinchoGrandeMesh1 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh2 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh3 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh4 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh5 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh6 = new THREE.Mesh(pinchoGrande, mat);
+    var pinchoGrandeMesh1 = new THREE.Mesh(pinchoGrande, materialPinchos);
+    var pinchoGrandeMesh2 = new THREE.Mesh(pinchoGrande, materialPinchos);
+    var pinchoGrandeMesh3 = new THREE.Mesh(pinchoGrande, materialPinchos);
+    var pinchoGrandeMesh4 = new THREE.Mesh(pinchoGrande, materialPinchos);
+    var pinchoGrandeMesh5 = new THREE.Mesh(pinchoGrande, materialPinchos);
+    var pinchoGrandeMesh6 = new THREE.Mesh(pinchoGrande, materialPinchos);
 
 
-    var pinchoPequeMesh1 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh2 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh3 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh4 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh5 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh6 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh7 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh8 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh9 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh10 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh11 = new THREE.Mesh(pinchoPeque, mat);
-    var pinchoPequeMesh12 = new THREE.Mesh(pinchoPeque, mat);
+    var pinchoPequeMesh1 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh2 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh3 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh4 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh5 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh6 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh7 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh8 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh9 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh10 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh11 = new THREE.Mesh(pinchoPeque, materialPinchos);
+    var pinchoPequeMesh12 = new THREE.Mesh(pinchoPeque, materialPinchos);
 
 
     //PINCHOS GRANDES  

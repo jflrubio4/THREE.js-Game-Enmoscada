@@ -26,9 +26,9 @@ class MoscaAgresiva extends THREE.Object3D {
     });
 
     var mat = new THREE.MeshPhysicalMaterial({
-      color: 0x222222,
+      color: 0xff0000,
       roughness: 0.5,
-      metalness: 0.1
+      metalness: 0.2
     });
 
     var matCejas = new THREE.MeshPhysicalMaterial({
@@ -116,14 +116,6 @@ class MoscaAgresiva extends THREE.Object3D {
     mosca.add(cejaD);
     mosca.rotateY(Math.PI/2);
     this.add(mosca);
-
-    //PATRA LAS COLISIONES.
-    this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(mosca);
-
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
     
   }
   

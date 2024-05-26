@@ -14,6 +14,14 @@ class Bomba extends THREE.Object3D {
       clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
       clearcoatRoughness: 1 // rugosidad del clearcoat, 0.5 es un valor medio
     });
+
+    var matBomba = new THREE.MeshPhysicalMaterial({
+      color: 0x444444, // color base
+      map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
+      /* roughness: 1,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 0.3 // rugosidad del clearcoat, 0.3 es un valor medio */
+    });
     
     //DEFINIMOS EL MATERIAL.
     //var mat = new THREE.MeshNormalMaterial();

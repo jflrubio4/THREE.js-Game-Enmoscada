@@ -5,10 +5,28 @@ import { Rev } from '../Rev/Rev.js'; //Importamos Rev para la cabeza.
 class Personaje extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
-    
-    // Se crea la parte de la interfaz que corresponde a la caja
-    // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-    this.createGUI(gui,titleGui);
+
+    var loader = new THREE.TextureLoader();
+    var textureCamiseta = loader.load('../../imgs/hawai2.png');
+    var texturaPatas = loader.load('../../imgs/vaqueros.png');
+
+    textureCamiseta.wrapS = THREE.ClampToEdgeWrapping;
+    textureCamiseta.wrapT = THREE.ClampToEdgeWrapping;
+    textureCamiseta.repeat.set(0.75, 0.75);
+
+    var matCamiseta = new THREE.MeshPhysicalMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.5,
+      map: textureCamiseta,
+      metalness: 0.5
+    });
+
+    var matPantalon = new THREE.MeshPhysicalMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.5,
+      map: texturaPatas,
+      metalness: 0.5
+    }); 
 
 
     //PARA LAS ROTACIONES.
@@ -20,7 +38,14 @@ class Personaje extends THREE.Object3D {
     //this.velocidad = 1.0;
 
     //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x5D68B8, // color base
+      map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
+      /* roughness: 1,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 0.3 // rugosidad del clearcoat, 0.3 es un valor medio */
+    });
+
 
     //CABEZA:
     this.cabeza = new Rev(gui, "Controles de la Cabeza");
@@ -41,42 +66,60 @@ class Personaje extends THREE.Object3D {
     //COLOCAMOS EL PRIMER BRAZO
     var mano = new THREE.Mesh(manoGeometry, mat);
     var brazo = new THREE.Mesh(brazoGeometry, mat);
-    var hombro = new THREE.Mesh(hombroGeometry, mat);
+    var hombro = new THREE.Mesh(hombroGeometry, matCamiseta);
+
+    this.brazoIzquierda = new THREE.Group();
+    this.brazoIzquierda.add(mano);
+    this.brazoIzquierda.add(brazo);
+    this.brazoIzquierda.add(hombro);
+    
+    this.brazoIzquierda.translateX(2.5);
+    this.brazoIzquierda.translateY(1);
+
+    //COLOCAMOS EL SEGUNDO BRAZO
+    this.brazoDerecha = new THREE.Group();
+    this.brazoDerecha.add(mano.clone());
+    this.brazoDerecha.add(brazo.clone());
+    this.brazoDerecha.add(hombro.clone());
+
+    this.brazoDerecha.translateX(-2.5);
+    this.brazoDerecha.translateY(1);
+    
 
     //UNIMOS LAS PARTES DEL BRAZO.
-    var cgsBrazoI = new CSG();
+    /* var cgsBrazoI = new CSG();
     cgsBrazoI.union([mano, brazo, hombro]);
     this.brazoIzquierda = cgsBrazoI.toMesh();
 
     this.brazoIzquierda.translateX(2.5);
-    this.brazoIzquierda.translateY(1);
+    this.brazoIzquierda.translateY(1); */
     //this.add(this.brazoIzquierda);
     
-    var cgsBrazoD = new CSG();
+    /* var cgsBrazoD = new CSG();
     cgsBrazoD.union([mano, brazo, hombro]);
     this.brazoDerecha = cgsBrazoD.toMesh();
 
     this.brazoDerecha.translateX(-2.5);
-    this.brazoDerecha.translateY(1);
+    this.brazoDerecha.translateY(1); */
     //this.add(this.brazoDerecha);
     
 
     //TORSO:
     var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2.5, 32);
-    this.torso = new THREE.Mesh(torsoGeometry, mat);
+    this.torso = new THREE.Mesh(torsoGeometry, matCamiseta);
 
     //this.add(this.torso);
 
     //PIERNAS:
     var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 32);
 
-    this.piernaDer = new THREE.Mesh(piernaGeometry, mat);
-    this.piernaDer.translateX(-1.25);
+    this.piernaDer = new THREE.Mesh(piernaGeometry, matPantalon);
+    this.piernaDer.translateX(-0.5);
     this.piernaDer.translateY(-2.25);
 
 
-    this.piernaIzq = new THREE.Mesh(piernaGeometry, mat);
-    this.piernaIzq.translateX(1.25);
+    this.piernaIzq = new THREE.Mesh(piernaGeometry, matPantalon);
+    this.piernaIzq.translateX(0.5);
     this.piernaIzq.translateY(-2.25);
 
 
@@ -94,26 +137,43 @@ class Personaje extends THREE.Object3D {
     var pie2 = new THREE.Mesh(pieGeometry, mat);
     pie2.position.z = -0.5;
     
-    var csg = new CSG();
+    this.tobilloPie1 = new THREE.Group();
+    this.tobilloPie1.add(tobillo);
+    this.tobilloPie1.add(pie1);
+    this.tobilloPie1.add(pie2);
+
+    this.tobilloPie2 = new THREE.Group();
+    this.tobilloPie2.add(tobillo.clone());
+    this.tobilloPie2.add(pie1.clone());
+    this.tobilloPie2.add(pie2.clone());
+    
+    /* var csg = new CSG();
     csg.union([tobillo, pie1, pie2]);
-    var tobilloPie1 = csg.toMesh();
-    tobilloPie1.translateZ(0.25);
-    tobilloPie1.translateY(-3.25);
-    tobilloPie1.translateX(-1.25);
+    var tobilloPie1 = csg.toMesh(); */
+    this.tobilloPie1.translateZ(0.5);
+    this.tobilloPie1.translateY(-3.25);
+    this.tobilloPie1.translateX(-0.5);
 
-    var tobilloPie2 = csg.toMesh();
-    tobilloPie2.translateZ(0.25);
-    tobilloPie2.translateY(-3.25);
-    tobilloPie2.translateX(1.25);
+    // var tobilloPie2 = csg.toMesh();
+    this.tobilloPie2.translateZ(0.5);
+    this.tobilloPie2.translateY(-3.25);
+    this.tobilloPie2.translateX(0.5);
 
-    var csgIzq = new CSG();
+    /* var csgIzq = new CSG();
     csgIzq.union([this.piernaIzq, tobilloPie2]);
-    this.pataIzq = csgIzq.toMesh();
+    this.pataIzq = csgIzq.toMesh(); */
 
-    var csgDer = new CSG();
+    this.pataIzq = new THREE.Group();
+    this.pataIzq.add(this.piernaIzq);
+    this.pataIzq.add(this.tobilloPie2);
+
+    /* var csgDer = new CSG();
     csgDer.union([this.piernaDer, tobilloPie1]);
-    this.pataDer = csgDer.toMesh();
+    this.pataDer = csgDer.toMesh(); */
 
+    this.pataDer = new THREE.Group();
+    this.pataDer.add(this.piernaDer);
+    this.pataDer.add(this.tobilloPie1);
 
     //this.add(this.pataIzq);
     //this.add(this.pataDer);
@@ -131,66 +191,6 @@ class Personaje extends THREE.Object3D {
     this.personaje.add(this.pataDer);
     this.personaje.add(this.pataIzq);
     this.add(this.personaje);
-
-    //PATRA LAS COLISIONES.
-    this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(this.personaje);
-
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
-  }
-  
-  createGUI (gui,titleGui) {
-    // Controles para el tamaño, la orientación y la posición de la caja
-    this.guiControls = {
-      sizeX : 0.5,
-      sizeY : 0.5,
-      sizeZ : 0.5,
-      
-      rotX : 0.0,
-      rotY : 0.0,
-      rotZ : 0.0,
-      
-      posX : 0.0,
-      posY : 0.0,
-      posZ : 0.0,
-      
-      // Un botón para dejarlo todo en su posición inicial
-      // Cuando se pulse se ejecutará esta función.
-      reset : () => {
-        this.guiControls.sizeX = 1.0;
-        this.guiControls.sizeY = 1.0;
-        this.guiControls.sizeZ = 1.0;
-        
-        this.guiControls.rotX = 0.0;
-        this.guiControls.rotY = 0.0;
-        this.guiControls.rotZ = 0.0;
-        
-        this.guiControls.posX = 0.0;
-        this.guiControls.posY = 0.0;
-        this.guiControls.posZ = 0.0;
-      }
-    } 
-    
-    // Se crea una sección para los controles de la caja
-    var folder = gui.addFolder (titleGui);
-    // Estas lineas son las que añaden los componentes de la interfaz
-    // Las tres cifras indican un valor mínimo, un máximo y el incremento
-    // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-    folder.add (this.guiControls, 'sizeX', 0.1, 5.0, 0.01).name ('Tamaño X : ').listen();
-    folder.add (this.guiControls, 'sizeY', 0.1, 5.0, 0.01).name ('Tamaño Y : ').listen();
-    folder.add (this.guiControls, 'sizeZ', 0.1, 5.0, 0.01).name ('Tamaño Z : ').listen();
-    
-    folder.add (this.guiControls, 'rotX', 0.0, Math.PI/2, 0.01).name ('Rotación X : ').listen();
-    folder.add (this.guiControls, 'rotY', 0.0, Math.PI/2, 0.01).name ('Rotación Y : ').listen();
-    folder.add (this.guiControls, 'rotZ', 0.0, Math.PI/2, 0.01).name ('Rotación Z : ').listen();
-    
-    folder.add (this.guiControls, 'posX', -20.0, 20.0, 0.01).name ('Posición X : ').listen();
-    folder.add (this.guiControls, 'posY', 0.0, 10.0, 0.01).name ('Posición Y : ').listen();
-    folder.add (this.guiControls, 'posZ', -20.0, 20.0, 0.01).name ('Posición Z : ').listen();
-    
-    folder.add (this.guiControls, 'reset').name ('[ Reset ]');
   }
 
   setRotacion(value){

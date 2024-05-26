@@ -86,7 +86,7 @@ class MyScene extends THREE.Scene {
       this.guiControls = {
         // En el contexto de una función   this   alude a la función
         lightPower : 100.0,  // La potencia de esta fuente de luz se mide en lúmenes
-        ambientIntensity : 0.35,
+        ambientIntensity : 1,
         axisOnOff : true,
         rotacion: false
       }
@@ -132,7 +132,7 @@ class MyScene extends THREE.Scene {
       // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
       this.pointLight = new THREE.SpotLight( 0xffffff );
       this.pointLight.power = this.guiControls.lightPower;
-      this.pointLight.position.set( 2, 3, 1 );
+      this.pointLight.position.set( 0, 3, 2 );
       this.add (this.pointLight);
     }
     
