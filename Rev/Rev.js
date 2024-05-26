@@ -16,7 +16,7 @@ class Rev extends THREE.Object3D {
     var geom = new THREE.LatheGeometry (this.points, 8, 0, 2*Math.PI);
     // Como material se crea uno a partir de un color
     var mat = new THREE.MeshPhysicalMaterial({
-      color: 0x5D68B8, // color base
+      color: 0x4b4e52, // color base
       map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
       /* roughness: 1,
       clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo

@@ -40,7 +40,7 @@ class MyScene extends THREE.Scene {
       
       // Y unos ejes. Imprescindibles para orientarnos sobre dónde están las cosas
       // Todas las unidades están en metros
-      this.axis = new THREE.AxesHelper (2);
+      this.axis = new THREE.AxesHelper (5);
       this.add (this.axis);
       
       

@@ -156,6 +156,16 @@ class BolaPinchos extends THREE.Object3D {
 
     this.add(this.BolaPinchos);
 
+    var boxInvisible = new THREE.BoxGeometry(2, 3, 2);
+    boxInvisible.translate(0, 1.5, 0);
+    var cajaMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff0000, // El color no importa ya que la caja será transparente
+      transparent: true,
+      opacity: 0.0 // Hacer la caja completamente transparente
+    });
+    var cajaInvisible = new THREE.Mesh(boxInvisible, cajaMaterial);
+    this.add(cajaInvisible);
+
     //PATRA LAS COLISIONES.
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(this.BolaPinchos);

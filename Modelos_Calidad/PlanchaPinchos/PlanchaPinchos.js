@@ -4,170 +4,137 @@ class PlanchaPinchos extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
 
-    // Se crea la parte de la interfaz que corresponde a la caja
-    // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-    this.createGUI(gui,titleGui);
+    var loader = new THREE.TextureLoader();
+    var texturePinchos = loader.load('../../imgs/metal.jpg');
+    var textureMadera = loader.load('../../imgs/madera.jpg');
 
-    var mat = new THREE.MeshNormalMaterial();
+    var materialPinchos = new THREE.MeshPhysicalMaterial({
+      //color: 0xff0000, // color base
+      map: texturePinchos,
+      metalness: 0.9,
+      roughness: 0.2,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 1 // rugosidad del clearcoat, 0.5 es un valor medio
+    });
+
+    //var materialPinchos = new THREE.MeshStandardMaterial({map: texturePinchos});
+    var materialMadera = new THREE.MeshStandardMaterial({map: textureMadera});
 
     var plancha = new THREE.BoxGeometry(3, 0.25, 3);
     
     var pinchoGrande = new THREE.ConeGeometry(0.25, 0.75, 32);
 
+    var planchaMesh = new THREE.Mesh(plancha, materialMadera);
 
-    var planchaMesh = new THREE.Mesh(plancha, mat);
+    // Crear múltiples instancias de los pinchos y distribuirlos
+    var pinchos = [];
+    for (let i = 0; i < 25; i++) {
+        pinchos[i] = new THREE.Mesh(pinchoGrande, materialPinchos);
+    }
 
-    var pinchoGrandeMesh1 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh2 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh3 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh4 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh5 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh6 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh7 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh8 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh9 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh10 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh11= new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh12 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh13 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh14 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh15 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh16 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh17 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh18 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh19 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoGrandeMesh20 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoPequeMesh21 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoPequeMesh22 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoPequeMesh23 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoPequeMesh24 = new THREE.Mesh(pinchoGrande, mat);
-    var pinchoPequeMesh25 = new THREE.Mesh(pinchoGrande, mat);
+    // Posicionar los pinchos
+    pinchos[0].translateY(0.375 + 0.125);
 
-    //FILA 
-    pinchoGrandeMesh1.translateY(0.375 + 0.125);
+    pinchos[1].translateY(0.375 + 0.125);
+    pinchos[1].translateX(0.55);
 
-    pinchoGrandeMesh2.translateY(0.375 + 0.125);
-    pinchoGrandeMesh2.translateX(0.55);
+    pinchos[2].translateY(0.375 + 0.125);
+    pinchos[2].translateX(1.1);
 
-    pinchoGrandeMesh3.translateY(0.375 + 0.125);
-    pinchoGrandeMesh3.translateX(1.1);
+    pinchos[3].translateY(0.375 + 0.125);
+    pinchos[3].translateX(-0.55);
 
-    pinchoGrandeMesh4.translateY(0.375 + 0.125);
-    pinchoGrandeMesh4.translateX(-0.55);
-
-    pinchoGrandeMesh5.translateY(0.375 + 0.125);
-    pinchoGrandeMesh5.translateX(-1.1);
+    pinchos[4].translateY(0.375 + 0.125);
+    pinchos[4].translateX(-1.1);
 
     //FILA
-    pinchoGrandeMesh6.translateY(0.375 + 0.125);
-    pinchoGrandeMesh6.translateZ(0.55);
+    pinchos[5].translateY(0.375 + 0.125);
+    pinchos[5].translateZ(0.55);
 
-    pinchoGrandeMesh7.translateY(0.375 + 0.125);
-    pinchoGrandeMesh7.translateX(0.55);
-    pinchoGrandeMesh7.translateZ(0.55);
+    pinchos[6].translateY(0.375 + 0.125);
+    pinchos[6].translateX(0.55);
+    pinchos[6].translateZ(0.55);
 
-    pinchoGrandeMesh8.translateY(0.375 + 0.125);
-    pinchoGrandeMesh8.translateX(1.1);
-    pinchoGrandeMesh8.translateZ(0.55);
+    pinchos[7].translateY(0.375 + 0.125);
+    pinchos[7].translateX(1.1);
+    pinchos[7].translateZ(0.55);
 
-    pinchoGrandeMesh9.translateY(0.375 + 0.125);
-    pinchoGrandeMesh9.translateX(-0.55);
-    pinchoGrandeMesh9.translateZ(0.55);
+    pinchos[8].translateY(0.375 + 0.125);
+    pinchos[8].translateX(-0.55);
+    pinchos[8].translateZ(0.55);
 
-    pinchoGrandeMesh10.translateY(0.375 + 0.125);
-    pinchoGrandeMesh10.translateX(-1.1);
-    pinchoGrandeMesh10.translateZ(0.55);
-
-    //FILA
-    pinchoGrandeMesh11.translateY(0.375 + 0.125);
-    pinchoGrandeMesh11.translateZ(1.1);
-
-    pinchoGrandeMesh12.translateY(0.375 + 0.125);
-    pinchoGrandeMesh12.translateX(0.55);
-    pinchoGrandeMesh12.translateZ(1.1);
-
-    pinchoGrandeMesh13.translateY(0.375 + 0.125);
-    pinchoGrandeMesh13.translateX(1.1);
-    pinchoGrandeMesh13.translateZ(1.1);
-
-    pinchoGrandeMesh14.translateY(0.375 + 0.125);
-    pinchoGrandeMesh14.translateX(-0.55);
-    pinchoGrandeMesh14.translateZ(1.1);
-
-    pinchoGrandeMesh15.translateY(0.375 + 0.125);
-    pinchoGrandeMesh15.translateX(-1.1);
-    pinchoGrandeMesh15.translateZ(1.1);
+    pinchos[9].translateY(0.375 + 0.125);
+    pinchos[9].translateX(-1.1);
+    pinchos[9].translateZ(0.55);
 
     //FILA
-    pinchoGrandeMesh16.translateY(0.375 + 0.125);
-    pinchoGrandeMesh16.translateZ(-0.55);
+    pinchos[10].translateY(0.375 + 0.125);
+    pinchos[10].translateZ(1.1);
+
+    pinchos[11].translateY(0.375 + 0.125);
+    pinchos[11].translateX(0.55);
+    pinchos[11].translateZ(1.1);
+
+    pinchos[12].translateY(0.375 + 0.125);
+    pinchos[12].translateX(1.1);
+    pinchos[12].translateZ(1.1);
+
+    pinchos[13].translateY(0.375 + 0.125);
+    pinchos[13].translateX(-0.55);
+    pinchos[13].translateZ(1.1);
+
+    pinchos[14].translateY(0.375 + 0.125);
+    pinchos[14].translateX(-1.1);
+    pinchos[14].translateZ(1.1);
+
+    //FILA
+    pinchos[15].translateY(0.375 + 0.125);
+    pinchos[15].translateZ(-0.55);
     
-    pinchoGrandeMesh17.translateY(0.375 + 0.125);
-    pinchoGrandeMesh17.translateX(0.55);
-    pinchoGrandeMesh17.translateZ(-0.55);
+    pinchos[16].translateY(0.375 + 0.125);
+    pinchos[16].translateX(0.55);
+    pinchos[16].translateZ(-0.55);
 
-    pinchoGrandeMesh18.translateY(0.375 + 0.125);
-    pinchoGrandeMesh18.translateX(1.1);
-    pinchoGrandeMesh18.translateZ(-0.55);
+    pinchos[17].translateY(0.375 + 0.125);
+    pinchos[17].translateX(1.1);
+    pinchos[17].translateZ(-0.55);
 
-    pinchoGrandeMesh19.translateY(0.375 + 0.125);
-    pinchoGrandeMesh19.translateX(-0.55);
-    pinchoGrandeMesh19.translateZ(-0.55);
+    pinchos[18].translateY(0.375 + 0.125);
+    pinchos[18].translateX(-0.55);
+    pinchos[18].translateZ(-0.55);
 
-    pinchoGrandeMesh20.translateY(0.375 + 0.125);
-    pinchoGrandeMesh20.translateX(-1.1);
-    pinchoGrandeMesh20.translateZ(-0.55);
+    pinchos[19].translateY(0.375 + 0.125);
+    pinchos[19].translateX(-1.1);
+    pinchos[19].translateZ(-0.55);
 
     //FILA
-    pinchoPequeMesh21.translateY(0.375 + 0.125);
-    pinchoPequeMesh21.translateZ(-1.1);
+    pinchos[20].translateY(0.375 + 0.125);
+    pinchos[20].translateZ(-1.1);
 
-    pinchoPequeMesh22.translateY(0.375 + 0.125);
-    pinchoPequeMesh22.translateX(0.55);
-    pinchoPequeMesh22.translateZ(-1.1);
+    pinchos[21].translateY(0.375 + 0.125);
+    pinchos[21].translateX(0.55);
+    pinchos[21].translateZ(-1.1);
 
-    pinchoPequeMesh23.translateY(0.375 + 0.125);
-    pinchoPequeMesh23.translateX(1.1);
-    pinchoPequeMesh23.translateZ(-1.1);
+    pinchos[22].translateY(0.375 + 0.125);
+    pinchos[22].translateX(1.1);
+    pinchos[22].translateZ(-1.1);
 
-    pinchoPequeMesh24.translateY(0.375 + 0.125);
-    pinchoPequeMesh24.translateX(-0.55);
-    pinchoPequeMesh24.translateZ(-1.1);
+    pinchos[23].translateY(0.375 + 0.125);
+    pinchos[23].translateX(-0.55);
+    pinchos[23].translateZ(-1.1);
 
-    pinchoPequeMesh25.translateY(0.375 + 0.125);
-    pinchoPequeMesh25.translateX(-1.1);
-    pinchoPequeMesh25.translateZ(-1.1);
+    pinchos[24].translateY(0.375 + 0.125);
+    pinchos[24].translateX(-1.1);
+    pinchos[24].translateZ(-1.1);
     
 
     this.planchaPincho = new THREE.Group();
 
     this.planchaPincho.add(planchaMesh);
 
-    this.planchaPincho.add(pinchoGrandeMesh1);
-    this.planchaPincho.add(pinchoGrandeMesh2);
-    this.planchaPincho.add(pinchoGrandeMesh3);
-    this.planchaPincho.add(pinchoGrandeMesh4);
-    this.planchaPincho.add(pinchoGrandeMesh5);
-    this.planchaPincho.add(pinchoGrandeMesh6);
-    this.planchaPincho.add(pinchoGrandeMesh7);
-    this.planchaPincho.add(pinchoGrandeMesh8);
-    this.planchaPincho.add(pinchoGrandeMesh9);
-    this.planchaPincho.add(pinchoGrandeMesh10);
-    this.planchaPincho.add(pinchoGrandeMesh11);
-    this.planchaPincho.add(pinchoGrandeMesh12);
-    this.planchaPincho.add(pinchoGrandeMesh13);
-    this.planchaPincho.add(pinchoGrandeMesh14);
-    this.planchaPincho.add(pinchoGrandeMesh15);
-    this.planchaPincho.add(pinchoGrandeMesh16);
-    this.planchaPincho.add(pinchoGrandeMesh17);
-    this.planchaPincho.add(pinchoGrandeMesh18);
-    this.planchaPincho.add(pinchoGrandeMesh19);
-    this.planchaPincho.add(pinchoGrandeMesh20);
-    this.planchaPincho.add(pinchoPequeMesh21);
-    this.planchaPincho.add(pinchoPequeMesh22);
-    this.planchaPincho.add(pinchoPequeMesh23);
-    this.planchaPincho.add(pinchoPequeMesh24);
-    this.planchaPincho.add(pinchoPequeMesh25);
+    for (let i=0; i<pinchos.length; i++){
+      this.planchaPincho.add(pinchos[i]);
+    }
 
     this.add(this.planchaPincho);
 
@@ -175,12 +142,9 @@ class PlanchaPinchos extends THREE.Object3D {
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(this.planchaPincho);
 
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
+    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible);
-
-    
-    
+    this.add(cajaEnvolventeVsible); */
     
     /* this.rotar = false; */
   }
@@ -251,29 +215,7 @@ class PlanchaPinchos extends THREE.Object3D {
   }
 
   
-  update () {
-    // Con independencia de cómo se escriban las 3 siguientes líneas, el orden en el que se aplican las transformaciones es:
-    // Primero, el escalado
-    // Segundo, la rotación en Z
-    // Después, la rotación en Y
-    // Luego, la rotación en X
-    // Y por último la traslación
-   
-    this.position.set (this.guiControls.posX,this.guiControls.posY,this.guiControls.posZ);
-    this.rotation.set (this.guiControls.rotX,this.guiControls.rotY,this.guiControls.rotZ);
-    this.scale.set (this.guiControls.sizeX,this.guiControls.sizeY,this.guiControls.sizeZ);
-
-
-    /* //PARA ROTAR EL OBEJTO.
-    if(this.rotar){
-        this.resultadoMesh1.rotation.x += 0.01;
-        this.resultadoMesh1.rotation.y += 0.01;
-        
-        this.resultadoMesh2.rotation.x -= 0.01;
-        this.resultadoMesh2.rotation.z -= 0.01;
-    } */
-    
-  }
+  update () {}
 }
 
 export { PlanchaPinchos };

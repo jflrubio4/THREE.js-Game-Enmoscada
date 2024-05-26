@@ -8,7 +8,34 @@ class MoscaAgresiva extends THREE.Object3D {
     this.nombre = 'Mosca Agresiva';
     
     //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    var materialAlas = new THREE.MeshPhysicalMaterial({
+      color: 0xcccccc, // Color gris claro
+      roughness: 0.2, // Un poco rugoso para darle un toque natural
+      metalness: 0.1, // Un toque de metalicidad para el brillo sutil
+      transmission: 0.9, // Alta transmisión para transparencia
+      opacity: 0.75, // Transparencia moderada
+      transparent: true, // Permitir transparencia
+      thickness: 0.01, // Grosor del material muy delgado
+      clearcoat: 0.5, // Añadir una capa de recubrimiento transparente
+      clearcoatRoughness: 0.1, // Un poco de rugosidad en la capa de recubrimiento
+      reflectivity: 0.5, // Reflejos sutiles
+      attenuationDistance: 1.0, // Distancia de atenuación de la luz
+      attenuationColor: new THREE.Color(0xaaaaaa) // Color de atenuación gris claro
+    });
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0xff0000,
+      roughness: 0.5,
+      metalness: 0.2
+    });
+
+    var matCejas = new THREE.MeshPhysicalMaterial({
+      color: 0x222222,
+      roughness: 0.5,
+      metalness: 0.1,
+      map: new THREE.TextureLoader().load('../../imgs/pelaje.jpg')
+    });
+
 
     //CUERPO MOSCA
     var cuerpoGeom = new THREE.SphereGeometry(0.65, 8, 8);
@@ -36,13 +63,13 @@ class MoscaAgresiva extends THREE.Object3D {
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaIGeometry.scale(0.75,0.75,0.75);
     alaIGeometry.translate(-0.5,0,-0.05);
-    this.alaI = new THREE.Mesh(alaIGeometry, mat);
+    this.alaI = new THREE.Mesh(alaIGeometry, materialAlas);
 
     var alaDGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaDGeometry.scale(0.75,0.75,0.75);
     alaDGeometry.translate(-0.5,0,-0.05);
     alaDGeometry.rotateY(Math.PI);
-    this.alaD = new THREE.Mesh(alaDGeometry, mat);
+    this.alaD = new THREE.Mesh(alaDGeometry, materialAlas);
 
     var cejasShape = new THREE.Shape();
     cejasShape.moveTo(-0.1,0.02);
@@ -68,22 +95,31 @@ class MoscaAgresiva extends THREE.Object3D {
     cejaIGeometry.scale(0.4,0.4,0.4);
     cejaIGeometry.rotateZ(-Math.PI/16);
     cejaIGeometry.translate(-0.2,0.1,0.45);
-    var cejaI = new THREE.Mesh(cejaIGeometry, mat);
+    var cejaI = new THREE.Mesh(cejaIGeometry, matCejas);
 
     var cejaDGeometry = new THREE.ExtrudeGeometry(cejasShape, cejasOptions);
     cejaDGeometry.scale(0.4,0.4,0.4);
     cejaDGeometry.rotateZ(-Math.PI/16);
     cejaDGeometry.rotateY(Math.PI);
     cejaDGeometry.translate(0.2,0.1,0.65);
-    var cejaD = new THREE.Mesh(cejaDGeometry, mat);
+    var cejaD = new THREE.Mesh(cejaDGeometry, matCejas);
 
     //UNIMOS LAS PARTES DEL BRAZO.
-    var moscaCSG = new CSG();
+    /* var moscaCSG = new CSG();
     moscaCSG.union([cuerpo, this.alaI, this.alaD, cejaI, cejaD]);
     var mosca = moscaCSG.toMesh();
-    //mosca.rotateY(Math.PI/2);
+    //mosca.rotateY(Math.PI/2); */
 
+    //this.add(mosca);
+
+    var mosca = new THREE.Group();
+    mosca.add(cuerpo);
+    mosca.add(this.alaI);
+    mosca.add(this.alaD);
+    mosca.add(cejaI);
+    mosca.add(cejaD);
     mosca.position.set(0,0.65,0);
+    mosca.rotation.set(0,Math.PI,0);
     this.add(mosca);
 
     //PATRA LAS COLISIONES.
@@ -103,9 +139,41 @@ class MoscaAgresiva extends THREE.Object3D {
     else{
         this.rotar = false;
     }
-}
+  }
   
-  update () {}
+  
+  funcionAnimar(value){
+    if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
+      this.alaI.rotation.y += 0.015;
+      if(this.alaI.rotation.y >= 0.2){
+        this.topeAlaI = true;
+      }
+    }
+    else{
+      this.alaI.rotation.y -= 0.015;
+      if(this.alaI.rotation.y <= -0.2){
+        this.topeAlaI = false;
+      }
+    }
+
+    if(this.alaD.rotation.y > -0.2 && !this.topeAlaD){
+      this.alaD.rotation.y -= 0.015;
+      if(this.alaD.rotation.y <= -0.2){
+        this.topeAlaD = true;
+      }
+    }
+    else{
+      this.alaD.rotation.y += 0.015;
+      if(this.alaD.rotation.y >= 0.2){
+        this.topeAlaD = false;
+      }
+    }
+  }
+  
+  update () {
+    this.funcionAnimar(this.rotar);
+    
+  }
 }
 
 export { MoscaAgresiva };

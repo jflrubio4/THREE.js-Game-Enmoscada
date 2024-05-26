@@ -6,13 +6,11 @@ class MoscaEnigma extends THREE.Object3D {
   constructor(gui,titleGui) {
     super();
 
-
     //VALORES PARA LAS ROTACIONES.
     this.topeAlaI = false;
     this.topeAlaD = false;
     this.rotar = true;
     
-    //DEFINIMOS LE MATERIAL.
     //DEFINIMOS LE MATERIAL.
     var materialAlas = new THREE.MeshPhysicalMaterial({
       color: 0xcccccc, // Color gris claro

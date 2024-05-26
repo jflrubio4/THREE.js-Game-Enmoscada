@@ -52,6 +52,7 @@ class MyScene extends THREE.Scene {
       
       //LIGA LA CAMARA AL PERSONAJE.
       this.model.personaje.add(this.cameraPersonaje);
+      this.model.personaje.add(this.pointLight);
     }
     
     createCamera () {
@@ -59,7 +60,7 @@ class MyScene extends THREE.Scene {
       //   El ángulo del campo de visión vértical en grados sexagesimales
       //   La razón de aspecto ancho/alto
       //   Los planos de recorte cercano y lejano
-      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 700);
+      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
       // También se indica dónde se coloca
       this.camera.position.set (100, 0.05, -250.0);
       // Y hacia dónde mira
@@ -78,7 +79,7 @@ class MyScene extends THREE.Scene {
       this.cameraControl.target = look;
 
       //CAMARA DEL PERSONAJE (3ª PERSONA).
-      this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 5000);
+      this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 10000);
       //this.model.personaje.add(this.cameraPersonaje);
       this.cameraPersonaje.position.set(0,8+3.75,-12); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
 
@@ -101,7 +102,7 @@ class MyScene extends THREE.Scene {
       // En este caso la intensidad de la luz y si se muestran o no los ejes
       this.guiControls = {
         // En el contexto de una función   this   alude a la función
-        lightPower : 100.0,  // La potencia de esta fuente de luz se mide en lúmenes
+        lightPower : 1000.0,  // La potencia de esta fuente de luz se mide en lúmenes
         ambientIntensity : 1,
         axisOnOff : true,
         rotacion: false
@@ -111,7 +112,7 @@ class MyScene extends THREE.Scene {
       var folder = gui.addFolder ('Luz y Ejes');
       
       // Se le añade un control para la potencia de la luz puntual
-      folder.add (this.guiControls, 'lightPower', 0, 200, 10)
+      folder.add (this.guiControls, 'lightPower', 0, 2000, 100)
         .name('Luz puntual : ')
         .onChange ( (value) => this.setLightPower(value) );
       
@@ -144,7 +145,6 @@ class MyScene extends THREE.Scene {
       // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
       this.pointLight = new THREE.SpotLight( 0xffffff );
       this.pointLight.power = this.guiControls.lightPower;
-      this.pointLight.position.set( 2, 3, 1 );
       this.add (this.pointLight);
     }
     

@@ -8,8 +8,35 @@ class MoscaLuz extends THREE.Object3D {
     this.nombre = 'Mosca  de luz';
     
     //DEFINIMOS LE MATERIAL.
-    //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    var materialAlas = new THREE.MeshPhysicalMaterial({
+      color: 0xcccccc, // Color gris claro
+      roughness: 0.2, // Un poco rugoso para darle un toque natural
+      metalness: 0.1, // Un toque de metalicidad para el brillo sutil
+      transmission: 0.9, // Alta transmisión para transparencia
+      opacity: 0.75, // Transparencia moderada
+      transparent: true, // Permitir transparencia
+      thickness: 0.01, // Grosor del material muy delgado
+      clearcoat: 0.5, // Añadir una capa de recubrimiento transparente
+      clearcoatRoughness: 0.1, // Un poco de rugosidad en la capa de recubrimiento
+      reflectivity: 0.5, // Reflejos sutiles
+      attenuationDistance: 1.0, // Distancia de atenuación de la luz
+      attenuationColor: new THREE.Color(0xaaaaaa) // Color de atenuación gris claro
+    });
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x82E4FF,
+      roughness: 0.5,
+      metalness: 0.2
+    });
+
+    var haloMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xFFEE97, // Color amarillo claro
+      emissive: 0xffffe0, // El mismo color para la emisión
+      emissiveIntensity: 1, // Alta intensidad de emisión
+      opacity: 0.7, // Opacidad parcial para un efecto suave
+      roughness: 0.5, // Un poco rugoso para un efecto natural
+      metalness: 0.1 // Un toque de metalicidad
+    });
 
     //CUERPO MOSCA
     var cuerpoGeom = new THREE.SphereGeometry(0.65, 8, 8);
@@ -37,13 +64,13 @@ class MoscaLuz extends THREE.Object3D {
     var alaIGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaIGeometry.scale(0.75,0.75,0.75);
     alaIGeometry.translate(-0.5,0,-0.05);
-    this.alaI = new THREE.Mesh(alaIGeometry, mat);
+    this.alaI = new THREE.Mesh(alaIGeometry, materialAlas);
 
     var alaDGeometry = new THREE.ExtrudeGeometry(shape, options);
     alaDGeometry.scale(0.75,0.75,0.75);
     alaDGeometry.translate(-0.5,0,-0.05);
     alaDGeometry.rotateY(Math.PI);
-    this.alaD = new THREE.Mesh(alaDGeometry, mat);
+    this.alaD = new THREE.Mesh(alaDGeometry, materialAlas);
 
     // Crear la geometría del toro (halo)
     var toroGeometry = new THREE.TorusGeometry(0.4, 0.1, 8, 8);
@@ -51,15 +78,23 @@ class MoscaLuz extends THREE.Object3D {
     toroGeometry.rotateX(Math.PI/2);
     toroGeometry.translate(0, 0.8, 0);
     // Crear el mesh del toro con el mismo material que la mosca
-    var toro = new THREE.Mesh(toroGeometry, mat);
+    var toro = new THREE.Mesh(toroGeometry, haloMaterial);
 
+    var haloLight = new THREE.PointLight(0xffffe0, 4, 100); // Color amarillo claro, intensidad 1, distancia 100
+    haloLight.position.set(0, 1.2, 0);
 
-    //UNIMOS LAS PARTES DEL BRAZO.
+    /* //UNIMOS LAS PARTES DEL BRAZO.
     var moscaCSG = new CSG();
     moscaCSG.union([cuerpo, this.alaI, this.alaD, toro]);
     var mosca = moscaCSG.toMesh();
-    mosca.rotateY(Math.PI/2);
+    mosca.rotateY(Math.PI/2); */
 
+    var mosca = new THREE.Group();
+    mosca.add(cuerpo);
+    mosca.add(this.alaI);
+    mosca.add(this.alaD);
+    mosca.add(toro);
+    mosca.add(haloLight);
     mosca.position.set(0,0.65,0);
     this.add(mosca);
 
@@ -80,9 +115,40 @@ class MoscaLuz extends THREE.Object3D {
     else{
         this.rotar = false;
     }
-}
+  }
   
-  update () {}
+  funcionAnimar(value){
+    if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
+      this.alaI.rotation.y += 0.015;
+      if(this.alaI.rotation.y >= 0.2){
+        this.topeAlaI = true;
+      }
+    }
+    else{
+      this.alaI.rotation.y -= 0.015;
+      if(this.alaI.rotation.y <= -0.2){
+        this.topeAlaI = false;
+      }
+    }
+
+    if(this.alaD.rotation.y > -0.2 && !this.topeAlaD){
+      this.alaD.rotation.y -= 0.015;
+      if(this.alaD.rotation.y <= -0.2){
+        this.topeAlaD = true;
+      }
+    }
+    else{
+      this.alaD.rotation.y += 0.015;
+      if(this.alaD.rotation.y >= 0.2){
+        this.topeAlaD = false;
+      }
+    }
+  }
+  
+  update () {
+    this.funcionAnimar(this.rotar);
+    
+  }
 }
 
 export { MoscaLuz };

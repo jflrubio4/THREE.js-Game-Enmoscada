@@ -6,7 +6,6 @@ import { OBJLoader } from '../libs/OBJLoader.js'
 class Enigma extends THREE.Object3D {
   constructor(gui,titleGui, resolucion) {
     super();
-  
     
     var path = new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, 0, 0),

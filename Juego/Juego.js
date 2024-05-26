@@ -6,6 +6,7 @@ import { Mosca } from '../Mosca/Mosca.js'; //HAY QUE PONER "Modelos_Calidad/".
 import { MoscaReina } from '../MoscaReina/MoscaReina.js';
 import { MoscaAgresiva } from '../MoscaAgresiva/MoscaAgresiva.js';
 import { MoscaEnigma } from '../MoscaEnigma/MoscaEnigma.js';
+import { MoscaLuz} from '../MoscaLuz/MoscaLuz.js';
 import { Enigma } from '../Enigma/Enigma.js';
 import { Bomba } from '../Bomba/Bomba.js';
 import { Nitro } from '../Nitro/Nitro.js';
@@ -144,6 +145,9 @@ class Juego extends THREE.Object3D {
       var moscaEnigma = new MoscaEnigma();
       this.moscas.push(moscaEnigma);
       this.objetos.push(moscaEnigma);
+      var moscaLuz = new MoscaLuz();
+      this.moscas.push(moscaLuz);
+      this.objetos.push(moscaLuz);
     }
 
     for (var i=0; i<8; i++){
@@ -211,10 +215,74 @@ class Juego extends THREE.Object3D {
       this.add(this.posicionarObjeto(this.candidatos[k], 0, rotacion, valor));
     } */
 
+    //POSICIONAR LOS OBJETOS MANUALMENTE
     var pinchos = new PlanchaPinchos();
-    this.add(this.posicionarObjeto(contador, pinchos, 0, 0, 0.02))
+    this.add(this.posicionarObjeto(contador, pinchos, 0, 0, 0.01))
     contador++;
     this.terrestres.push(pinchos);
+    this.objetos.push(pinchos);
+
+    var bola = new BolaPinchos();
+    this.add(this.posicionarObjeto(contador, bola, 0, 0, 0.02))
+    contador++;
+    this.terrestres.push(bola);
+    this.objetos.push(bola);
+
+    var bomb = new Bomba();
+    this.add(this.posicionarObjeto(contador, bomb, 0, 0, 0.03))
+    contador++;
+    this.terrestres.push(bomb);
+    this.objetos.push(bomb);
+
+    var enigma = new Enigma();
+    this.add(this.posicionarObjeto(contador, enigma, 0, 0, 0.04))
+    contador++;
+    this.terrestres.push(enigma);
+    this.objetos.push(enigma);
+
+    var venus = new Venus();
+    this.add(this.posicionarObjeto(contador, venus, 0, 0, 0.05))
+    contador++;
+    this.terrestres.push(venus);
+    this.objetos.push(venus);
+
+    var escudo = new Escudo();
+    this.add(this.posicionarObjeto(contador, escudo, 0, 0, 0.06))
+    contador++;
+    this.terrestres.push(escudo);
+    this.objetos.push(escudo);
+
+    var nitro = new Nitro();
+    this.add(this.posicionarObjeto(contador, nitro, 0, 0, 0.07))
+    contador++;
+    this.terrestres.push(nitro);
+    this.objetos.push(nitro);
+
+    var moscaN = new Mosca();
+    this.add(this.posicionarObjeto(contador, moscaN, 4, 0, 0.01))
+    contador++;
+    this.moscas.push(moscaN);
+
+    var moscaR = new MoscaReina();
+    this.add(this.posicionarObjeto(contador, moscaR, 4, 0, 0.02))
+    contador++;
+    this.moscas.push(moscaR);
+
+    var moscaA = new MoscaAgresiva();
+    this.add(this.posicionarObjeto(contador, moscaA, 4, 0, 0.03))
+    contador++;
+    this.moscas.push(moscaA);
+
+    var moscaE = new MoscaEnigma();
+    this.add(this.posicionarObjeto(contador, moscaE, 4, 0, 0.04))
+    contador++;
+    this.moscas.push(moscaE);
+
+    var moscaL = new MoscaLuz();
+    this.add(this.posicionarObjeto(contador, moscaL, 4, 0, 0.05))
+    contador++;
+    this.moscas.push(moscaL);
+
 
     //Rayo para las colisiones terrestres
     this.rayo = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3(0,0,1), 0, 500); //BUSCA ELEMENTOS ENTRE 0 Y distancia (10).
@@ -338,26 +406,6 @@ class Juego extends THREE.Object3D {
 
     return this.nodosPosOrientacion[index];
   }
-
-  /* posicionarObjeto(objeto, posicion){
-    this.posSuperficieObj = new THREE.Object3D();
-    this.posSuperficieObj.add(objeto);
-    this.posSuperficieObj.position.y = this.radio + 5;
-
-    this.movimientoLateralObj = new THREE.Object3D();
-    this.movimientoLateralObj.add(this.posSuperficieObj);
-    this.setAnguloRotacionObj(this.rotMosca);
-
-    this.nodoPosOrientTuboObj = new THREE.Object3D();
-    this.nodoPosOrientTuboObj.add(this.movimientoLateralObj);
-    this.situarObjeto(posicion);
-
-    this.add(this.nodoPosOrientTuboObj);
-  } */
-
-  /* getNombre(index){
-    return this.terrestres[index].getNombre()
-  } */
   
   getPersonaje(){
     return this.personaje;

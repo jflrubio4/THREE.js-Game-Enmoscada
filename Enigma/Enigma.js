@@ -25,7 +25,11 @@ class Enigma extends THREE.Object3D {
     var tubeGeometry = new THREE.TubeGeometry(path, 12, 0.2, 12, false);
     var tapaGeometry = new THREE.CylinderGeometry(0.2,0.2,0.01);
     tapaGeometry.translate(0,0.005,0);
-    var mat = new THREE.MeshNormalMaterial();
+    var mat = new THREE.MeshStandardMaterial({
+      color: 0xFFA500, // Color dorado
+      metalness: 0.9, // Alto valor para que parezca metálico
+      roughness: 0.2, // Bajo valor para que sea suave y reflectante
+    });
 
     var sphereGeom = new THREE.SphereGeometry(0.2, 8, 8);
     sphereGeom.translate(0,-0.3,0);

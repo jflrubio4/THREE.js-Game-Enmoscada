@@ -7,6 +7,35 @@ class Circuito extends THREE.Object3D {
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
     this.createGUI(gui,titleGui);
+
+    var cielo = new THREE.SphereGeometry(2000, 32, 32);
+
+    var loader = new THREE.TextureLoader();
+    var texture = loader.load('../../imgs/cesped.jpg');
+    var textureCielo = loader.load('../../imgs/cielo.png');
+
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(50, 1); // ajusta estos valores para cambiar la repetición de la textura
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x05f70d,
+      //roughness: 0.5,
+      map: texture,
+      //metalness: 0.5
+    });
+
+    textureCielo.wrapS = THREE.RepeatWrapping;
+    textureCielo.wrapT = THREE.RepeatWrapping;
+    textureCielo.repeat.set(1, 1); // ajusta estos valores para cambiar la repetición de la textura
+
+
+    var materialCielo = new THREE.MeshBasicMaterial({
+      map: textureCielo,
+      side: THREE.DoubleSide
+    });
+
+    var cieloMesh = new THREE.Mesh(cielo, materialCielo);
     
     var path = new THREE.CatmullRomCurve3([
       new THREE.Vector3(-200, -35, 100),
@@ -34,7 +63,7 @@ class Circuito extends THREE.Object3D {
     ],true);
 
     var tubeGeometry = new THREE.TubeGeometry(path, resolucion, 5, divisiones, true);
-    var mat = new THREE.MeshNormalMaterial();
+    //var mat = new THREE.MeshNormalMaterial();
 
     var tubo = new THREE.Mesh(tubeGeometry, mat);
     this.add(tubo);
@@ -44,6 +73,8 @@ class Circuito extends THREE.Object3D {
     this.path = tubeGeometry.parameters.path;
     this.radio = tubeGeometry.parameters.radius;
     this.segmentos = tubeGeometry.parameters.tubularSegments;
+
+    this.add(cieloMesh);
 
     // var esfera = new THREE.SphereGeometry(10, 32, 32);
     // var esfera1 = new THREE.Mesh(esfera, mat);

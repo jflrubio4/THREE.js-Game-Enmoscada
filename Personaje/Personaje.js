@@ -6,6 +6,28 @@ class Personaje extends THREE.Object3D {
   constructor() {
     super();
 
+    var loader = new THREE.TextureLoader();
+    var textureCamiseta = loader.load('../../imgs/hawai2.png');
+    var texturaPatas = loader.load('../../imgs/vaqueros.png');
+
+    textureCamiseta.wrapS = THREE.ClampToEdgeWrapping;
+    textureCamiseta.wrapT = THREE.ClampToEdgeWrapping;
+    textureCamiseta.repeat.set(0.75, 0.75);
+
+    var matCamiseta = new THREE.MeshPhysicalMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.5,
+      map: textureCamiseta,
+      metalness: 0.5
+    });
+
+    var matPantalon = new THREE.MeshPhysicalMaterial({
+      color: 0xFFFFFF,
+      roughness: 0.5,
+      map: texturaPatas,
+      metalness: 0.5
+    }); 
+
     //PARA LAS ROTACIONES.
     this.topeIzqBrazo = false;
     this.topeIzqPata = false;
@@ -15,7 +37,13 @@ class Personaje extends THREE.Object3D {
     //this.velocidad = 1.0;
 
     //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshNormalMaterial();
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x4b4e52, // color base
+      map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
+      /* roughness: 1,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 0.3 // rugosidad del clearcoat, 0.3 es un valor medio */
+    });
 
     //CABEZA:
     this.cabeza = new Rev();
@@ -36,41 +64,42 @@ class Personaje extends THREE.Object3D {
     //COLOCAMOS EL PRIMER BRAZO
     var mano = new THREE.Mesh(manoGeometry, mat);
     var brazo = new THREE.Mesh(brazoGeometry, mat);
-    var hombro = new THREE.Mesh(hombroGeometry, mat);
+    var hombro = new THREE.Mesh(hombroGeometry, matCamiseta);
 
     //UNIMOS LAS PARTES DEL BRAZO.
-    var cgsBrazoI = new CSG();
-    cgsBrazoI.union([mano, brazo, hombro]);
-    this.brazoIzquierda = cgsBrazoI.toMesh();
-
+    this.brazoIzquierda = new THREE.Group();
+    this.brazoIzquierda.add(mano);
+    this.brazoIzquierda.add(brazo);
+    this.brazoIzquierda.add(hombro);
+    
     this.brazoIzquierda.translateX(2.5);
     this.brazoIzquierda.translateY(1);
-    //this.add(this.brazoIzquierda);
     
-    var cgsBrazoD = new CSG();
-    cgsBrazoD.union([mano, brazo, hombro]);
-    this.brazoDerecha = cgsBrazoD.toMesh();
+    //COLOCAMOS EL SEGUNDO BRAZO
+    this.brazoDerecha = new THREE.Group();
+    this.brazoDerecha.add(mano.clone());
+    this.brazoDerecha.add(brazo.clone());
+    this.brazoDerecha.add(hombro.clone());
 
     this.brazoDerecha.translateX(-2.5);
     this.brazoDerecha.translateY(1);
-    //this.add(this.brazoDerecha);
     
 
     //TORSO:
     var torsoGeometry = new THREE.CylinderGeometry(2, 2, 2.5, 8);
-    this.torso = new THREE.Mesh(torsoGeometry, mat);
+    this.torso = new THREE.Mesh(torsoGeometry, matCamiseta);
 
     //this.add(this.torso);
 
     //PIERNAS:
     var piernaGeometry = new THREE.CylinderGeometry(0.5, 0.5, 2, 8);
 
-    this.piernaDer = new THREE.Mesh(piernaGeometry, mat);
+    this.piernaDer = new THREE.Mesh(piernaGeometry, matPantalon);
     this.piernaDer.translateX(-0.5);
     this.piernaDer.translateY(-2.25);
 
 
-    this.piernaIzq = new THREE.Mesh(piernaGeometry, mat);
+    this.piernaIzq = new THREE.Mesh(piernaGeometry, matPantalon);
     this.piernaIzq.translateX(0.5);
     this.piernaIzq.translateY(-2.25);
 
@@ -89,25 +118,31 @@ class Personaje extends THREE.Object3D {
     var pie2 = new THREE.Mesh(pieGeometry, mat);
     pie2.position.z = -0.5;
     
-    var csg = new CSG();
-    csg.union([tobillo, pie1, pie2]);
-    var tobilloPie1 = csg.toMesh();
-    tobilloPie1.translateZ(0.25);
-    tobilloPie1.translateY(-3.25);
-    tobilloPie1.translateX(-0.5);
+    this.tobilloPie1 = new THREE.Group();
+    this.tobilloPie1.add(tobillo);
+    this.tobilloPie1.add(pie1);
+    this.tobilloPie1.add(pie2);
+    
+    this.tobilloPie1.translateZ(0.5);
+    this.tobilloPie1.translateY(-3.25);
+    this.tobilloPie1.translateX(-0.5);
 
-    var tobilloPie2 = csg.toMesh();
-    tobilloPie2.translateZ(0.25);
-    tobilloPie2.translateY(-3.25);
-    tobilloPie2.translateX(0.5);
+    this.tobilloPie2 = new THREE.Group();
+    this.tobilloPie2.add(tobillo.clone());
+    this.tobilloPie2.add(pie1.clone());
+    this.tobilloPie2.add(pie2.clone());
+    
+    this.tobilloPie2.translateZ(0.5);
+    this.tobilloPie2.translateY(-3.25);
+    this.tobilloPie2.translateX(0.5);
 
-    var csgIzq = new CSG();
-    csgIzq.union([this.piernaIzq, tobilloPie2]);
-    this.pataIzq = csgIzq.toMesh();
+    this.pataIzq = new THREE.Group();
+    this.pataIzq.add(this.piernaIzq);
+    this.pataIzq.add(this.tobilloPie2);
 
-    var csgDer = new CSG();
-    csgDer.union([this.piernaDer, tobilloPie1]);
-    this.pataDer = csgDer.toMesh();
+    this.pataDer = new THREE.Group();
+    this.pataDer.add(this.piernaDer);
+    this.pataDer.add(this.tobilloPie1);
 
 
     //this.add(this.pataIzq);

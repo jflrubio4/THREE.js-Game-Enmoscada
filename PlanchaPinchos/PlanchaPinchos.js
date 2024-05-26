@@ -11,14 +11,31 @@ class PlanchaPinchos extends THREE.Object3D {
     var texturePinchos = loader.load('../imgs/metal.jpg');
     var textureMadera = loader.load('../imgs/madera.jpg');
 
-    var materialPinchos = new THREE.MeshStandardMaterial({map: texturePinchos});
+    var materialPinchos = new THREE.MeshPhysicalMaterial({
+      //color: 0xff0000, // color base
+      map: texturePinchos,
+      metalness: 0.9,
+      roughness: 0.2,
+      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+      clearcoatRoughness: 1 // rugosidad del clearcoat, 0.5 es un valor medio
+    });
+    
+    //var materialPinchos = new THREE.MeshStandardMaterial({map: texturePinchos});
     var materialMadera = new THREE.MeshStandardMaterial({map: textureMadera});
 
     var plancha = new THREE.BoxGeometry(3, 0.25, 3);
+    var boxInvisible = new THREE.BoxGeometry(3, 3, 3);
+    boxInvisible.translate(0, 1.5, 0);
+    var cajaMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff0000, // El color no importa ya que la caja será transparente
+      transparent: true,
+      opacity: 0.0 // Hacer la caja completamente transparente
+    });
     
     var pinchoGrande = new THREE.ConeGeometry(0.25, 0.75, 8);
 
     var planchaMesh = new THREE.Mesh(plancha, materialMadera);
+    var cajaInvisible = new THREE.Mesh(boxInvisible, cajaMaterial);
 
     // Crear múltiples instancias de los pinchos y distribuirlos
     var pinchos = [];
@@ -140,6 +157,7 @@ class PlanchaPinchos extends THREE.Object3D {
       this.planchaPincho.add(pinchos[i]);
     }
 
+    this.add(cajaInvisible);
     this.add(this.planchaPincho);
 
     /* //PATRA LAS COLISIONES.

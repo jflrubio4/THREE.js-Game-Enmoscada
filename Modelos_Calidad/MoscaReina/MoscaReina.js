@@ -75,10 +75,10 @@ class MoscaReina extends THREE.Object3D {
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, materialAlas);
 
-    var moscaCSG = new CSG();
+    /* var moscaCSG = new CSG();
     moscaCSG.union([cuerpo, this.alaI, this.alaD]);
     var mosca = moscaCSG.toMesh();
-    mosca.rotateY(Math.PI/2);
+    mosca.rotateY(Math.PI/2); */
     //FIN MOSCA
 
     var shape = new THREE.Shape();

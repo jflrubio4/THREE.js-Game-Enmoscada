@@ -30,16 +30,19 @@ class Mosca extends THREE.Object3D {
       reflectivity: 0.5, // Reflejos sutiles
       attenuationDistance: 1.0, // Distancia de atenuación de la luz
       attenuationColor: new THREE.Color(0xaaaaaa) // Color de atenuación gris claro
-  });
+    });
+
+    var mat = new THREE.MeshPhysicalMaterial({
+      color: 0x222222,
+      roughness: 0.5,
+      metalness: 0.1
+    })
 
     //VALORES PARA LAS ROTACIONES.
     //VALORES PARA LAS ROTACIONES.
     this.topeAlaI = false;
     this.topeAlaD = false;
     this.rotar = true;
-    
-    //DEFINIMOS LE MATERIAL.
-    var mat = new THREE.MeshBasicMaterial({ color: 0x222222 });
 
     //CUERPO MOSCA
     var cuerpoGeom = new THREE.SphereGeometry(0.3, 8, 8);
@@ -140,7 +143,10 @@ class Mosca extends THREE.Object3D {
     }
   }
   
-  update () {}
+  update () {
+    this.funcionAnimar(this.rotar);
+    
+  }
 }
 
 export { Mosca };
