@@ -170,6 +170,8 @@ class MoscaEnigma extends THREE.Object3D {
     this.add(this.alaI);
     this.add(this.alaD);
     this.add(enigma); */
+
+    mosca.userData.name = 'moscaEnigma';
     
   }
 

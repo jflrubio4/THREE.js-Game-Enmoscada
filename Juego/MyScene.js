@@ -52,8 +52,34 @@ class MyScene extends THREE.Scene {
       
       //LIGA LA CAMARA AL PERSONAJE.
       this.model.personaje.add(this.cameraPersonaje);
-      this.model.personaje.add(this.pointLight);
+      this.model.personaje.add(this.pointLightPersonaje);
+
+      //ASIGNAMOS UN FONDO A LA ESCENA.
+      this.asignarFondo();
     }
+
+    asignarFondo() {
+      // Ruta del video
+      var videoPath = "../imgs/videoFondo.mp4";
+  
+      // Crear elemento de video
+      var video = document.createElement('video');
+      video.src = videoPath;
+      video.crossOrigin = 'anonymous';
+      video.loop = true;
+      video.muted = true; // Importante para evitar problemas con autoplay en algunos navegadores
+      video.autoplay = true; // Autoreproducción
+      video.play();
+  
+      // Crear textura de video
+      var videoTexture = new THREE.VideoTexture(video);
+      videoTexture.minFilter = THREE.LinearFilter;
+      videoTexture.magFilter = THREE.LinearFilter;
+      videoTexture.format = THREE.RGBAFormat; // Cambiado a RGBAFormat
+  
+      // Asignar textura de video como fondo
+      this.background = videoTexture;
+  }
     
     createCamera () {
       // Para crear una cámara le indicamos
@@ -143,9 +169,37 @@ class MyScene extends THREE.Scene {
       // La luz focal, además tiene una posición, y un punto de mira
       // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
       // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-      this.pointLight = new THREE.SpotLight( 0xffffff );
+      this.pointLight = new THREE.PointLight( 0xffffff );
       this.pointLight.power = this.guiControls.lightPower;
       this.add (this.pointLight);
+
+      //LUZ DEL PERSONAJE.
+      /* this.pointLightPersonaje = new THREE.PointLight( 0xffffff );
+      this.pointLightPersonaje.power = 20000;
+      this.add (this.pointLightPersonaje); */
+
+      //LUCES PARA EL CIRCUITO.
+      this.pointLight1 = new THREE.PointLight( 0x0d00ff );
+      this.pointLight1.power = 10000;
+      this.pointLight1.position.set(-240, 20, 10);
+      this.pointLight1.decay = 1;
+      this.add (this.pointLight1);
+
+      this.pointLight2 = new THREE.PointLight( 0xff00a2);
+      this.pointLight2.power = 10000;
+      this.pointLight2.position.set(125, 70, 125);
+      this.pointLight2.decay = 1;
+      this.add (this.pointLight2);
+
+      this.pointLight3 = new THREE.PointLight( 0x00ffaa );
+      this.pointLight3.power = 8000;
+      this.pointLight3.position.set(-50, 20, 190);
+      this.pointLight3.decay = 1;
+      this.add (this.pointLight3);
+
+
+
+
     }
     
     setLightPower (valor) {

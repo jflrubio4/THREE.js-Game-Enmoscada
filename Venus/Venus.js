@@ -33,7 +33,9 @@ class Venus extends THREE.Object3D {
 
             /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
             var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-            this.add(cajaEnvolventeVsible);     */ 
+            this.add(cajaEnvolventeVsible);     */
+
+            this.resultadoMesh1.userData.name = 'venus';
           }, null, null);
       });
   }

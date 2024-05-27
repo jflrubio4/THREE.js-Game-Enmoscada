@@ -293,6 +293,13 @@ class Juego extends THREE.Object3D {
       console.log("Colisión");
       this.remove(impactados[0].object);
     }
+
+    this.bolaLuz = new THREE.SphereGeometry(0.5, 32, 32);
+    this.matBolaLuz = new THREE.MeshBasicMaterial({color: 0xffff00});
+    this.bolaLuzMesh = new THREE.Mesh(this.bolaLuz, this.matBolaLuz);
+
+    this.bolaLuzMesh.position.set(-70, 20, 170);
+    this.add(this.bolaLuzMesh);
     
   }
 
@@ -326,10 +333,22 @@ class Juego extends THREE.Object3D {
 
     if(pickedObjects.length > 0){
       var selectedObject = pickedObjects[0].object;
-      
-       var selectedPoint = pickedObjects[0].point;
 
-      console.log("Objeto seleccionado: " + selectedObject.nombre);
+      /* if (this.impactos.length > 0) {
+        let object = this.impactos[0].object;
+        while (object.parent && object.parent.parent && !(object instanceof Ovni  object instanceof Moneda  object instanceof Pinchos  object instanceof Escudo  object instanceof Puertas)) {
+          object = object.parent;
+        }
+        const originalObject = object;
+
+        if (!this.objetosConColision.has(originalObject)) { // Verificar si el objeto ya ha sido colisionado
+          console.log(originalObject.userData.nombre);
+          originalObject.colision(this);
+          this.objetosConColision.add(originalObject); // Agregar el objeto al conjunto de objetos colisionados
+        }
+      } */
+
+      console.log("Objeto seleccionado: " + selectedObject.userData.name);
     }
   }
 
@@ -477,7 +496,7 @@ class Juego extends THREE.Object3D {
     // Y por último la traslación
    
     //0
-    this.t = (this.t + 0.00005) % 1;
+    this.t = (this.t + 0.0005) % 1;
     //this.rotMosca += 0.01;
     this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);

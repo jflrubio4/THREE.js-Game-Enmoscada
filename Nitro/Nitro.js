@@ -4,8 +4,6 @@ import {CSG} from '../libs/CSG-v2.js'
 class Nitro extends THREE.Object3D {
   constructor() {
     super();
-
-    this.nombre = 'Nitro';
     
     // Crear una instancia de THREE.Shape
     var shape = new THREE.Shape();
@@ -69,6 +67,8 @@ class Nitro extends THREE.Object3D {
     this.add(cajaEnvolventeVsible); */
 
     this.rotar = false;
+
+    mesh.userData.name = 'nitro';
   }
   
   update () {}

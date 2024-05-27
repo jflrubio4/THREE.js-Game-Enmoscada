@@ -77,6 +77,8 @@ class Enigma extends THREE.Object3D {
     /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
     this.add(cajaEnvolventeVsible); */
+
+    this.enigma.userData.name = 'enigma';
   }
   
   update () {}

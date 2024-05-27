@@ -95,6 +95,8 @@ class Bomba extends THREE.Object3D {
     /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
     var cajaEnvolventeVisible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
     this.add(cajaEnvolventeVisible); */
+
+    this.bombaFinal.userData.name = 'bomba';
     
   }
 
