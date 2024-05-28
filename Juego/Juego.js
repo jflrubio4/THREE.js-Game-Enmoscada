@@ -595,8 +595,8 @@ class Juego extends THREE.Object3D {
         }
     } else {
         if (this.timer >= this.waitDuration) {
-          this.lightIntensity = 2000;
-            if (this.lightIntensity >= 2000) {
+          this.lightIntensity = 20000;
+            if (this.lightIntensity >= 20000) {
               this.fadingOut = true;
               this.timer = 0;
               console.log("ELSE SE PONE A CERO");
