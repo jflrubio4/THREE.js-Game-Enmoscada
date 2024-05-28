@@ -55,12 +55,12 @@ class MyScene extends THREE.Scene {
       this.model.personaje.add(this.pointLightPersonaje);
 
       //ASIGNAMOS UN FONDO A LA ESCENA.
-      this.asignarFondo();
+      this.asignarFondo("../imgs/videoFondo.mp4");
     }
 
-    asignarFondo() {
+    asignarFondo(fondo) {
       // Ruta del video
-      var videoPath = "../imgs/noche.mp4";
+      var videoPath = fondo;
   
       // Crear elemento de video
       var video = document.createElement('video');
