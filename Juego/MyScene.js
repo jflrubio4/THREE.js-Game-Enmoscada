@@ -60,7 +60,7 @@ class MyScene extends THREE.Scene {
 
     asignarFondo() {
       // Ruta del video
-      var videoPath = "../imgs/videoFondo.mp4";
+      var videoPath = "../imgs/noche.mp4";
   
       // Crear elemento de video
       var video = document.createElement('video');
@@ -174,9 +174,9 @@ class MyScene extends THREE.Scene {
       this.add (this.pointLight);
 
       //LUZ DEL PERSONAJE.
-      /* this.pointLightPersonaje = new THREE.PointLight( 0xffffff );
+      this.pointLightPersonaje = new THREE.PointLight( 0xffffff );
       this.pointLightPersonaje.power = 20000;
-      this.add (this.pointLightPersonaje); */
+      this.add (this.pointLightPersonaje);
 
       //LUCES PARA EL CIRCUITO.
       this.pointLight1 = new THREE.PointLight( 0x0d00ff );
@@ -191,14 +191,17 @@ class MyScene extends THREE.Scene {
       this.pointLight2.decay = 1;
       this.add (this.pointLight2);
 
-      this.pointLight3 = new THREE.PointLight( 0x00ffaa );
-      this.pointLight3.power = 8000;
-      this.pointLight3.position.set(-50, 20, 190);
+      this.pointLight3 = new THREE.PointLight( 0xff0000 );
+      this.pointLight3.power = 10000;
+      this.pointLight3.position.set(-80, 20, 170);
       this.pointLight3.decay = 1;
       this.add (this.pointLight3);
 
-
-
+      this.pointLight3 = new THREE.PointLight( 0xbe03fc );
+      this.pointLight3.power = 10000;
+      this.pointLight3.position.set(0, 70, 35);
+      this.pointLight3.decay = 1;
+      this.add (this.pointLight3);
 
     }
     
@@ -239,6 +242,10 @@ class MyScene extends THREE.Scene {
         return this.cameraPersonaje;
       else  
         return this.camera;
+    }
+
+    setLuzPersonaje(value) {
+      this.pointLightPersonaje.power = value;
     }
     
     setCameraAspect (ratio) {

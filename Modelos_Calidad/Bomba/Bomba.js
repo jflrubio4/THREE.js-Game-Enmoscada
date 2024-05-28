@@ -10,25 +10,26 @@ class Bomba extends THREE.Object3D {
     this.createGUI(gui,titleGui);
 
     //DEFINIMOS LE MATERIAL.
-    var loader = new THREE.TextureLoader();
-    var textureCuerda = loader.load('../../imgs/cuerda.jpg');
-    textureCuerda.wrapS = THREE.RepeatWrapping;
+    //DEFINIMOS LE MATERIAL.
+    var matBomba = new THREE.MeshStandardMaterial({color: 0x444444});
+    matBomba.bumpMap = new THREE.TextureLoader().load('../../imgs/rock-texture.jpg');
+    //textureCuerda.wrapS = THREE.RepeatWrapping;
     //textureCuerda.wrapT = THREE.RepeatWrapping;
     /* textureAlas.offset.set(-0.5, 0.5);
     textureAlas.wrapS = THREE.RepeatWrapping;
     textureAlas.wrapT = THREE.RepeatWrapping; */
 
-    var matCuerda = new THREE.MeshStandardMaterial({map: textureCuerda});
+    //var matCuerda = new THREE.MeshStandardMaterial({map: textureCuerda});
 
     
     //DEFINIMOS EL MATERIAL.
-    var matBomba = new THREE.MeshPhysicalMaterial({
-      color: 0x444444, // color base
-      map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
-      /* roughness: 1,
-      clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
-      clearcoatRoughness: 0.3 // rugosidad del clearcoat, 0.3 es un valor medio */
-    });
+    // var matBomba = new THREE.MeshPhysicalMaterial({
+    //   color: 0x444444, // color base
+    //   map: new THREE.TextureLoader().load('../../imgs/bomba.jpg'),
+    //   /* roughness: 1,
+    //   clearcoat: 1.0, // intensidad del clearcoat, 1.0 es el máximo
+    //   clearcoatRoughness: 0.3 // rugosidad del clearcoat, 0.3 es un valor medio */
+    // });
 
     var matCuerda = new THREE.MeshPhysicalMaterial({
       map: new THREE.TextureLoader().load('../../imgs/cuerda.jpg'),

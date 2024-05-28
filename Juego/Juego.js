@@ -42,6 +42,9 @@ class Juego extends THREE.Object3D {
     super();
 
     this.myScene = scene;
+
+    //PARA LA LUZ CON LAS BOMBAS.
+    this.clock = new THREE.Clock();
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
@@ -132,7 +135,7 @@ class Juego extends THREE.Object3D {
     this.rotaciones = [];
     this.valorRotaciones = [];
 
-    for (var i=0; i<10; i++){
+    for (var i=0; i<1; i++){ //A 100000000000000000000000000000000000
       var mosca = new Mosca();
       this.moscas.push(mosca);
       this.objetos.push(mosca);
@@ -150,7 +153,7 @@ class Juego extends THREE.Object3D {
       this.objetos.push(moscaLuz);
     }
 
-    for (var i=0; i<8; i++){
+    for (var i=0; i<1; i++){ //A 8888888888888888888888888888888888888888888888888888
       var nitro = new Nitro();
       this.terrestres.push(nitro);
       this.objetos.push(nitro);
@@ -294,12 +297,26 @@ class Juego extends THREE.Object3D {
       this.remove(impactados[0].object);
     }
 
-    this.bolaLuz = new THREE.SphereGeometry(0.5, 32, 32);
-    this.matBolaLuz = new THREE.MeshBasicMaterial({color: 0xffff00});
-    this.bolaLuzMesh = new THREE.Mesh(this.bolaLuz, this.matBolaLuz);
+    this.bolaLuz = new THREE.SphereGeometry(5, 32, 32);
+    this.matBolaLuz1 = new THREE.MeshBasicMaterial({color: 0x0d00ff});
+    this.matBolaLuz2 = new THREE.MeshBasicMaterial({color: 0xff00a2});
+    this.matBolaLuz3 = new THREE.MeshBasicMaterial({color: 0xff0000});
+    this.matBolaLuz4 = new THREE.MeshBasicMaterial({color: 0xbe03fc});
 
-    this.bolaLuzMesh.position.set(-70, 20, 170);
-    this.add(this.bolaLuzMesh);
+    this.bolaLuzMesh1 = new THREE.Mesh(this.bolaLuz, this.matBolaLuz1);
+    this.bolaLuzMesh2 = new THREE.Mesh(this.bolaLuz, this.matBolaLuz2);
+    this.bolaLuzMesh3 = new THREE.Mesh(this.bolaLuz, this.matBolaLuz3);
+    this.bolaLuzMesh4 = new THREE.Mesh(this.bolaLuz, this.matBolaLuz4);
+
+    this.bolaLuzMesh1.position.set(-240, 20, 10);
+    this.bolaLuzMesh2.position.set(125, 70, 125);
+    this.bolaLuzMesh3.position.set(-80, 20, 170);
+    this.bolaLuzMesh4.position.set(0, 70, 35);
+
+    this.add(this.bolaLuzMesh1);
+    this.add(this.bolaLuzMesh2);
+    this.add(this.bolaLuzMesh3);
+    this.add(this.bolaLuzMesh4);
     
   }
 
@@ -307,10 +324,10 @@ class Juego extends THREE.Object3D {
     const keyCode = event.keyCode;
 
     switch (keyCode) {
-      case 37: //Flecha izquierda
+      case 65: //Flecha izquierda
           this.setAnguloRotacion(this.rot -= 0.1);
           break;
-      case 39: //Flecha derecha
+      case 68: //Flecha derecha
           this.setAnguloRotacion(this.rot += 0.1);
           break;
       case 32: //Barra espaciadora
@@ -496,7 +513,7 @@ class Juego extends THREE.Object3D {
     // Y por último la traslación
    
     //0
-    this.t = (this.t + 0.0005) % 1;
+    this.t = (this.t + 0.00005) % 1;
     //this.rotMosca += 0.01;
     this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
@@ -519,7 +536,44 @@ class Juego extends THREE.Object3D {
         var padre = impactados[0].object.parent;
         var abuelo = padre.parent;
 
-        impactados[0].object.parent.remove(impactados[0].object);
+
+        if (abuelo instanceof Bomba){
+          console.log("TIENE UNA BOMBA");
+          this.lightIntensity = 1;
+          //var timeElapsed = 0;
+          this.fadingOut = true;
+          this.fadeDuration = 1; // Duración del fade-in y fade-out en segundos
+          this.waitDuration = 5; // Duración de la espera en segundos
+          this.timer = 0; // Variable de temporizador
+
+          this.clock = new THREE.Clock();
+          this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
+          this.timer += this.deltaTime;
+
+          if (this.fadingOut) {
+            this.lightIntensity = 1 - Math.min(this.timer / this.fadeDuration, 1);
+              if (this.timer >= this.fadeDuration) {
+                this.fadingOut = false;
+                this.timer = 0;
+                
+              }
+          } else {
+              if (this.timer >= this.waitDuration) {
+                this.lightIntensity = Math.min((this.timer - this.waitDuration) / this.fadeDuration, 1);
+                  if (this.lightIntensity >= 1) {
+                    this.lightIntensity = 1;
+                    this.fadingOut = true;
+                    this.timer = 0;
+                  }
+              }
+          }
+
+          this.myScene.setLuzPersonaje(this.lightIntensity);
+        }
+
+        else{
+          impactados[0].object.parent.remove(impactados[0].object);
+        }
 
         if(abuelo != null){
           abuelo.remove(padre);
@@ -527,6 +581,44 @@ class Juego extends THREE.Object3D {
 
       //this.t = (this.t - 0.0015) % 1;
     }
+
+    this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
+    this.timer += this.deltaTime;
+
+    console.log(this.timer);
+
+    if (this.fadingOut) {
+      this.lightIntensity = 1 - Math.min(this.timer / this.fadeDuration, 1);
+        if (this.timer >= this.fadeDuration) {
+          this.fadingOut = false;
+/*           this.timer = 0; */
+        }
+    } else {
+        if (this.timer >= this.waitDuration) {
+          this.lightIntensity = 2000;
+            if (this.lightIntensity >= 2000) {
+              this.fadingOut = true;
+              this.timer = 0;
+              console.log("ELSE SE PONE A CERO");
+            }
+            this.myScene.setLuzPersonaje(this.lightIntensity);
+        }
+    }
+
+    // if (impactados.length > 0) { 
+    //   let object = impactados[0].object;
+    //   while (object.parent && object.parent.parent && object instanceof Bomba) {
+    //     object = object.parent;
+    //   }
+    //   const originalObject = object;
+ 
+    //   // Lo probamos a ver?
+    //   //if (!this.objetosConColision.has(originalObject)) { // Verificar si el objeto ya ha sido colisionado
+    //     console.log(originalObject.userData.name);
+    //     //originalObject.colision(this);
+    //     //this.objetosConColision.add(originalObject); // Agregar el objeto al conjunto de objetos colisionados
+    //   //} 
+    // }
 
     /* //BALAS
     var bala;
