@@ -45,6 +45,12 @@ class Juego extends THREE.Object3D {
 
     //PARA LA LUZ CON LAS BOMBAS.
     this.clock = new THREE.Clock();
+
+    //LA VELOCIDAD INICIAL DEL PERSONAJE.
+    this.rate = 0.00005;
+
+    //VIDAS DEL PERSONAJE.
+    this.vidas = 3;
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
@@ -513,7 +519,7 @@ class Juego extends THREE.Object3D {
     // Y por último la traslación
    
     //0
-    this.t = (this.t + 0.00005) % 1;
+    this.t = (this.t + this.rate) % 1;
     //this.rotMosca += 0.01;
     this.avanzaPersonaje(this.t);
     this.setAnguloRotacion(this.rot);
@@ -539,10 +545,8 @@ class Juego extends THREE.Object3D {
 
         if (abuelo instanceof Bomba){
           console.log("TIENE UNA BOMBA");
-          this.lightIntensity = 1;
-          //var timeElapsed = 0;
-          this.fadingOut = true;
-          this.fadeDuration = 1; // Duración del fade-in y fade-out en segundos
+
+          this.fadeOut = true;
           this.waitDuration = 5; // Duración de la espera en segundos
           this.timer = 0; // Variable de temporizador
 
@@ -550,25 +554,16 @@ class Juego extends THREE.Object3D {
           this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
           this.timer += this.deltaTime;
 
-          if (this.fadingOut) {
-            this.lightIntensity = 1 - Math.min(this.timer / this.fadeDuration, 1);
-              if (this.timer >= this.fadeDuration) {
-                this.fadingOut = false;
-                this.timer = 0;
-                
-              }
-          } else {
-              if (this.timer >= this.waitDuration) {
-                this.lightIntensity = Math.min((this.timer - this.waitDuration) / this.fadeDuration, 1);
-                  if (this.lightIntensity >= 1) {
-                    this.lightIntensity = 1;
-                    this.fadingOut = true;
-                    this.timer = 0;
-                  }
-              }
+          if (this.fadeOut) {
+            this.lightIntensity = 0;
+            this.fadeOut = false;
+            this.timer = 0;
           }
 
           this.myScene.setLuzPersonaje(this.lightIntensity);
+
+          //REDUCE LA VELOCIDAD DEL PERSONAJE.
+          this.rate = 0.00001;
         }
 
         else{
@@ -579,30 +574,20 @@ class Juego extends THREE.Object3D {
           abuelo.remove(padre);
         }
 
-      //this.t = (this.t - 0.0015) % 1;
+        //RESTAMOS UNA VIDA
+        this.vidas--;
     }
 
     this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
     this.timer += this.deltaTime;
 
-    console.log(this.timer);
+    if (!this.fadeOut && this.timer >= this.waitDuration) {
+      this.lightIntensity = 20000;
+      this.fadeOut = true;
+      this.timer = 0;
+      this.myScene.setLuzPersonaje(this.lightIntensity);
 
-    if (this.fadingOut) {
-      this.lightIntensity = 1 - Math.min(this.timer / this.fadeDuration, 1);
-        if (this.timer >= this.fadeDuration) {
-          this.fadingOut = false;
-/*           this.timer = 0; */
-        }
-    } else {
-        if (this.timer >= this.waitDuration) {
-          this.lightIntensity = 20000;
-            if (this.lightIntensity >= 20000) {
-              this.fadingOut = true;
-              this.timer = 0;
-              console.log("ELSE SE PONE A CERO");
-            }
-            this.myScene.setLuzPersonaje(this.lightIntensity);
-        }
+      this.rate = 0.00005; //Vuelve a la velocidad normal.
     }
 
     // if (impactados.length > 0) { 

@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
     <title>Juego.js</title>
     <meta charset="utf-8">
@@ -14,24 +12,64 @@
             }
         }
     </script>
-
-    <script type="module" src="MyScene.js"></script>    
+    <script type="module" src="MyScene.js"></script>
+    <script type="module" src="Juego.js"></script>  
     
     <style>
         body{
             margin: 0;
             overflow: hidden; 
         }
+        #header {
+            background-color: transparent; /* Completely transparent */
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            z-index: 1;
+            pointer-events: none; /* Prevents header from intercepting mouse events */
+        }
+        #header p {
+            margin: 0;
+            display: inline-block;
+            margin-right: 20px;
+            color: black; /* Set text color to white for visibility */
+        }
     </style>
 </head>
 <body>
+    <!-- Header to display game information -->
+    <div id="header">
+        <p id="vidas">Vidas: 3</p>
+        <p id="tiempo">Tiempo: 0</p>
+    </div>
+    <!-- Div which will show statistical information -->
+    <div id="Stats-output">
+    </div>
+    <!-- Div which will hold the Output -->
+    <div id="WebGL-output">
+    </div>
+    <script type="text/javascript">
+        // En index.html
+        $(document).ready(function() {
+          // Actualiza el DOM con los datos del juego
+          updateVidas();
+        });
 
-<!-- Div which will show statistical information -->
-<div id="Stats-output">
-</div>
+        // Función para actualizar el DOM con el valor actual de vidas
+        function updateVidas() {
+          $('#vidas').text('Vidas: ' + window.gameData.vidas);
+        }
 
-<!-- Div which will hold the Output -->
-<div id="WebGL-output">
-</div>
+        // Escucha los cambios en el valor de vidas y actualiza el DOM
+        Object.defineProperty(window.gameData, 'vidas', {
+          set: function(value) {
+            this._vidas = value;
+            updateVidas();
+          },
+          get: function() {
+            return this._vidas;
+          }
+        });
+    </script>
 </body>
 </html>
