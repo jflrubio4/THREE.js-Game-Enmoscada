@@ -34,13 +34,26 @@
             margin-right: 20px;
             color: black; /* Set text color to white for visibility */
         }
+
+        #vidas {
+            position: absolute;
+            top: 10px; /* Ajusta según sea necesario */
+            left: 50%; /* Centra el elemento a lo largo del eje X */
+            transform: translateX(-50%); /* Ajusta la posición para que el centro del elemento esté en el centro del header */
+        }
+
+        #vidas img {
+            height: 40px; /* Ajusta según sea necesario */
+            width: auto; /* Mantiene la proporción de la imagen */
+        }
     </style>
 </head>
 <body>
     <!-- Header to display game information -->
     <div id="header">
-        <p id="vidas">Vidas: 3</p>
-        <p id="tiempo">Tiempo: 0</p>
+        <p id="vidas"></p>
+        <br>
+        Puntos: <p id="puntos">0</p>
     </div>
     <!-- Div which will show statistical information -->
     <div id="Stats-output">
@@ -48,28 +61,5 @@
     <!-- Div which will hold the Output -->
     <div id="WebGL-output">
     </div>
-    <script type="text/javascript">
-        // En index.html
-        $(document).ready(function() {
-          // Actualiza el DOM con los datos del juego
-          updateVidas();
-        });
-
-        // Función para actualizar el DOM con el valor actual de vidas
-        function updateVidas() {
-          $('#vidas').text('Vidas: ' + window.gameData.vidas);
-        }
-
-        // Escucha los cambios en el valor de vidas y actualiza el DOM
-        Object.defineProperty(window.gameData, 'vidas', {
-          set: function(value) {
-            this._vidas = value;
-            updateVidas();
-          },
-          get: function() {
-            return this._vidas;
-          }
-        });
-    </script>
 </body>
 </html>

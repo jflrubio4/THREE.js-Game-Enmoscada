@@ -50,7 +50,15 @@ class Juego extends THREE.Object3D {
     this.rate = 0.00005;
 
     //VIDAS DEL PERSONAJE.
-    this.vidas = 3;
+    this.vidas = 6;
+    this.myScene.actualizarVidas(this.vidas);
+
+    //PUNTUACION DEL PERSONAJE.
+    this.puntuacion = 0;
+
+    //FRAMES DE INVENCIBILIDAD.
+    this.lastCollisionTime = 0;
+    this.collisionCooldown = 2000; // tiempo en milisegundos
     
     // Se crea la parte de la interfaz que corresponde a la caja
     // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
@@ -326,6 +334,10 @@ class Juego extends THREE.Object3D {
     
   }
 
+  getVidas() {
+    return this.vidas;
+  }
+
   onKeyDown(event) {
     const keyCode = event.keyCode;
 
@@ -342,6 +354,7 @@ class Juego extends THREE.Object3D {
     }
   }
 
+  //COLISONES CON OBJETOS VOLADORES.
   onDocumentMouseDown(event){
     //Creamos el mouse y el rayo para el picking.
     this.mouse = new THREE.Vector2();
@@ -357,6 +370,36 @@ class Juego extends THREE.Object3D {
     if(pickedObjects.length > 0){
       var selectedObject = pickedObjects[0].object;
 
+      var padre = pickedObjects[0].object.parent;
+      var abuelo = padre.parent;
+
+      if(abuelo instanceof Mosca){
+        this.puntuacion += 1;
+        this.myScene.sumarPuntuacion(this.puntuacion);
+      }
+      else if(abuelo instanceof MoscaReina){
+        abuelo.reducirVida();
+        if(abuelo.vida == 0){
+          //La eliminamos.
+          abuelo.remove(padre);
+          
+          //Sumamos la puntuacion al matarla.
+          this.puntuacion += 3;
+          this.myScene.sumarPuntuacion(this.puntuacion);
+        }
+      }
+      else if(abuelo instanceof MoscaAgresiva){
+        this.puntuacion += 5;
+        this.myScene.sumarPuntuacion(this.puntuacion);
+      }
+      else if(abuelo instanceof MoscaEnigma){}
+      else if(abuelo instanceof MoscaLuz){}
+
+      //PARA ELIMINAR LOS OBJETOS VOLADORES UNA VEZ DISPARADOS.
+      /* if(abuelo != null){
+        abuelo.remove(padre);
+      } */
+
       /* if (this.impactos.length > 0) {
         let object = this.impactos[0].object;
         while (object.parent && object.parent.parent && !(object instanceof Ovni  object instanceof Moneda  object instanceof Pinchos  object instanceof Escudo  object instanceof Puertas)) {
@@ -371,7 +414,7 @@ class Juego extends THREE.Object3D {
         }
       } */
 
-      console.log("Objeto seleccionado: " + selectedObject.userData.name);
+      console.log("Objeto seleccionado: " + abuelo.userData.name);
     }
   }
 
@@ -534,48 +577,56 @@ class Juego extends THREE.Object3D {
     var posicion = new THREE.Vector3();
     var direccion = new THREE.Vector3(0,0,1);
 
+    //ACTUALIZAMOS EL TIEMPO DE LA ÚLTIMA COLISIÓN.
+    var currentTime = Date.now();
+
     this.personaje.getWorldPosition(posicion);
     this.rayo.set(posicion, direccion.normalize());
     var impactados = this.rayo.intersectObjects(this.terrestres, true);
-    if(impactados.length > 0){
+    if(currentTime - this.lastCollisionTime > this.collisionCooldown && impactados.length > 0){
       console.log("Colisión de rayos.");
-        var padre = impactados[0].object.parent;
-        var abuelo = padre.parent;
+
+      this.lastCollisionTime = currentTime; //ACTUALIZAMOS EL TIEMPO DE LA ÚLTIMA COLISIÓN.
+
+      var padre = impactados[0].object.parent;
+      var abuelo = padre.parent;
+
+      //RESTAMOS UNA VIDA
+      this.vidas--;
+      this.myScene.actualizarVidas(this.vidas); //HAY QUE ARREGLAR LAS COLISIONES (QUITA 2 VIDAS POR COLISION).
 
 
-        if (abuelo instanceof Bomba){
-          console.log("TIENE UNA BOMBA");
+      if (abuelo instanceof Bomba){
+        console.log("TIENE UNA BOMBA");
 
-          this.fadeOut = true;
-          this.waitDuration = 5; // Duración de la espera en segundos
-          this.timer = 0; // Variable de temporizador
+        this.fadeOut = true;
+        this.waitDuration = 5; // Duración de la espera en segundos
+        this.timer = 0; // Variable de temporizador
 
-          this.clock = new THREE.Clock();
-          this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
-          this.timer += this.deltaTime;
+        this.clock = new THREE.Clock();
+        this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
+        this.timer += this.deltaTime;
 
-          if (this.fadeOut) {
-            this.lightIntensity = 0;
-            this.fadeOut = false;
-            this.timer = 0;
-          }
-
-          this.myScene.setLuzPersonaje(this.lightIntensity);
-
-          //REDUCE LA VELOCIDAD DEL PERSONAJE.
-          this.rate = 0.00001;
+        if (this.fadeOut) {
+          this.lightIntensity = 0;
+          this.fadeOut = false;
+          this.timer = 0;
         }
+        this.myScene.setLuzPersonaje(this.lightIntensity);
 
-        else{
-          impactados[0].object.parent.remove(impactados[0].object);
-        }
+        //this.myScene.asignarFondo("imgs/noche.mp4");
 
-        if(abuelo != null){
-          abuelo.remove(padre);
-        }
+        //REDUCE LA VELOCIDAD DEL PERSONAJE.
+        this.rate = 0.00001;
+      }
 
-        //RESTAMOS UNA VIDA
-        this.vidas--;
+      else{
+        impactados[0].object.parent.remove(impactados[0].object);
+      }
+
+      if(abuelo != null){
+        abuelo.remove(padre);
+      }
     }
 
     this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
@@ -588,6 +639,8 @@ class Juego extends THREE.Object3D {
       this.myScene.setLuzPersonaje(this.lightIntensity);
 
       this.rate = 0.00005; //Vuelve a la velocidad normal.
+
+      //this.myScene.asignarFondo("imgs/videoFondo.mp4"); //Vuelve al fondo original.
     }
 
     // if (impactados.length > 0) { 

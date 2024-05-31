@@ -7,6 +7,9 @@ class MoscaReina extends THREE.Object3D {
     super();
 
     this.nombre = 'Mosca Reina';
+
+    //CLICKS NECESARIOS PARA MATAR A LA MOSCA REINA.
+    this.vida = 3;
     
     //DEFINIMOS LE MATERIAL.
     var materialAlas = new THREE.MeshPhysicalMaterial({
@@ -152,6 +155,11 @@ class MoscaReina extends THREE.Object3D {
     this.add(cajaEnvolventeVsible); */
 
     mosca.userData.name = 'moscaReina';
+  }
+
+  // Método para reducir la vida de la mosca
+  reducirVida() {
+    this.vida--;
   }
   
   funcionAnimar(value){

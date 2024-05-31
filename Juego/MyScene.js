@@ -59,9 +59,16 @@ class MyScene extends THREE.Scene {
     }
 
     asignarFondo(fondo) {
+      // Si ya hay un video de fondo, detenerlo
+      if (this.background && this.background.image) {
+        this.background.image.pause();
+        this.background.image.src = '';
+        this.background.image.load();
+      }
+    
       // Ruta del video
       var videoPath = fondo;
-  
+    
       // Crear elemento de video
       var video = document.createElement('video');
       video.src = videoPath;
@@ -70,15 +77,60 @@ class MyScene extends THREE.Scene {
       video.muted = true; // Importante para evitar problemas con autoplay en algunos navegadores
       video.autoplay = true; // Autoreproducción
       video.play();
-  
+    
       // Crear textura de video
       var videoTexture = new THREE.VideoTexture(video);
       videoTexture.minFilter = THREE.LinearFilter;
       videoTexture.magFilter = THREE.LinearFilter;
       videoTexture.format = THREE.RGBAFormat; // Cambiado a RGBAFormat
-  
+    
       // Asignar textura de video como fondo
       this.background = videoTexture;
+    }
+
+  /* cambiarFondo(fondo) {
+    // Detener el video actual
+    this.background.image.pause();
+
+    // Cambiar la fuente del video
+    this.background.image.src = fondo;
+    this.background.image.load();
+
+    // Reproducir el nuevo video
+    this.background.image.play();
+  } */
+
+  actualizarVidas(vidas) {
+    // Obtén el elemento #vidas
+    var elementoVidas = document.getElementById('vidas');
+  
+    // Elimina todos los corazones existentes
+    while (elementoVidas.firstChild) {
+      elementoVidas.firstChild.remove();
+    }
+  
+    // Calcula el número de corazones completos y medios
+    var corazonesCompletos = Math.floor(vidas / 2);
+    var medioCorazon = vidas % 2 !== 0;
+  
+    // Agrega los corazones completos
+    for (var i = 0; i < corazonesCompletos; i++) {
+      var img = document.createElement('img');
+      img.src = '../imgs/corazon.png'; // Reemplaza con la ruta a tu imagen de corazón completo
+      elementoVidas.appendChild(img);
+    }
+  
+    // Agrega el medio corazón, si es necesario
+    if (medioCorazon) {
+      var img = document.createElement('img');
+      img.src = '../imgs/medioCora.png'; // Reemplaza con la ruta a tu imagen de medio corazón
+      elementoVidas.appendChild(img);
+    }
+  }
+
+  sumarPuntuacion(puntuacion){
+    var puntuacionActual = document.getElementById("puntos");
+    puntuacionActual.innerHTML = puntuacion;
   }
     
     createCamera () {
