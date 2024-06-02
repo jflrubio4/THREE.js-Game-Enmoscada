@@ -6,6 +6,9 @@ class MoscaLuz extends THREE.Object3D {
     super();
 
     this.nombre = 'Mosca  de luz';
+
+    //CLICKS NECESARIOS PARA MATAR A LA MOSCA DE LUZ.
+    this.vida = 2;
     
     //DEFINIMOS LE MATERIAL.
     var materialAlas = new THREE.MeshPhysicalMaterial({
@@ -108,6 +111,11 @@ class MoscaLuz extends THREE.Object3D {
 
     mosca.userData.name = 'moscaLuz';
     
+  }
+
+  // Método para reducir la vida de la mosca
+  reducirVida() {
+    this.vida--;
   }
 
   setRotacion(value){

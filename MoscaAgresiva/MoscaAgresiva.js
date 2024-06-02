@@ -6,6 +6,9 @@ class MoscaAgresiva extends THREE.Object3D {
     super();
 
     this.nombre = 'Mosca Agresiva';
+
+    //CLICKS NECESARIOS PARA MATAR A LA MOSCA AGRESIVA.
+    this.vida = 2;
     
     //DEFINIMOS LE MATERIAL.
     var materialAlas = new THREE.MeshPhysicalMaterial({
@@ -132,6 +135,11 @@ class MoscaAgresiva extends THREE.Object3D {
 
     mosca.userData.name = 'moscaAgresiva';
     
+  }
+
+  // Método para reducir la vida de la mosca
+  reducirVida() {
+    this.vida--;
   }
 
   setRotacion(value){

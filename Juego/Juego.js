@@ -14,6 +14,7 @@ import { Escudo } from '../Escudo/Escudo.js';
 import { Venus } from '../Venus/Venus.js';
 import { BolaPinchos} from '../BolaPinchos/BolaPinchos.js';
 import { PlanchaPinchos} from '../PlanchaPinchos/PlanchaPinchos.js';
+import { BolaEscudo } from '../BolaEscudo/BolaEscudo.js';
 
 class GestorBalas {
   constructor() {
@@ -47,14 +48,15 @@ class Juego extends THREE.Object3D {
     this.clock = new THREE.Clock();
 
     //LA VELOCIDAD INICIAL DEL PERSONAJE.
-    this.rate = 0.00005;
+    this.rate = 0.0001;
 
     //VIDAS DEL PERSONAJE.
     this.vidas = 6;
     this.myScene.actualizarVidas(this.vidas);
 
-    //PUNTUACION DEL PERSONAJE.
+    //PUNTUACION DEL PERSONAJE Y EL MULTIPLLICADOR.
     this.puntuacion = 0;
+    this.multiplicador = 1;
 
     //FRAMES DE INVENCIBILIDAD.
     this.lastCollisionTime = 0;
@@ -65,6 +67,9 @@ class Juego extends THREE.Object3D {
     this.createGUI(gui,titleGui);
     this.circuito = new Circuito();
     this.add(this.circuito);
+
+    this.bolaEscudo = new BolaEscudo();
+    this.protegido = false;
 
     //PARA ESCALAR TODO
     this.factorEscalado = 0.2;
@@ -139,6 +144,12 @@ class Juego extends THREE.Object3D {
     this.add(this.posicionarObjeto(this.mosca, 5, this.rotMosca, 0.01)); //La posiciona */
 
 /*     var valores = []; */
+
+    //EFECTOS DE LOS ENIGMAS.
+    this.efectosEnigma = ['inverso', 'x2', 'daño', 'cura', 'lento', 'rapido'];
+    this.efectoActual = '';
+    this.mezclarEfectos(); //Mezclamos los efectos para que no se repitan.
+
     this.moscas = [];
     this.terrestres = [];
     this.objetos = [];
@@ -189,8 +200,6 @@ class Juego extends THREE.Object3D {
       var planchaPinchos = new PlanchaPinchos();
       this.terrestres.push(planchaPinchos);
       this.objetos.push(planchaPinchos);
-
-      planchaPinchos.name = 'Plancha de pinchos';
     }
 
     for (var i=0; i<this.moscas.length; i++){
@@ -239,35 +248,35 @@ class Juego extends THREE.Object3D {
     this.terrestres.push(pinchos);
     this.objetos.push(pinchos);
 
+    var enigma = new Enigma();
+    this.add(this.posicionarObjeto(contador, enigma, 0, 0, 0.02))
+    contador++;
+    this.terrestres.push(enigma);
+    this.objetos.push(enigma);
+
+    var escudo = new Escudo();
+    this.add(this.posicionarObjeto(contador, escudo, 0, 0, 0.03))
+    contador++;
+    this.terrestres.push(escudo);
+    this.objetos.push(escudo);
+
     var bola = new BolaPinchos();
-    this.add(this.posicionarObjeto(contador, bola, 0, 0, 0.02))
+    this.add(this.posicionarObjeto(contador, bola, 0, 0, 0.04))
     contador++;
     this.terrestres.push(bola);
     this.objetos.push(bola);
 
     var bomb = new Bomba();
-    this.add(this.posicionarObjeto(contador, bomb, 0, 0, 0.03))
+    this.add(this.posicionarObjeto(contador, bomb, 0, 0, 0.05))
     contador++;
     this.terrestres.push(bomb);
     this.objetos.push(bomb);
 
-    var enigma = new Enigma();
-    this.add(this.posicionarObjeto(contador, enigma, 0, 0, 0.04))
-    contador++;
-    this.terrestres.push(enigma);
-    this.objetos.push(enigma);
-
     var venus = new Venus();
-    this.add(this.posicionarObjeto(contador, venus, 0, 0, 0.05))
+    this.add(this.posicionarObjeto(contador, venus, 0, 0, 0.06))
     contador++;
     this.terrestres.push(venus);
     this.objetos.push(venus);
-
-    var escudo = new Escudo();
-    this.add(this.posicionarObjeto(contador, escudo, 0, 0, 0.06))
-    contador++;
-    this.terrestres.push(escudo);
-    this.objetos.push(escudo);
 
     var nitro = new Nitro();
     this.add(this.posicionarObjeto(contador, nitro, 0, 0, 0.07))
@@ -330,12 +339,88 @@ class Juego extends THREE.Object3D {
     this.add(this.bolaLuzMesh1);
     this.add(this.bolaLuzMesh2);
     this.add(this.bolaLuzMesh3);
-    this.add(this.bolaLuzMesh4);
-    
+    this.add(this.bolaLuzMesh4);    
   }
 
   getVidas() {
     return this.vidas;
+  }
+
+  mezclarEfectos() {
+    let array = this.efectosEnigma;
+    let currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // Mientras queden elementos para mezclar...
+    while (0 !== currentIndex) {
+  
+      // Selecciona un elemento sin mezclar...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // Y lo intercambia con el elemento actual
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    this.efectosEnigma = array;
+  }
+
+  aplicaEfecto(){
+    //PROCESAMOS EL EFECTO DE LOS ENIGMAS.
+    switch(this.efectoActual){
+      case 'inverso':
+        console.log("inverso");
+        this.tiempoEfecto = 5;
+        break;
+      case 'x2':
+        console.log("x2");
+        this.multiplicador = this.multiplicador * 2;
+        this.tiempoEfecto = 5;
+        this.myScene.actualizarMultiplicador('x'+this.multiplicador);
+        break;
+      case 'daño':
+        console.log("daño");
+        this.vidas--;
+        this.myScene.actualizarVidas(this.vidas);
+        break;
+      case 'cura':
+        console.log("cura");
+        this.vidas++;
+        this.myScene.actualizarVidas(this.vidas);
+        break;
+      case 'lento':
+        console.log("lento");
+        this.rate = 0.00005;
+        this.tiempoEfecto = 5;
+        break;
+      case 'rapido':
+        console.log("rapido");
+        this.rate = 0.00035;
+        this.tiempoEfecto = 5;
+        break;
+    }
+  }
+
+  eliminaEfecto(){
+    //REVERTIMOS EL EFECTO DE LOS ENIGMAS.
+    switch(this.efectoActual){
+      case 'inverso':
+        this.efectoActual = '';
+      case 'x2':
+        this.multiplicador = 1;
+        this.myScene.actualizarMultiplicador('x1');
+        break;
+      case 'lento':
+        this.rate = 0.0001;
+        break;
+      case 'rapido':
+        this.rate = 0.0001;
+        break;
+    }
+
+    //RESETEAMOS EL EFECTO ACTUAL.
+    this.efectoActual = '';
   }
 
   onKeyDown(event) {
@@ -343,11 +428,21 @@ class Juego extends THREE.Object3D {
 
     switch (keyCode) {
       case 65: //Flecha izquierda
-          this.setAnguloRotacion(this.rot -= 0.1);
-          break;
-      case 68: //Flecha derecha
+        if(this.efectoActual == 'inverso'){
           this.setAnguloRotacion(this.rot += 0.1);
-          break;
+        }
+        else{          
+          this.setAnguloRotacion(this.rot -= 0.1);
+        }
+        break;
+      case 68: //Flecha derecha
+      if(this.efectoActual == 'inverso'){
+        this.setAnguloRotacion(this.rot -= 0.1);
+      }
+      else{          
+        this.setAnguloRotacion(this.rot += 0.1);
+      }
+      break;
       case 32: //Barra espaciadora
           this.setThirdCamera()
           break;
@@ -374,8 +469,9 @@ class Juego extends THREE.Object3D {
       var abuelo = padre.parent;
 
       if(abuelo instanceof Mosca){
-        this.puntuacion += 1;
+        this.puntuacion += 1 * this.multiplicador;
         this.myScene.sumarPuntuacion(this.puntuacion);
+        abuelo.remove(padre);
       }
       else if(abuelo instanceof MoscaReina){
         abuelo.reducirVida();
@@ -384,37 +480,41 @@ class Juego extends THREE.Object3D {
           abuelo.remove(padre);
           
           //Sumamos la puntuacion al matarla.
-          this.puntuacion += 3;
+          this.puntuacion += 10 * this.multiplicador;
           this.myScene.sumarPuntuacion(this.puntuacion);
         }
       }
       else if(abuelo instanceof MoscaAgresiva){
-        this.puntuacion += 5;
-        this.myScene.sumarPuntuacion(this.puntuacion);
+        abuelo.reducirVida();
+        if(abuelo.vida == 0){
+          //La eliminamos.
+          abuelo.remove(padre);
+
+          //Sumamos la puntuacion al matarla.
+          this.puntuacion += 5 * this.multiplicador;
+          this.myScene.sumarPuntuacion(this.puntuacion);
+        }
       }
-      else if(abuelo instanceof MoscaEnigma){}
-      else if(abuelo instanceof MoscaLuz){}
-
-      //PARA ELIMINAR LOS OBJETOS VOLADORES UNA VEZ DISPARADOS.
-      /* if(abuelo != null){
+      else if(abuelo instanceof MoscaEnigma){ //1 vida
+        this.efectoActual = this.efectosEnigma[0];
+        this.aplicaEfecto();
+        console.log("Efecto actual: " + this.efectoActual);
+        this.mezclarEfectos(); //Mezclamos los efectos para que no se repitan.
         abuelo.remove(padre);
-      } */
+      }
+      else if(abuelo instanceof MoscaLuz){ //2 vida
+        abuelo.reducirVida();
+        if(abuelo.vida == 0){
+          //La eliminamos.
+          abuelo.remove(padre);
 
-      /* if (this.impactos.length > 0) {
-        let object = this.impactos[0].object;
-        while (object.parent && object.parent.parent && !(object instanceof Ovni  object instanceof Moneda  object instanceof Pinchos  object instanceof Escudo  object instanceof Puertas)) {
-          object = object.parent;
+          //Sumamos una vida al personaje.
+          this.vidas++;
+          this.myScene.actualizarVidas(this.vidas);
         }
-        const originalObject = object;
+      }
 
-        if (!this.objetosConColision.has(originalObject)) { // Verificar si el objeto ya ha sido colisionado
-          console.log(originalObject.userData.nombre);
-          originalObject.colision(this);
-          this.objetosConColision.add(originalObject); // Agregar el objeto al conjunto de objetos colisionados
-        }
-      } */
-
-      console.log("Objeto seleccionado: " + abuelo.userData.name);
+      console.log("Objeto seleccionado: " + abuelo.nombre);
     }
   }
 
@@ -565,6 +665,7 @@ class Juego extends THREE.Object3D {
     this.t = (this.t + this.rate) % 1;
     //this.rotMosca += 0.01;
     this.avanzaPersonaje(this.t);
+
     this.setAnguloRotacion(this.rot);
     for (var i=0; i < this.moscas.length; i++){
       this.valorRotaciones[i] += this.rotaciones[i];
@@ -573,9 +674,18 @@ class Juego extends THREE.Object3D {
     this.personaje.update();
     
     
-    //COLISIONES.
+    //COLISIONES TERRESTRES.
     var posicion = new THREE.Vector3();
     var direccion = new THREE.Vector3(0,0,1);
+
+    //CON CADA VUELTA, AUMENTA LA VELOCIDAD.
+    if (this.t.toFixed(2) >= 0.99) {
+      //console.log("AAAAAAAAAAAAAAAAAA: " + this.t);
+      // Aumenta la velocidad
+      this.rate += 0.00005;
+      // Restablece this.t a 0 para la próxima vuelta
+      this.t = 0;
+    }
 
     //ACTUALIZAMOS EL TIEMPO DE LA ÚLTIMA COLISIÓN.
     var currentTime = Date.now();
@@ -591,10 +701,13 @@ class Juego extends THREE.Object3D {
       var padre = impactados[0].object.parent;
       var abuelo = padre.parent;
 
-      //RESTAMOS UNA VIDA
-      this.vidas--;
-      this.myScene.actualizarVidas(this.vidas); //HAY QUE ARREGLAR LAS COLISIONES (QUITA 2 VIDAS POR COLISION).
-
+      if((abuelo instanceof BolaPinchos) || (abuelo instanceof PlanchaPinchos) || (abuelo instanceof Bomba)){
+        if (!this.protegido){
+          //RESTAMOS UNA VIDA
+          this.vidas--;
+          this.myScene.actualizarVidas(this.vidas); //HAY QUE ARREGLAR LAS COLISIONES (QUITA 2 VIDAS POR COLISION).
+        }
+      }
 
       if (abuelo instanceof Bomba){
         console.log("TIENE UNA BOMBA");
@@ -619,12 +732,30 @@ class Juego extends THREE.Object3D {
         //REDUCE LA VELOCIDAD DEL PERSONAJE.
         this.rate = 0.00001;
       }
-
-      else{
-        impactados[0].object.parent.remove(impactados[0].object);
+      else if(abuelo instanceof Enigma){ //EFECTOS DE LOS ENIGMAS.
+          this.efectoActual = this.efectosEnigma[0];
+          this.aplicaEfecto();
+          console.log("Efecto actual: " + this.efectoActual);
+          this.mezclarEfectos(); //Mezclamos los efectos para que no se repitan.
+      }
+      else if (abuelo instanceof Escudo){
+        this.personaje.add(this.bolaEscudo);
+        this.protegido = true;
+    
+        setTimeout(() => {
+          this.personaje.remove(this.bolaEscudo);
+          this.protegido = false;
+        }, 20000);
+      }
+      else if(abuelo instanceof Venus){
+        this.multiplicador = this.multiplicador * 2;
+        this.myScene.actualizarMultiplicador('x'+this.multiplicador);
+        this.tiempoVenus = 30;
+        this.venusActivo = true;
       }
 
-      if(abuelo != null){
+      //SE ELIMINAN TODOS LOS OBJETOS COLISIONADOS, MENOS LOS PINCHOS.
+      if(abuelo != null && !(abuelo instanceof PlanchaPinchos) && !(abuelo instanceof BolaPinchos)){
         abuelo.remove(padre);
       }
     }
@@ -632,15 +763,34 @@ class Juego extends THREE.Object3D {
     this.deltaTime = this.clock.getDelta(); // Tiempo transcurrido desde el último frame
     this.timer += this.deltaTime;
 
-    if (!this.fadeOut && this.timer >= this.waitDuration) {
+    if (!this.fadeOut && this.timer >= this.waitDuration){
       this.lightIntensity = 20000;
       this.fadeOut = true;
       this.timer = 0;
       this.myScene.setLuzPersonaje(this.lightIntensity);
 
-      this.rate = 0.00005; //Vuelve a la velocidad normal.
+      this.rate = 0.0001;//Vuelve a la velocidad normal.
 
       //this.myScene.asignarFondo("imgs/videoFondo.mp4"); //Vuelve al fondo original.
+    }
+
+    //GESTIONAMOS LOS EFECTOS.
+    if(this.efectoActual != '' && this.tiempoEfecto > 0){
+      this.tiempoEfecto -= this.deltaTime;
+      //console.log("Tiempo efecto: " + this.tiempoEfecto);
+      if(this.tiempoEfecto <= 0){
+        this.eliminaEfecto();
+        console.log("Efecto eliminado.");
+      }
+    }
+
+    if(this.venusActivo && this.tiempoVenus > 0){
+      this.tiempoVenus -= this.deltaTime;
+      if(this.tiempoVenus <= 0){
+        this.multiplicador = 1;
+        this.myScene.actualizarMultiplicador('x1');
+        this.venusActivo = false;
+      }
     }
 
     // if (impactados.length > 0) { 
