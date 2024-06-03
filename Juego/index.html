@@ -16,8 +16,10 @@
     <script type="module" src="Juego.js"></script>  
     
     <style>
-        body{
+        html, body{
+            height: 100%;
             margin: 0;
+            padding: 0;
             overflow: hidden; 
         }
         #header {
@@ -46,6 +48,72 @@
             height: 40px; /* Ajusta según sea necesario */
             width: auto; /* Mantiene la proporción de la imagen */
         }
+
+        /* Estilos para el menú de inicio */
+        #menu-inicio {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align:center;
+            background-color: rgba(255, 255, 255, 0.45);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #menu-inicio h1 {
+            font-size: 50px;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #menu-inicio button {
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 20px;
+        }
+
+        #menu-fin {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align:center;
+            background-color: rgba(255, 255, 255, 0.45);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #menu-fin h1 {
+            font-size: 50px;
+            margin: 0;
+            padding: 20px;
+        }
+        #menu-fin button {
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 20px;
+        }
+
+        #listaMensajes {
+            padding-left: 10px;
+        }
+
+        /*SEGUN LOS EFECTOS*/
+        .bueno {
+            color: green;
+        }
+
+        .malo {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -53,15 +121,29 @@
     <div id="header">
         <p id="vidas"></p>
         <br>
-        Puntos: <p id="puntos">0</p>
+        <strong>Puntos: <p id="puntos">0</p></strong>
         <br>
-        Multiplicador: <p id="multiplicador">x1</p>
+        <strong>Multiplicador: <p id="multiplicador">x1</p></strong>
+        <br>
+        <strong>Efectos<div id="listaMensajes"></div></strong>
     </div>
     <!-- Div which will show statistical information -->
     <div id="Stats-output">
     </div>
     <!-- Div which will hold the Output -->
     <div id="WebGL-output">
+    </div>
+
+    <!-- Menú de inicio -->
+    <div id="menu-inicio">
+        <h1>¡ENMOSCADA!</h1>
+        <button id="boton-empezar">Empezar</button>
+    </div>
+
+    <!-- Menú de fin de juego -->
+    <div id="menu-fin" style="display: none;">
+        <h1>Fin del juego</h1>
+        <button id="boton-reiniciar">Reiniciar</button>
     </div>
 </body>
 </html>

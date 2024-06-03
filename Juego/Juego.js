@@ -51,7 +51,7 @@ class Juego extends THREE.Object3D {
     this.rate = 0.0001;
 
     //VIDAS DEL PERSONAJE.
-    this.vidas = 6;
+    this.vidas = 1;
     this.myScene.actualizarVidas(this.vidas);
 
     //PUNTUACION DEL PERSONAJE Y EL MULTIPLLICADOR.
@@ -160,25 +160,31 @@ class Juego extends THREE.Object3D {
     this.rotaciones = [];
     this.valorRotaciones = [];
 
-    for (var i=0; i<1; i++){ //A 100000000000000000000000000000000000
+    for (var i=0; i<8; i++){
       var mosca = new Mosca();
       this.moscas.push(mosca);
       this.objetos.push(mosca);
+    }
+    
+    for (var i=0; i<6; i++){
       var moscaReina = new MoscaReina();
       this.moscas.push(moscaReina);
       this.objetos.push(moscaReina);
-      var moscaAgresiva = new MoscaAgresiva();
-      this.moscas.push(moscaAgresiva);
-      this.objetos.push(moscaAgresiva);
+    }
+
+    for (var i=0; i<3; i++){
       var moscaEnigma = new MoscaEnigma();
       this.moscas.push(moscaEnigma);
       this.objetos.push(moscaEnigma);
       var moscaLuz = new MoscaLuz();
       this.moscas.push(moscaLuz);
       this.objetos.push(moscaLuz);
+      var moscaAgresiva = new MoscaAgresiva();
+      this.moscas.push(moscaAgresiva);
+      this.objetos.push(moscaAgresiva);
     }
 
-    for (var i=0; i<1; i++){ //A 8888888888888888888888888888888888888888888888888888
+    for (var i=0; i<4; i++){
       var nitro = new Nitro();
       this.terrestres.push(nitro);
       this.objetos.push(nitro);
@@ -187,13 +193,19 @@ class Juego extends THREE.Object3D {
       this.objetos.push(escudo);
       var venus = new Venus();
       this.terrestres.push(venus);
+      var bomba = new Bomba();
+      this.terrestres.push(bomba);
+      this.objetos.push(bomba);
+    }
+
+    for(var i=0; i<7; i++){
       this.objetos.push(venus);
       var enigma = new Enigma();
       this.terrestres.push(enigma);
       this.objetos.push(enigma);
-      var bomba = new Bomba();
-      this.terrestres.push(bomba);
-      this.objetos.push(bomba);
+    }
+
+    for (var i=0; i<3; i++){ //A 888888888888888888888
       var bolaPinchos = new BolaPinchos();
       this.terrestres.push(bolaPinchos);
       this.objetos.push(bolaPinchos);
@@ -202,8 +214,16 @@ class Juego extends THREE.Object3D {
       this.objetos.push(planchaPinchos);
     }
 
-    for (var i=0; i<this.moscas.length; i++){
+    //Para la rotación de las moscas en general
+    for (var i=0; i<this.moscas.length - 3; i++){
       var valorAleatorio = Math.random() * (0.01 - 0.001) + 0.001;
+      this.rotaciones.push(valorAleatorio);
+      this.valorRotaciones.push(0);
+    }
+    
+    //Para la velocidad de rotación de las moscas agresivas
+    for (var i=this.moscas.length - 3; i<this.moscas.length; i++){
+      var valorAleatorio = Math.random() * (0.1 - 0.05) + 0.05;
       this.rotaciones.push(valorAleatorio);
       this.valorRotaciones.push(0);
     }
@@ -226,20 +246,6 @@ class Juego extends THREE.Object3D {
       this.add(this.posicionarObjeto(contador, this.terrestres[i], 0, rotacion, valor));
       contador++;
     }
-    
-    /* for (var j=0; j<this.voladores.length; j++){
-      var altura = Math.random() * (8 - 4) + 4; // un número aleatorio entre 4 y 8
-      var rotacion = Math.random() * 2 * Math.PI; // un número aleatorio entre 0 y 2*Math.PI
-      var valor = Math.random(); // un número aleatorio entre 0 y 1
-      
-      this.add(this.posicionarObjeto(this.voladores[j], altura, rotacion, valor));
-    }
-
-    for (var k=0; k<this.candidatos.length; k++){
-      var rotacion = Math.random() * 2 * Math.PI; // un número aleatorio entre 0 y 2*Math.PI
-      var valor = Math.random(); // un número aleatorio entre 0 y 1
-      this.add(this.posicionarObjeto(this.candidatos[k], 0, rotacion, valor));
-    } */
 
     //POSICIONAR LOS OBJETOS MANUALMENTE
     var pinchos = new PlanchaPinchos();
@@ -370,32 +376,32 @@ class Juego extends THREE.Object3D {
     //PROCESAMOS EL EFECTO DE LOS ENIGMAS.
     switch(this.efectoActual){
       case 'inverso':
-        console.log("inverso");
+        this.mostrarMensajeTemporal("Controles inversos", false);
         this.tiempoEfecto = 5;
         break;
       case 'x2':
-        console.log("x2");
+        this.mostrarMensajeTemporal("Multiplicador", true);
         this.multiplicador = this.multiplicador * 2;
         this.tiempoEfecto = 5;
         this.myScene.actualizarMultiplicador('x'+this.multiplicador);
         break;
       case 'daño':
-        console.log("daño");
+        this.mostrarMensajeTemporal("-1 Vida", false);
         this.vidas--;
         this.myScene.actualizarVidas(this.vidas);
         break;
       case 'cura':
-        console.log("cura");
+        this.mostrarMensajeTemporal("+1 Vida", true);
         this.vidas++;
         this.myScene.actualizarVidas(this.vidas);
         break;
       case 'lento':
-        console.log("lento");
+        this.mostrarMensajeTemporal("Velocidad reducida", true);
         this.rate = 0.00005;
         this.tiempoEfecto = 5;
         break;
       case 'rapido':
-        console.log("rapido");
+        this.mostrarMensajeTemporal("Velocidad aumentada", false);
         this.rate = 0.00035;
         this.tiempoEfecto = 5;
         break;
@@ -421,6 +427,36 @@ class Juego extends THREE.Object3D {
 
     //RESETEAMOS EL EFECTO ACTUAL.
     this.efectoActual = '';
+  }
+
+  mostrarMensajeTemporal(mensaje, esBueno, duracion = 5000) {
+    // Obtén el elemento #listaMensajes
+    var listaMensajes = document.getElementById('listaMensajes');
+
+    // Crea un nuevo elemento de lista y establece su contenido en el mensaje
+    var nuevoMensaje = document.createElement('li');
+    nuevoMensaje.innerHTML = mensaje;
+
+    // Establece la clase del nuevo mensaje en función de si el efecto es bueno o malo
+    nuevoMensaje.className = esBueno ? 'bueno' : 'malo';
+
+    // Agrega el nuevo mensaje a la lista
+    listaMensajes.appendChild(nuevoMensaje);
+
+    // Usa setTimeout para eliminar el mensaje de la lista después de 'duracion' milisegundos
+    setTimeout(function() {
+        listaMensajes.removeChild(nuevoMensaje);
+    }, duracion);
+  }
+
+  verificarFinJuego() {
+    if (this.vidas == 0) {
+      // Elimina el personaje del nodo
+      this.nodoPosOrientTubo.remove(this.movimientoLateral);
+
+      // Mostrar el menú de fin de juego
+      document.getElementById('menu-fin').style.display = 'block';
+    }
   }
 
   onKeyDown(event) {
@@ -792,6 +828,12 @@ class Juego extends THREE.Object3D {
         this.venusActivo = false;
       }
     }
+
+    this.verificarFinJuego();
+    
+    document.getElementById('boton-reiniciar').addEventListener('click', function() {
+      location.reload();
+    });
 
     // if (impactados.length > 0) { 
     //   let object = impactados[0].object;

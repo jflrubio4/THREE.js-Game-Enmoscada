@@ -21,6 +21,8 @@ class MyScene extends THREE.Scene {
     // la visualización de la escena
     constructor (myCanvas) { 
       super();
+
+      this.juegoEmpezado = false;
       
       // Lo primero, crear el visualizador, pasándole el lienzo sobre el que realizar los renderizados.
       this.renderer = this.createRenderer(myCanvas);
@@ -304,6 +306,11 @@ class MyScene extends THREE.Scene {
     setLuzPersonaje(value) {
       this.pointLightPersonaje.power = value;
     }
+
+    comenzar(){
+      this.juegoEmpezado = true;
+      this.model.update();
+    }
     
     setCameraAspect (ratio) {
       // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
@@ -331,8 +338,10 @@ class MyScene extends THREE.Scene {
       // Se actualiza la posición de la cámara según su controlador
       this.cameraControl.update();
       
-      //SE ACTUALIZAN LOS OBJETOS DEL MODELO.
-      this.model.update();
+      if(this.juegoEmpezado){
+        //SE ACTUALIZAN LOS OBJETOS DEL MODELO.
+        this.model.update();
+      }
       
       // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
       // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
@@ -344,12 +353,39 @@ class MyScene extends THREE.Scene {
 /// La función   main
 $(function () {
   
+    // Obtén una referencia al botón
+    var botonEmpezar = document.getElementById('boton-empezar');
+    var menuInicio = document.getElementById('menu-inicio');
+
     // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
     var scene = new MyScene("#WebGL-output");
   
     // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
     window.addEventListener ("resize", () => scene.onWindowResize());
-    
+
     // Que no se nos olvide, la primera visualización.
     scene.update();
+
+    // Agrega un controlador de eventos de clic al botón
+    botonEmpezar.addEventListener('click', function() {
+
+      scene.comenzar();
+      scene.update();
+
+      // Hacer que el menú de inicio desaparezca
+      menuInicio.style.display = 'none';
+    });
   });
+
+/*   /// La función   main
+$(function () {
+  
+  // Se instancia la escena pasándole el  div  que se ha creado en el html para visualizar
+  var scene = new MyScene("#WebGL-output");
+
+  // Se añaden los listener de la aplicación. En este caso, el que va a comprobar cuándo se modifica el tamaño de la ventana de la aplicación.
+  window.addEventListener ("resize", () => scene.onWindowResize());
+  
+  // Que no se nos olvide, la primera visualización.
+  scene.update();
+}); */
