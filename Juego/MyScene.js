@@ -49,7 +49,7 @@ class MyScene extends THREE.Scene {
       // la gui y el texto bajo el que se agruparán los controles de la interfaz que añada el modelo.
       // this.model = new Juego(this.gui, "Controles del Juego");
       // this.add (this.model);
-      this.model = new Juego(this.gui,"Controles del juego",this);
+      this.model = new Juego(this);
       this.add(this.model);
       
       //LIGA LA CAMARA AL PERSONAJE.

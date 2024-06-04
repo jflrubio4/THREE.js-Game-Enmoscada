@@ -180,63 +180,63 @@ class Personaje extends THREE.Object3D {
     }
   }
   
-  funcionAnimar(value){
+  funcionAnimar(velocidad){
     if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzqBrazo){
-      this.brazoIzquierda.rotation.x += 0.01;
+      this.brazoIzquierda.rotation.x += 0.01 * velocidad;
       if(this.brazoIzquierda.rotation.x >= Math.PI/4){
         this.topeIzqBrazo = true;
       }
     }
     else{
-      this.brazoIzquierda.rotation.x -= 0.01;
+      this.brazoIzquierda.rotation.x -= 0.01 * velocidad;
       if(this.brazoIzquierda.rotation.x <= -Math.PI/4){
         this.topeIzqBrazo = false;
       }
     }
 
     if(this.brazoDerecha.rotation.x > -Math.PI/4 && !this.topeDerBrazo){
-      this.brazoDerecha.rotation.x -= 0.01;
+      this.brazoDerecha.rotation.x -= 0.01 * velocidad;
       if(this.brazoDerecha.rotation.x <= -Math.PI/4){
         this.topeDerBrazo = true;
       }
     }
     else{
-      this.brazoDerecha.rotation.x += 0.01;
+      this.brazoDerecha.rotation.x += 0.01 * velocidad;
       if(this.brazoDerecha.rotation.x >= +Math.PI/4){
         this.topeDerBrazo = false;
       }
     }
 
     if(this.pataDer.rotation.x < Math.PI/4 && !this.topeIzqPata){
-      this.pataDer.rotation.x += 0.01;
+      this.pataDer.rotation.x += 0.01 * velocidad;
       if(this.pataDer.rotation.x >= Math.PI/4){
         this.topeIzqPata = true;
       }
     }
     else{
-      this.pataDer.rotation.x -= 0.01;
+      this.pataDer.rotation.x -= 0.01 * velocidad;
       if(this.pataDer.rotation.x <= -Math.PI/4){
         this.topeIzqPata = false;
       }
     }
 
     if(this.pataIzq.rotation.x > -Math.PI/4 && !this.topeDerPata){
-      this.pataIzq.rotation.x -= 0.01;
+      this.pataIzq.rotation.x -= 0.01 * velocidad;
       if(this.pataIzq.rotation.x <= -Math.PI/4){
         this.topeDerPata = true;
       }
     }
     else{
-      this.pataIzq.rotation.x += 0.01;
+      this.pataIzq.rotation.x += 0.01 * velocidad;
       if(this.pataIzq.rotation.x >= +Math.PI/4){
         this.topeDerPata = false;
       }
     }
   }
 
-  update () {
+  update (velocidad) {
 
-    this.funcionAnimar(this.rotar);
+    this.funcionAnimar(velocidad);
   }
 }
 
