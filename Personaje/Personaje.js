@@ -180,7 +180,7 @@ class Personaje extends THREE.Object3D {
     }
   }
   
-  funcionAnimar(velocidad){
+  funcionAnimar(velocidad=1){
     if(this.brazoIzquierda.rotation.x < Math.PI/4 && !this.topeIzqBrazo){
       this.brazoIzquierda.rotation.x += 0.01 * velocidad;
       if(this.brazoIzquierda.rotation.x >= Math.PI/4){

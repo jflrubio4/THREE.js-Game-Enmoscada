@@ -32,7 +32,7 @@ class Juego extends THREE.Object3D {
     this.rate = 0.0001;
 
     //VELOCIDAD DE ANIMACIÓN DEL PERSONAJE
-    this.velocidadAnim = 10;
+    this.velocidadAnim = 15;
 
     //VIDAS DEL PERSONAJE.
     this.vidas = 6;
@@ -376,7 +376,7 @@ class Juego extends THREE.Object3D {
         break;
       case 'lento':
         this.mostrarMensajeTemporal("Velocidad reducida", true);
-        this.rate = 0.00005;
+        this.rate = 0.00008;
         this.tiempoEfecto = 10;
         break;
       case 'rapido':
@@ -397,10 +397,10 @@ class Juego extends THREE.Object3D {
         this.myScene.actualizarMultiplicador('x1');
         break;
       case 'lento':
-        this.rate = 0.0001;
+        this.rate = 0.0002;
         break;
       case 'rapido':
-        this.rate = 0.0001;
+        this.rate = 0.0002;
         break;
     }
 
@@ -631,7 +631,7 @@ class Juego extends THREE.Object3D {
       this.rate += 0.00005;
       // Restablece this.t a 0 para la próxima vuelta
       this.t = 0;
-      this.velocidadAnim += 15;
+      this.velocidadAnim += 10;
     }
 
     /*********************************************************************************************************/
@@ -660,7 +660,18 @@ class Juego extends THREE.Object3D {
           if (!this.protegido){
             //RESTAMOS UNA VIDA
             this.vidas--;
-            this.myScene.actualizarVidas(this.vidas); 
+            this.myScene.actualizarVidas(this.vidas);
+
+            if(abuelo instanceof BolaPinchos){
+              //Restamos 5 puntos (NO SEA NEGAIVO)
+              this.puntuacion = Math.max(0, this.puntuacion - 5);
+              this.myScene.sumarPuntuacion(this.puntuacion);
+            }
+            else if(abuelo instanceof PlanchaPinchos){
+              //Restamos 3 puntos (NO SEA NEGAIVO)
+              this.puntuacion = Math.max(0, this.puntuacion - 3);
+              this.myScene.sumarPuntuacion(this.puntuacion);
+            }
           }
         }
 
@@ -684,6 +695,10 @@ class Juego extends THREE.Object3D {
 
           //REDUCE LA VELOCIDAD DEL PERSONAJE.
           this.rate = 0.00001;
+
+          //Restamos 10 puntos (NO SEA NEGAIVO)
+          this.puntuacion = Math.max(0, this.puntuacion - 10);
+          this.myScene.sumarPuntuacion(this.puntuacion);
         }
         else if(abuelo instanceof Enigma){ //EFECTOS DE LOS ENIGMAS.
             this.efectoActual = this.efectosEnigma[0];
@@ -704,7 +719,8 @@ class Juego extends THREE.Object3D {
           this.tiempoVenus = 10;
           this.venusActivo = true;
         }
-
+        else if(abuelo instanceof PlanchaPinchos){}
+        else if(abuelo instanceof BolaPinchos){}
         else if(!(abuelo instanceof Bomba) && !(abuelo instanceof Enigma) && !(abuelo instanceof Escudo) && !(abuelo instanceof Venus) && !(abuelo instanceof PlanchaPinchos) && !(abuelo instanceof BolaPinchos)){ //SI TOCA EL RAYO
           this.multiplicador = this.multiplicador * 2;
           this.myScene.actualizarMultiplicador('x'+this.multiplicador);
@@ -729,7 +745,7 @@ class Juego extends THREE.Object3D {
       this.timer = 0;
       this.myScene.setLuzPersonaje(this.lightIntensity);
 
-      this.rate = 0.0001;//Vuelve a la velocidad normal.
+      this.rate = 0.0002;//Vuelve a la velocidad normal.
     }
 
     /*********************************************************************************************************/
