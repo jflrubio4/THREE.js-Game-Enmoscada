@@ -236,47 +236,47 @@ class Juego extends THREE.Object3D {
     }
 
     //POSICIONAR LOS OBJETOS MANUALMENTE
-    var nitro = new Venus();
-    this.add(this.posicionarObjeto(contador, nitro, 0, 0, 0.01))
+    var nitro = new Nitro();
+    this.add(this.posicionarObjeto(contador, nitro, 0, 0, 0.012))
     contador++;
     this.terrestres.push(nitro);
     this.objetos.push(nitro);
 
+    var bomb = new Bomba();
+    this.add(this.posicionarObjeto(contador, bomb, 0, 0, 0.024))
+    contador++;
+    this.terrestres.push(bomb);
+    this.objetos.push(bomb);
+
     var pinchos = new PlanchaPinchos();
-    this.add(this.posicionarObjeto(contador, pinchos, 0, 0, 0.02))
+    this.add(this.posicionarObjeto(contador, pinchos, 0, 0, 0.036))
     contador++;
     this.terrestres.push(pinchos);
     this.objetos.push(pinchos);
 
-    var enigma = new Enigma();
-    this.add(this.posicionarObjeto(contador, enigma, 0, 0, 0.03))
-    contador++;
-    this.terrestres.push(enigma);
-    this.objetos.push(enigma);
-
     var escudo = new Escudo();
-    this.add(this.posicionarObjeto(contador, escudo, 0, 0, 0.04))
+    this.add(this.posicionarObjeto(contador, escudo, 0, 0, 0.048))
     contador++;
     this.terrestres.push(escudo);
     this.objetos.push(escudo);
 
     var bola = new BolaPinchos();
-    this.add(this.posicionarObjeto(contador, bola, 0, 0, 0.05))
+    this.add(this.posicionarObjeto(contador, bola, 0, 0, 0.06))
     contador++;
     this.terrestres.push(bola);
     this.objetos.push(bola);
 
-    /* var bomb = new Bomba();
-    this.add(this.posicionarObjeto(contador, bomb, 0, 0, 0.05))
-    contador++;
-    this.terrestres.push(bomb);
-    this.objetos.push(bomb); */
-
     var venus = new Venus();
-    this.add(this.posicionarObjeto(contador, venus, 0, 0, 0.06))
+    this.add(this.posicionarObjeto(contador, venus, 0, 0, 0.072))
     contador++;
     this.terrestres.push(venus);
     this.objetos.push(venus);
+
+    var enigma = new Enigma();
+    this.add(this.posicionarObjeto(contador, enigma, 0, 0, 0.084))
+    contador++;
+    this.terrestres.push(enigma);
+    this.objetos.push(enigma);
 
     var moscaN = new Mosca();
     var valorAleatorio = Math.random() * (0.05 - 0.005) + 0.005;
@@ -407,10 +407,10 @@ class Juego extends THREE.Object3D {
         this.myScene.actualizarMultiplicador('x1');
         break;
       case 'lento':
-        this.rate = 0.0002;
+        this.rate = 0.0001;
         break;
       case 'rapido':
-        this.rate = 0.0002;
+        this.rate = 0.0001;
         break;
     }
 
@@ -755,7 +755,7 @@ class Juego extends THREE.Object3D {
       this.timer = 0;
       this.myScene.setLuzPersonaje(this.lightIntensity);
 
-      this.rate = 0.0002;//Vuelve a la velocidad normal.
+      this.rate = 0.0001;//Vuelve a la velocidad normal.
     }
 
     /*********************************************************************************************************/
