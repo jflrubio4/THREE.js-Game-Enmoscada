@@ -279,27 +279,37 @@ class Juego extends THREE.Object3D {
     this.objetos.push(venus);
 
     var moscaN = new Mosca();
-    this.add(this.posicionarObjeto(contador, moscaN, 4, 0, 0.01))
+    var valorAleatorio = Math.random() * (0.05 - 0.005) + 0.005;
+    this.rotaciones.push(valorAleatorio);
+    this.add(this.posicionarObjeto(contador, moscaN, 4, 0, 0.015))
     contador++;
     this.moscas.push(moscaN);
 
     var moscaR = new MoscaReina();
-    this.add(this.posicionarObjeto(contador, moscaR, 4, 0, 0.02))
+    valorAleatorio = Math.random() * (0.005 - 0.001) + 0.001;
+    this.rotaciones.push(valorAleatorio);
+    this.add(this.posicionarObjeto(contador, moscaR, 4, 0, 0.03))
     contador++;
     this.moscas.push(moscaR);
 
     var moscaA = new MoscaAgresiva();
-    this.add(this.posicionarObjeto(contador, moscaA, 4, 0, 0.03))
+    valorAleatorio = Math.random() * (0.1 - 0.05) + 0.05;
+    this.rotaciones.push(valorAleatorio);
+    this.add(this.posicionarObjeto(contador, moscaA, 4, 0, 0.045))
     contador++;
     this.moscas.push(moscaA);
 
     var moscaE = new MoscaEnigma();
-    this.add(this.posicionarObjeto(contador, moscaE, 4, 0, 0.04))
+    valorAleatorio = Math.random() * (0.05 - 0.005) + 0.005;
+    this.rotaciones.push(valorAleatorio);
+    this.add(this.posicionarObjeto(contador, moscaE, 4, 0, 0.06))
     contador++;
     this.moscas.push(moscaE);
 
     var moscaL = new MoscaLuz();
-    this.add(this.posicionarObjeto(contador, moscaL, 4, 0, 0.05))
+    valorAleatorio = Math.random() * (0.05 - 0.005) + 0.005;
+    this.rotaciones.push(valorAleatorio);
+    this.add(this.posicionarObjeto(contador, moscaL, 4, 0, 0.075))
     contador++;
     this.moscas.push(moscaL);
 
