@@ -86,12 +86,6 @@ class MoscaLuz extends THREE.Object3D {
     var haloLight = new THREE.PointLight(0xffffe0, 4, 100); // Color amarillo claro, intensidad 1, distancia 100
     haloLight.position.set(0, 1.2, 0);
 
-    /* //UNIMOS LAS PARTES DEL BRAZO.
-    var moscaCSG = new CSG();
-    moscaCSG.union([cuerpo, this.alaI, this.alaD, toro]);
-    var mosca = moscaCSG.toMesh();
-    mosca.rotateY(Math.PI/2); */
-
     var mosca = new THREE.Group();
     mosca.add(cuerpo);
     mosca.add(this.alaI);
@@ -104,10 +98,6 @@ class MoscaLuz extends THREE.Object3D {
     //PATRA LAS COLISIONES.
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(mosca);
-
-    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible); */
 
     mosca.userData.name = 'moscaLuz';
     
@@ -127,7 +117,7 @@ class MoscaLuz extends THREE.Object3D {
     }
   }
   
-  funcionAnimar(value){
+  funcionAnimar(){
     if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
       this.alaI.rotation.y += 0.015;
       if(this.alaI.rotation.y >= 0.2){
@@ -156,7 +146,7 @@ class MoscaLuz extends THREE.Object3D {
   }
   
   update () {
-    this.funcionAnimar(this.rotar);
+    this.funcionAnimar();
     
   }
 }

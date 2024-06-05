@@ -58,14 +58,6 @@ class Bomba extends THREE.Object3D {
 
     toroCortado.position.set(1,2.25,0);
 
-    // var tapaToro = new THREE.CylinderGeometry(0.7, 0.7, 0.01, 32);
-    // tapaToro.rotateY(-Math.PI/2);
-    // tapaToro.rotateZ(Math.PI/2);
-    // tapaToro.translate(-2,6,0);
-    // var tapaToroMesh = new THREE.Mesh(tapaToro, mat);
-    
-    //this.add(tapaToroMesh);
-
     this.bombaFinal = new THREE.Group();
     topeMesh.scale.set(0.5,0.5,0.5);
     topeMesh.rotation.set(0,Math.PI,0);
@@ -76,20 +68,6 @@ class Bomba extends THREE.Object3D {
     this.bombaFinal.add(cuerpo);
 
     this.bombaFinal.translateY(1.5);
-
-
-    /* //UNIMOS LAS PARTES DEL BRAZO.
-    var fuseCSG = new CSG();
-    fuseCSG.union([topeMesh, toroCortado]);
-    var fuse = fuseCSG.toMesh();
-    fuse.scale.set(0.5,0.5,0.5);
-    fuse.rotation.set(0,Math.PI,Math.PI/6);
-
-    var bombaCSG = new CSG();
-    bombaCSG.union([fuse, cuerpo]);
-    var bomba = bombaCSG.toMesh();
-
-    bomba.position.set(0,2,0); */
 
     this.add(this.bombaFinal);
 
@@ -104,15 +82,6 @@ class Bomba extends THREE.Object3D {
     this.bombaFinal.userData.name = 'bomba';
     
   }
-
-  setRotacion(value){
-    if (value){
-        this.rotar = true;
-    }
-    else{
-        this.rotar = false;
-    }
-}
   
   update () {}
 }

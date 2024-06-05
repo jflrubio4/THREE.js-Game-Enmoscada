@@ -66,8 +66,6 @@ class Nitro extends THREE.Object3D {
     var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
     this.add(cajaEnvolventeVsible); */
 
-    this.rotar = false;
-
     mesh.userData.name = 'nitro';
   }
   

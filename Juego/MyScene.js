@@ -140,215 +140,215 @@ class MyScene extends THREE.Scene {
     multiplicadorActual.innerHTML = multiplicador;
   }
     
-    createCamera () {
-      // Para crear una cámara le indicamos
-      //   El ángulo del campo de visión vértical en grados sexagesimales
-      //   La razón de aspecto ancho/alto
-      //   Los planos de recorte cercano y lejano
-      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-      // También se indica dónde se coloca
-      this.camera.position.set (100, 0.05, -250.0);
-      // Y hacia dónde mira
-      var look = new THREE.Vector3 (-30,0,0);
-      this.camera.lookAt(look);
-      this.add (this.camera);
-      
-      // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
-      this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
-      
-      // Se configuran las velocidades de los movimientos
-      this.cameraControl.rotateSpeed = 5;
-      this.cameraControl.zoomSpeed = -2;
-      this.cameraControl.panSpeed = 0.5;
-      // Debe orbitar con respecto al punto de mira de la cámara
-      this.cameraControl.target = look;
-
-      //CAMARA DEL PERSONAJE (3ª PERSONA).
-      this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 10000);
-      //this.model.personaje.add(this.cameraPersonaje);
-      this.cameraPersonaje.position.set(0,8+3.75,-12); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
-
-      var puntoDeMira = new THREE.Vector3(0,-0.35, 1);
-
-      var target = new THREE.Vector3();
-      this.cameraPersonaje.getWorldPosition(target);
-
-      target.add(puntoDeMira);
-      this.cameraPersonaje.lookAt(target);
-
-    }
+  createCamera () {
+    // Para crear una cámara le indicamos
+    //   El ángulo del campo de visión vértical en grados sexagesimales
+    //   La razón de aspecto ancho/alto
+    //   Los planos de recorte cercano y lejano
+    this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
+    // También se indica dónde se coloca
+    this.camera.position.set (100, 0.05, -250.0);
+    // Y hacia dónde mira
+    var look = new THREE.Vector3 (-30,0,0);
+    this.camera.lookAt(look);
+    this.add (this.camera);
     
-    createGUI () {
-      // Se crea la interfaz gráfica de usuario
-      var gui = new GUI();
-      
-      // La escena le va a añadir sus propios controles. 
-      // Se definen mediante un objeto de control
-      // En este caso la intensidad de la luz y si se muestran o no los ejes
-      this.guiControls = {
-        // En el contexto de una función   this   alude a la función
-        lightPower : 1000.0,  // La potencia de esta fuente de luz se mide en lúmenes
-        ambientIntensity : 1,
-        axisOnOff : true,
-        rotacion: false
-      }
+    // Para el control de cámara usamos una clase que ya tiene implementado los movimientos de órbita
+    this.cameraControl = new TrackballControls (this.camera, this.renderer.domElement);
+    
+    // Se configuran las velocidades de los movimientos
+    this.cameraControl.rotateSpeed = 5;
+    this.cameraControl.zoomSpeed = -2;
+    this.cameraControl.panSpeed = 0.5;
+    // Debe orbitar con respecto al punto de mira de la cámara
+    this.cameraControl.target = look;
+
+    //CAMARA DEL PERSONAJE (3ª PERSONA).
+    this.cameraPersonaje = new THREE.PerspectiveCamera(85, window.innerWidth / window.innerHeight, 0.01, 10000);
+    //this.model.personaje.add(this.cameraPersonaje);
+    this.cameraPersonaje.position.set(0,8+3.75,-12); //'y' cambia desde donde se ve el personaje desde atrás, y 'z' como de atrás está la camara
+
+    var puntoDeMira = new THREE.Vector3(0,-0.35, 1);
+
+    var target = new THREE.Vector3();
+    this.cameraPersonaje.getWorldPosition(target);
+
+    target.add(puntoDeMira);
+    this.cameraPersonaje.lookAt(target);
+
+  }
   
-      // Se crea una sección para los controles de esta clase
-      var folder = gui.addFolder ('Luz y Ejes');
-      
-      // Se le añade un control para la potencia de la luz puntual
-      folder.add (this.guiControls, 'lightPower', 0, 2000, 100)
-        .name('Luz puntual : ')
-        .onChange ( (value) => this.setLightPower(value) );
-      
-      // Otro para la intensidad de la luz ambiental
-      folder.add (this.guiControls, 'ambientIntensity', 0, 1, 0.05)
-        .name('Luz ambiental: ')
-        .onChange ( (value) => this.setAmbientIntensity(value) );
-        
-      // Y otro para mostrar u ocultar los ejes
-      folder.add (this.guiControls, 'axisOnOff')
-        .name ('Mostrar ejes : ')
-        .onChange ( (value) => this.setAxisVisible (value) );
-
-      
-      return gui;
-    }
+  createGUI () {
+    // Se crea la interfaz gráfica de usuario
+    var gui = new GUI();
     
-    createLights () {
-      // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
-      // La luz ambiental solo tiene un color y una intensidad
-      // Se declara como   var   y va a ser una variable local a este método
-      //    se hace así puesto que no va a ser accedida desde otros métodos
-      this.ambientLight = new THREE.AmbientLight('white', this.guiControls.ambientIntensity);
-      // La añadimos a la escena
-      this.add (this.ambientLight);
-      
-      // Se crea una luz focal que va a ser la luz principal de la escena
-      // La luz focal, además tiene una posición, y un punto de mira
-      // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
-      // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
-      this.pointLight = new THREE.PointLight( 0xffffff );
-      this.pointLight.power = this.guiControls.lightPower;
-      this.add (this.pointLight);
-
-      //LUZ DEL PERSONAJE.
-      this.pointLightPersonaje = new THREE.PointLight( 0xffffff );
-      this.pointLightPersonaje.power = 20000;
-      this.add (this.pointLightPersonaje);
-
-      //LUCES PARA EL CIRCUITO.
-      this.pointLight1 = new THREE.PointLight( 0x0d00ff );
-      this.pointLight1.power = 10000;
-      this.pointLight1.position.set(-240, 20, 10);
-      this.pointLight1.decay = 1;
-      this.add (this.pointLight1);
-
-      this.pointLight2 = new THREE.PointLight( 0xff00a2);
-      this.pointLight2.power = 10000;
-      this.pointLight2.position.set(125, 70, 125);
-      this.pointLight2.decay = 1;
-      this.add (this.pointLight2);
-
-      this.pointLight3 = new THREE.PointLight( 0xff0000 );
-      this.pointLight3.power = 10000;
-      this.pointLight3.position.set(-80, 20, 170);
-      this.pointLight3.decay = 1;
-      this.add (this.pointLight3);
-
-      this.pointLight3 = new THREE.PointLight( 0xbe03fc );
-      this.pointLight3.power = 10000;
-      this.pointLight3.position.set(0, 70, 35);
-      this.pointLight3.decay = 1;
-      this.add (this.pointLight3);
-
+    // La escena le va a añadir sus propios controles. 
+    // Se definen mediante un objeto de control
+    // En este caso la intensidad de la luz y si se muestran o no los ejes
+    this.guiControls = {
+      // En el contexto de una función   this   alude a la función
+      lightPower : 1000.0,  // La potencia de esta fuente de luz se mide en lúmenes
+      ambientIntensity : 1,
+      axisOnOff : true,
+      rotacion: false
     }
+
+    // Se crea una sección para los controles de esta clase
+    var folder = gui.addFolder ('Luz y Ejes');
     
-    setLightPower (valor) {
-      this.pointLight.power = valor;
-    }
+    // Se le añade un control para la potencia de la luz puntual
+    folder.add (this.guiControls, 'lightPower', 0, 2000, 100)
+      .name('Luz puntual : ')
+      .onChange ( (value) => this.setLightPower(value) );
+    
+    // Otro para la intensidad de la luz ambiental
+    folder.add (this.guiControls, 'ambientIntensity', 0, 1, 0.05)
+      .name('Luz ambiental: ')
+      .onChange ( (value) => this.setAmbientIntensity(value) );
+      
+    // Y otro para mostrar u ocultar los ejes
+    folder.add (this.guiControls, 'axisOnOff')
+      .name ('Mostrar ejes : ')
+      .onChange ( (value) => this.setAxisVisible (value) );
+
+    
+    return gui;
+  }
   
-    setAmbientIntensity (valor) {
-      this.ambientLight.intensity = valor;
-    }  
+  createLights () {
+    // Se crea una luz ambiental, evita que se vean complentamente negras las zonas donde no incide de manera directa una fuente de luz
+    // La luz ambiental solo tiene un color y una intensidad
+    // Se declara como   var   y va a ser una variable local a este método
+    //    se hace así puesto que no va a ser accedida desde otros métodos
+    this.ambientLight = new THREE.AmbientLight('white', this.guiControls.ambientIntensity);
+    // La añadimos a la escena
+    this.add (this.ambientLight);
     
-    setAxisVisible (valor) {
-      this.axis.visible = valor;
-    }
-    
-    createRenderer (myCanvas) {
-      // Se recibe el lienzo sobre el que se van a hacer los renderizados. Un div definido en el html.
-      
-      // Se instancia un Renderer   WebGL
-      var renderer = new THREE.WebGLRenderer();
-      
-      // Se establece un color de fondo en las imágenes que genera el render
-      renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
-      
-      // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      
-      // La visualización se muestra en el lienzo recibido
-      $(myCanvas).append(renderer.domElement);
-      
-      return renderer;  
-    }
-    
-    getCamera () {
-      // En principio se devuelve la única cámara que tenemos
-      // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
-      if (this.model.thirdCamera)
-        return this.cameraPersonaje;
-      else  
-        return this.camera;
-    }
+    // Se crea una luz focal que va a ser la luz principal de la escena
+    // La luz focal, además tiene una posición, y un punto de mira
+    // Si no se le da punto de mira, apuntará al (0,0,0) en coordenadas del mundo
+    // En este caso se declara como   this.atributo   para que sea un atributo accesible desde otros métodos.
+    this.pointLight = new THREE.PointLight( 0xffffff );
+    this.pointLight.power = this.guiControls.lightPower;
+    this.add (this.pointLight);
 
-    setLuzPersonaje(value) {
-      this.pointLightPersonaje.power = value;
-    }
+    //LUZ DEL PERSONAJE.
+    this.pointLightPersonaje = new THREE.PointLight( 0xffffff );
+    this.pointLightPersonaje.power = 20000;
+    this.add (this.pointLightPersonaje);
 
-    comenzar(){
-      this.juegoEmpezado = true;
+    //LUCES PARA EL CIRCUITO.
+    this.pointLight1 = new THREE.PointLight( 0x0d00ff );
+    this.pointLight1.power = 10000;
+    this.pointLight1.position.set(-240, 20, 10);
+    this.pointLight1.decay = 1;
+    this.add (this.pointLight1);
+
+    this.pointLight2 = new THREE.PointLight( 0xff00a2);
+    this.pointLight2.power = 10000;
+    this.pointLight2.position.set(125, 70, 125);
+    this.pointLight2.decay = 1;
+    this.add (this.pointLight2);
+
+    this.pointLight3 = new THREE.PointLight( 0xff0000 );
+    this.pointLight3.power = 10000;
+    this.pointLight3.position.set(-80, 20, 170);
+    this.pointLight3.decay = 1;
+    this.add (this.pointLight3);
+
+    this.pointLight3 = new THREE.PointLight( 0xbe03fc );
+    this.pointLight3.power = 10000;
+    this.pointLight3.position.set(0, 70, 35);
+    this.pointLight3.decay = 1;
+    this.add (this.pointLight3);
+
+  }
+  
+  setLightPower (valor) {
+    this.pointLight.power = valor;
+  }
+
+  setAmbientIntensity (valor) {
+    this.ambientLight.intensity = valor;
+  }  
+  
+  setAxisVisible (valor) {
+    this.axis.visible = valor;
+  }
+  
+  createRenderer (myCanvas) {
+    // Se recibe el lienzo sobre el que se van a hacer los renderizados. Un div definido en el html.
+    
+    // Se instancia un Renderer   WebGL
+    var renderer = new THREE.WebGLRenderer();
+    
+    // Se establece un color de fondo en las imágenes que genera el render
+    renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
+    
+    // Se establece el tamaño, se aprovecha la totalidad de la ventana del navegador
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // La visualización se muestra en el lienzo recibido
+    $(myCanvas).append(renderer.domElement);
+    
+    return renderer;  
+  }
+  
+  getCamera () {
+    // En principio se devuelve la única cámara que tenemos
+    // Si hubiera varias cámaras, este método decidiría qué cámara devuelve cada vez que es consultado
+    if (this.model.thirdCamera)
+      return this.cameraPersonaje;
+    else  
+      return this.camera;
+  }
+
+  setLuzPersonaje(value) {
+    this.pointLightPersonaje.power = value;
+  }
+
+  comenzar(){
+    this.juegoEmpezado = true;
+    this.model.update();
+  }
+  
+  setCameraAspect (ratio) {
+    // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
+    // su sistema operativo hay que actualizar el ratio de aspecto de la cámara
+    this.camera.aspect = ratio;
+    this.cameraPersonaje.aspect = ratio;
+    // Y si se cambia ese dato hay que actualizar la matriz de proyección de la cámara
+    this.camera.updateProjectionMatrix();
+    this.cameraPersonaje.updateProjectionMatrix();
+  }
+    
+  onWindowResize () {
+    // Este método es llamado cada vez que el usuario modifica el tamapo de la ventana de la aplicación
+    // Hay que actualizar el ratio de aspecto de la cámara
+    this.setCameraAspect (window.innerWidth / window.innerHeight);
+    
+    // Y también el tamaño del renderizador
+    this.renderer.setSize (window.innerWidth, window.innerHeight);
+  }
+
+  update () {
+    // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
+    this.renderer.render (this, this.getCamera());
+    
+    // Se actualiza la posición de la cámara según su controlador
+    this.cameraControl.update();
+    
+    if(this.juegoEmpezado){
+      //SE ACTUALIZAN LOS OBJETOS DEL MODELO.
       this.model.update();
     }
     
-    setCameraAspect (ratio) {
-      // Cada vez que el usuario modifica el tamaño de la ventana desde el gestor de ventanas de
-      // su sistema operativo hay que actualizar el ratio de aspecto de la cámara
-      this.camera.aspect = ratio;
-      this.cameraPersonaje.aspect = ratio;
-      // Y si se cambia ese dato hay que actualizar la matriz de proyección de la cámara
-      this.camera.updateProjectionMatrix();
-      this.cameraPersonaje.updateProjectionMatrix();
-    }
-      
-    onWindowResize () {
-      // Este método es llamado cada vez que el usuario modifica el tamapo de la ventana de la aplicación
-      // Hay que actualizar el ratio de aspecto de la cámara
-      this.setCameraAspect (window.innerWidth / window.innerHeight);
-      
-      // Y también el tamaño del renderizador
-      this.renderer.setSize (window.innerWidth, window.innerHeight);
-    }
-  
-    update () {
-      // Le decimos al renderizador "visualiza la escena que te indico usando la cámara que te estoy pasando"
-      this.renderer.render (this, this.getCamera());
-      
-      // Se actualiza la posición de la cámara según su controlador
-      this.cameraControl.update();
-      
-      if(this.juegoEmpezado){
-        //SE ACTUALIZAN LOS OBJETOS DEL MODELO.
-        this.model.update();
-      }
-      
-      // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
-      // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
-      // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
-      requestAnimationFrame(() => this.update())
-    }
+    // Este método debe ser llamado cada vez que queramos visualizar la escena de nuevo.
+    // Literalmente le decimos al navegador: "La próxima vez que haya que refrescar la pantalla, llama al método que te indico".
+    // Si no existiera esta línea,  update()  se ejecutaría solo la primera vez.
+    requestAnimationFrame(() => this.update())
   }
+}
 
 /// La función   main
 $(function () {

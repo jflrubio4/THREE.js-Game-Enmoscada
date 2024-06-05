@@ -125,21 +125,6 @@ class MoscaEnigma extends THREE.Object3D {
 
     this.enigma.position.set(0,1.1,0);
     this.enigma.scale.set(0.5,0.5,0.5);
-    //this.enigma.rotation.set(0,Math.PI/2,0);
-    //mosca.rotateY(Math.PI/2);
-
-
-    //UNIMOS LAS PARTES DEL BRAZO.
-    /* var moscaCSG = new CSG();
-    moscaCSG.union([cuerpo, this.alaI, this.alaD]);
-    var mosca = moscaCSG.toMesh();
-
-    mosca.position.set(0,0.7,0); */
-
-    /* this.moscaEnigma = new THREE.Group();
-    this.moscaEnigma.add(mosca);
-    this.moscaEnigma.add(this.enigma);
-    this.add(this.moscaEnigma); */
 
     var mosca = new THREE.Group();
     mosca.add(cuerpo);
@@ -154,23 +139,6 @@ class MoscaEnigma extends THREE.Object3D {
     this.cajaEnvolvente = new THREE.Box3();
     this.cajaEnvolvente.setFromObject(mosca);
 
-    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVisible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVisible); */
-
-    /* //PATRA LAS COLISIONES.
-    this.cajaEnvolventeEnigma = new THREE.Box3();
-    this.cajaEnvolventeEnigma.setFromObject(enigma);
-
-    //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeEnigmaVisible = new THREE.Box3Helper(this.cajaEnvolventeEnigma, 0x00ff00);
-    this.add(cajaEnvolventeEnigmaVisible); */
-
-    /* this.add(cuerpo);
-    this.add(this.alaI);
-    this.add(this.alaD);
-    this.add(enigma); */
-
     mosca.userData.name = 'moscaEnigma';
     
   }
@@ -184,7 +152,7 @@ class MoscaEnigma extends THREE.Object3D {
     }
   }
 
-  funcionAnimar(value){
+  funcionAnimar(){
     if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
       this.alaI.rotation.y += 0.015;
       if(this.alaI.rotation.y >= 0.2){
@@ -213,7 +181,7 @@ class MoscaEnigma extends THREE.Object3D {
   }
   
   update () {
-    this.funcionAnimar(this.rotar);
+    this.funcionAnimar();
     
   }
 }

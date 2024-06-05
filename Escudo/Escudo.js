@@ -36,19 +36,6 @@ class Escudo extends THREE.Object3D {
           }, null, null);
       });
       
-     
-    
-
-    this.rotar = false;
-  }
-
-  setRotacion(value){
-    if (value){
-        this.rotar = true;
-    }
-    else{
-        this.rotar = false;
-    }
   }
   
   update () {}

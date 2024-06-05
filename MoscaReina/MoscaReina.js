@@ -81,12 +81,6 @@ class MoscaReina extends THREE.Object3D {
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, materialAlas);
 
-    /* var moscaCSG = new CSG();
-    moscaCSG.union([cuerpo, this.alaI, this.alaD]);
-    var mosca = moscaCSG.toMesh(); */
-    //mosca.rotateY(Math.PI/2);
-    //FIN MOSCA
-
     var shape = new THREE.Shape();
     shape.moveTo(0,0);
     shape.lineTo(-0.31,0.5);
@@ -134,10 +128,6 @@ class MoscaReina extends THREE.Object3D {
     coronaMesh.scale.set(0.3,0.4,0.3);
     coronaMesh.position.y = 0.9;
 
-    /* var reinaCSG = new CSG();
-    reinaCSG.union([coronaMesh, mosca]);
-    var moscaReina = reinaCSG.toMesh(); */
-
     var mosca = new THREE.Group();
     mosca.add(cuerpo);
     mosca.add(this.alaI);
@@ -162,7 +152,7 @@ class MoscaReina extends THREE.Object3D {
     this.vida--;
   }
   
-  funcionAnimar(value){
+  funcionAnimar(){
     if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
       this.alaI.rotation.y += 0.015;
       if(this.alaI.rotation.y >= 0.2){

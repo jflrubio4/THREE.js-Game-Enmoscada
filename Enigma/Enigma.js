@@ -55,12 +55,6 @@ class Enigma extends THREE.Object3D {
     // Crear la caja
     var caja = new THREE.Mesh(cajaGeometry, cajaMaterial);
     
-
- /*    var enigmaCSG = new CSG();
-    enigmaCSG.union([punto, interrog, tapa1, tapa2]);
-    this.enigma = enigmaCSG.toMesh();
-    this.enigma.rotateY(Math.PI/2); */
-
     this.enigma = new THREE.Group();
     this.enigma.add(punto);
     this.enigma.add(interrog);
@@ -73,10 +67,6 @@ class Enigma extends THREE.Object3D {
     this.enigma.scale.set(2,2,2);
     this.add(this.enigma);
 
-
-    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible); */
 
     this.enigma.userData.name = 'enigma';
   }

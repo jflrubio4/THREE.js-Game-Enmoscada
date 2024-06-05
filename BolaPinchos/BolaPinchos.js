@@ -176,20 +176,6 @@ class BolaPinchos extends THREE.Object3D {
 
     this.BolaPinchos.userData.name = 'bolaPinchos';
   }
-
-  setRotacion(value){
-    if (value){
-        this.rotar = true;
-    }
-    else{
-        this.rotar = false;
-    }
-  }
-
-  getGeometry(){
-    return this.tubo;
-  }
-
   
   update () {}
 }

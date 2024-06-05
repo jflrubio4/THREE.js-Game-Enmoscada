@@ -76,15 +76,6 @@ class Circuito extends THREE.Object3D {
     /* this.rotar = false; */
   }
 
-  setRotacion(value){
-    if (value){
-        this.rotar = true;
-    }
-    else{
-        this.rotar = false;
-    }
-  }
-
   getGeometry(){
     return this.tubo;
   }

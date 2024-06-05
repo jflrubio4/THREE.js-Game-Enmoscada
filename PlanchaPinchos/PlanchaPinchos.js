@@ -137,17 +137,6 @@ class PlanchaPinchos extends THREE.Object3D {
     pinchos[24].translateY(0.375 + 0.125);
     pinchos[24].translateX(-1.1);
     pinchos[24].translateZ(-1.1);
-    
-    /* let csg = new CSG();
-
-    for (let i = 0; i < pinchos.length; i++) {
-      csg.union([pinchos[i]]);
-    }
-
-    // Convertir el CSG resultante de nuevo a Mesh
-    let finalMesh = csg.toMesh();
-
-    this.add(finalMesh); */
 
     this.planchaPincho = new THREE.Object3D();
 
@@ -160,19 +149,7 @@ class PlanchaPinchos extends THREE.Object3D {
     this.add(cajaInvisible);
     this.add(this.planchaPincho);
 
-    /* //PATRA LAS COLISIONES.
-    this.cajaEnvolvente = new THREE.Box3();
-    this.cajaEnvolvente.setFromObject(this.planchaPincho); */
-
-    /* //PARA VISUALIZAR LA CAJA ENVOLVENTE.
-    var cajaEnvolventeVsible = new THREE.Box3Helper(this.cajaEnvolvente, 0x00ff00);
-    this.add(cajaEnvolventeVsible); */
-
     this.planchaPincho.userData.name = 'planchaPinchos';
-  }
-
-  getNombre(){
-    return this.nombre;
   }
   
   update(){}

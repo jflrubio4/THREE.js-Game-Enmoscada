@@ -107,14 +107,6 @@ class MoscaAgresiva extends THREE.Object3D {
     cejaDGeometry.translate(0.2,0.1,0.65);
     var cejaD = new THREE.Mesh(cejaDGeometry, matCejas);
 
-    //UNIMOS LAS PARTES DEL BRAZO.
-    /* var moscaCSG = new CSG();
-    moscaCSG.union([cuerpo, this.alaI, this.alaD, cejaI, cejaD]);
-    var mosca = moscaCSG.toMesh();
-    //mosca.rotateY(Math.PI/2); */
-
-    //this.add(mosca);
-
     var mosca = new THREE.Group();
     mosca.add(cuerpo);
     mosca.add(this.alaI);
@@ -134,7 +126,6 @@ class MoscaAgresiva extends THREE.Object3D {
     this.add(cajaEnvolventeVsible); */
 
     mosca.userData.name = 'moscaAgresiva';
-    
   }
 
   // Método para reducir la vida de la mosca
@@ -152,7 +143,7 @@ class MoscaAgresiva extends THREE.Object3D {
   }
   
   
-  funcionAnimar(value){
+  funcionAnimar(){
     if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
       this.alaI.rotation.y += 0.015;
       if(this.alaI.rotation.y >= 0.2){
@@ -181,7 +172,7 @@ class MoscaAgresiva extends THREE.Object3D {
   }
   
   update () {
-    this.funcionAnimar(this.rotar);
+    this.funcionAnimar();
     
   }
 }

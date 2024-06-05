@@ -2,19 +2,10 @@ import * as THREE from '../libs/three.module.js'
 import {CSG} from '../libs/CSG-v2.js'
  
 class Mosca extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor() {
     super();
 
     this.nombre = 'Mosca corriente';
-
-    // var loader = new THREE.TextureLoader();
-    // var textureAlas = loader.load('../imgs/alas.jpg');
-    // /* textureAlas.offset.set(-0.5, 0.5); */
-    // textureAlas.wrapS = THREE.RepeatWrapping;
-    // textureAlas.wrapT = THREE.RepeatWrapping;
-/*     textureAlas.repeat.set(0, 1); // Ajusta estos valores según sea necesario */
-    
-    /* textureAlas.wrapT = THREE.RepeatWrapping; */
 
     //var materialAlas = new THREE.MeshStandardMaterial({map: textureAlas});
     var materialAlas = new THREE.MeshPhysicalMaterial({
@@ -38,7 +29,6 @@ class Mosca extends THREE.Object3D {
       metalness: 0.1
     })
 
-    //VALORES PARA LAS ROTACIONES.
     //VALORES PARA LAS ROTACIONES.
     this.topeAlaI = false;
     this.topeAlaD = false;
@@ -78,15 +68,6 @@ class Mosca extends THREE.Object3D {
     alaDGeometry.rotateY(Math.PI);
     this.alaD = new THREE.Mesh(alaDGeometry, materialAlas);
 
-
-    /* //UNIMOS LAS PARTES DEL BRAZO.
-    var moscaCSG = new CSG();
-    moscaCSG.union([cuerpo, this.alaI, this.alaD]);
-    var mosca = moscaCSG.toMesh();
-    mosca.rotateY(Math.PI/2);
-
-    this.add(mosca); */
-
     this.mosca = new THREE.Group();
 
     this.mosca.add(cuerpo);
@@ -117,7 +98,7 @@ class Mosca extends THREE.Object3D {
     }
   }
 
-  funcionAnimar(value){
+  funcionAnimar(){
     if(this.alaI.rotation.y < 0.2 && !this.topeAlaI){
       this.alaI.rotation.y += 0.015;
       if(this.alaI.rotation.y >= 0.2){
@@ -146,7 +127,7 @@ class Mosca extends THREE.Object3D {
   }
   
   update () {
-    this.funcionAnimar(this.rotar);
+    this.funcionAnimar();
     
   }
 }
