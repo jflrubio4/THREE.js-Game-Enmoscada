@@ -65,7 +65,7 @@ A continuación, aquí está una guía rápida para empezar a jugar:
     *   **Objetos:** Recoge nitros como multiplicadores, escudos para protegerte y cajas de enigma para efectos sorpresa.
     *   **Efecto 'Enigma':** Perteneciente a un objeto y un tipo de mosca, este efecto otorga un estado beneficioso o perjudicial al jugador, pero no se sabe cual es hasta que se agarra el objeto o mata a la mosca correspondiente. ¡Pruébalos todos!
 
-Para una explicación  más detallada de todas las mecánicas, objetos y enemigos, consulta la memoria del juego completa en el [Manual de Usuario](./_ENMOSCADA_.pdf).
+Para una explicación  más detallada de todas las mecánicas, objetos y enemigos, consulta la memoria del juego completa en el [Manual de Usuario](./_ENMOSCADA_.pdf). De igual forma, en este enlace puedes encontrar un vídeo de muestra del funcionamiento del juego: [Vídeo](./Video%20y%20Diagramas/Video%20y%20Diagramas/video.webm)
 
 ## Imágenes del Juego
 
