@@ -4,8 +4,7 @@
 import * as THREE from '../libs/three.module.js'
 import { GUI } from '../libs/dat.gui.module.js'
 import { TrackballControls } from '../libs/TrackballControls.js'
-import { Personaje } from '../Personaje/Personaje.js';
-import { Circuito } from '../Circuito/Circuito.js';
+import { Personaje } from '../Modelos/Personaje/Personaje.js';
 
 // Clases de mi proyecto
 //IMPORT <MI CLASE>

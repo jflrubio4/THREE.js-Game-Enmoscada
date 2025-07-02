@@ -1,20 +1,19 @@
 import * as THREE from '../libs/three.module.js'
-import {CSG} from '../libs/CSG-v2.js'
-import { Personaje } from '../Personaje/Personaje.js';
-import { Circuito } from '../Circuito/Circuito.js';
-import { Mosca } from '../Mosca/Mosca.js'; //HAY QUE PONER "Modelos_Calidad/".
-import { MoscaReina } from '../MoscaReina/MoscaReina.js';
-import { MoscaAgresiva } from '../MoscaAgresiva/MoscaAgresiva.js';
-import { MoscaEnigma } from '../MoscaEnigma/MoscaEnigma.js';
-import { MoscaLuz} from '../MoscaLuz/MoscaLuz.js';
-import { Enigma } from '../Enigma/Enigma.js';
-import { Bomba } from '../Bomba/Bomba.js';
-import { Nitro } from '../Nitro/Nitro.js';
-import { Escudo } from '../Escudo/Escudo.js';
-import { Venus } from '../Venus/Venus.js';
-import { BolaPinchos} from '../BolaPinchos/BolaPinchos.js';
-import { PlanchaPinchos} from '../PlanchaPinchos/PlanchaPinchos.js';
-import { BolaEscudo } from '../BolaEscudo/BolaEscudo.js';
+import { Personaje } from '../Modelos/Personaje/Personaje.js';
+import { Circuito } from '../Modelos/Circuito/Circuito.js';
+import { Mosca } from '../Modelos/Mosca/Mosca.js'; //HAY QUE PONER "Modelos_Calidad/".
+import { MoscaReina } from '../Modelos/MoscaReina/MoscaReina.js';
+import { MoscaAgresiva } from '../Modelos/MoscaAgresiva/MoscaAgresiva.js';
+import { MoscaEnigma } from '../Modelos/MoscaEnigma/MoscaEnigma.js';
+import { MoscaLuz} from '../Modelos/MoscaLuz/MoscaLuz.js';
+import { Enigma } from '../Modelos/Enigma/Enigma.js';
+import { Bomba } from '../Modelos/Bomba/Bomba.js';
+import { Nitro } from '../Modelos/Nitro/Nitro.js';
+import { Escudo } from '../Modelos/Escudo/Escudo.js';
+import { Venus } from '../Modelos/Venus/Venus.js';
+import { BolaPinchos} from '../Modelos/BolaPinchos/BolaPinchos.js';
+import { PlanchaPinchos} from '../Modelos/PlanchaPinchos/PlanchaPinchos.js';
+import { BolaEscudo } from '../Modelos/BolaEscudo/BolaEscudo.js';
 
 class Juego extends THREE.Object3D {
   constructor(scene) {
